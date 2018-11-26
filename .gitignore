@@ -1,0 +1,4 @@
+_site
+.sass-cache
+.jekyll-metadata
+vendor/bundle/gems/ffi-1.9.25/ext/ffi_c/libffi-x86_64-linux-gnu/include/ffitarget.h
