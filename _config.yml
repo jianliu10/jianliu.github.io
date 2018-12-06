@@ -16,7 +16,7 @@
 title: Jian Liu's Blog
 email: admin@janejianliu.site
 description: >- # this means to ignore newlines until "baseurl:"
-  Jian is a experienced senior software developer with diverse technical skills and projects work experience. She got a Computer Science bachelor degree from Xiamen University and a Computer Science master degree from Zhejiang University.
+  Jian is an experienced senior software developer with diverse technical skills and work experience. She got a Computer Science bachelor degree from Xiamen University and a Computer Science master degree from Zhejiang University.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://janejianliu.site" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
