@@ -8,7 +8,7 @@ categories: tech security
 ## Authentication and Authorization in Micro-services architectur ##
 
 in Micro-services architecture, Requests arrive at the API Gateway. The API Gateway may handle, among other things, load balancing and authentication.   
-"iss": "https://LCL_APIGW_DOMAIN/",  # JWT id_token is issued by Loblaw API Gateway service.   
+"iss": "https://LCL_APIGW_DOMAIN/",  # JWT id_token is issued by IAM authentication and authorization service.   
 shared cookies (session id) across sites by using API gateway.
 Switching from a session based architecture to a token based architecture may be done incrementally.   
 
