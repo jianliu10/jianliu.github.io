@@ -4,15 +4,17 @@ title:  "Case Study - batch data integration using Java + Spring-boot + Spring-b
 date:   2018-12-01 00:00:00 -0500
 categories: data-integration batch case-study
 ---
-# Case Study
+# Abstract
 
-# business requirement
+# Business requirement
 
-# architecture
+# Architecture
 
-# design
+# Design
 
-# code base
+# Code base
 
-# deployment
+# Deployment
+
+# Conclusion
 
