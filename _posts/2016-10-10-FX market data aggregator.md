@@ -112,28 +112,39 @@ controller functionalities:
  
 
 ### Architecture Diagram
+
 ![architecture](/images/architecture.gif)  
 
-### Detail Design Diagrams
+### Component Diagram
+
 ![component-diagram](/images/component-diagram.gif)  
+
+### Deployment Diagram
 
 ![deployment-diagram](/images/deployment-diagram.gif)  
 
+### Process Flow
 ![process-flow-1](/images/process-flow-1.gif)  
 
 ![process-flow-2](/images/process-flow-2.gif)  
 
+### Persistence
+
 ![persistence](/images/persistence.gif)  
 
+
 ### Concurrency pseudo code
+
+
 ![concurrency-1](/images/concurrency-1.gif)  
 ![concurrency-2](/images/concurrency-2.gif)  
  
 ## Technology Stack
+
 ![technology-stack](/images/technology-stack.gif)
 
-## Enhance real-time performance
-Replace messaging Queue/Topics design with Multicast socket design to transfer real-time data to clients. 
+## Enhancement
+To enhance run-time performance, we can replace messaging Queue/Topics design with Multicast socket design to transfer real-time data to clients. 
 
  
 
