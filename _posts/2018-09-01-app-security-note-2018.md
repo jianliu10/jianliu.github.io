@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "java security"
+title:  "Application Security notes - 2018"
 date:   2018-09-01 13:15:42 -0500
-categories: java security
+categories: tech security
 ---
 
 ## Authentication and Authorization in Micro-services architectur ##

@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Technical notes in 2018"
+title:  "Technical notes - 2018"
 date:   2018-09-01 13:15:42 -0500
-categories: technical notes
+categories: tech java-spring
 ---
 
 # 2018 technical notes #
