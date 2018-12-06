@@ -1,13 +1,27 @@
 ---
 layout: post
-title:  "Welcome to my blog"
+title:  "Jian's Bio"
 date:   2018-01-01 00:00:00 -0500
 categories: jian home
 ---
+# Personal Introduction
+Jian was born in Fuzhou, Fujian, China. Her father side ancestors were originated from middle China. Her mother side ancestors were originated from south China. She grew up in Fuzhou and attended elementary school and high schools in Fuzhou. She love Fuzhou  as her home city. 
 
-##An experienced senior software developer with 20+ years of progressive advancement in designing and developing complex large scaled applications.
+She attended Xiamen University in Xiamen China, studied Computer Science major for four years and graduated with a honor B.Sc. degree.
 
-##Domain experience: 12+ years in Capital Market and Finance Risk Management, 2 years in health benefits, 2 year in Ontario government OPS.
+Right after university, She attended Zhejiang University Graduate School in Hangzhou China, studied Computer Application major for 2.5 years and graduate with a M.Sc. degree. She published a couple research articles in national computer science periodicals.
+
+She worked in ICBC (Industrial and Commercial Bank of China) for a few years before she immigrated to Canada in 1999.
+
+She has worked as senior software engineer/developer in Toronto since 1999.
+
+She provides independent consultant service to software development.  
+
+# Profession Introduction
+
+## An experienced senior software developer with 20+ years of progressive advancement in designing and developing complex large scaled applications.
+
+### Domain experience: 12+ years in Capital Market and Finance Risk Management, 2 years in health benefits, 2 year in Ontario government OPS.
 
 
 - Most recent development experience is in Java 8, Spring-boot, Micro services, REST API, Docker, Google Cloud.
