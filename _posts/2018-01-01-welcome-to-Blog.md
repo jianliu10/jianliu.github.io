@@ -5,20 +5,23 @@ date:   2018-01-01 00:00:00 -0500
 categories: jian home
 ---
 
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+##An experienced senior software developer with 20+ years of progressive advancement in designing and developing complex large scaled applications.
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+##Domain experience: 12+ years in Capital Market and Finance Risk Management, 2 years in health benefits, 2 year in Ontario government OPS.
 
-Jekyll also offers powerful support for code snippets:
 
-{% highlight java %}
-int i = 0;
-i++;
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
-
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
-
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+- Most recent development experience is in Java 8, Spring-boot, Micro services, REST API, Docker, Google Cloud.
+- Diversified technical skills in two areas: ETL data warehouse area and Application backend area. Ranging from Web Service backend, REST API, Spring, Distributed computing, clustered, partitioned, multi-thread, database, real-time, batch, event messaging, data warehouse, ETL.
+- In-depth and in-width strength is in backend and middle-tier applications design and development.
+- Hands-on developer. Good in OOP and Design Patterns. 
+- 9 years as software engineer in an industry renowned finance risk management software company IBM Algorithmics 
+- 15+ years using Java and JEE. 8+ years using Spring. 10+ in database development.
+- 6+ years’ in-depth development in high performance risk computation engine using distributed clustered, controller-workers, multi-threading architecture and design (2001-2006). 
+- 5+ years’ in-depth development in data integration components in data warehouses and ETL applications (2010 current).
+- 5+ years’ in-depth development in web service components using SOAP API/REST API/JMS API (2010 – current).
+- 1 year hand-on development experience in Micro-services RESP API backend.
+- 2 years government web application development using with Spring MVC, JSF, JSP, HTML, CSS (2011 2013)
+- Proven capability in designing generic highly extensible frameworks. Able to explain complex designs in simple language.
+- Strong analytical and problem solving skills. 
+- Initiative, High quality conscious; Responsible and accountable; Results oriented; 
+- Certified PMP by PMI for 2010 2019. Knowledge and work experience with Agile Scrum.
