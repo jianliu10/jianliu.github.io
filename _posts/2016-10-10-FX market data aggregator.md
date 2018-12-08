@@ -7,7 +7,7 @@ categories: tech trading-system
 
 ## Case Study - FX Market data aggregator in a FX trading system
  
-I was tasked to architect a FX Market data aggregator with the following capabilities:
+I was tasked to architect a FX market data aggregator for a FX trading system in a pension investment company. The system MDQ (Market Data Quotes) is required to have the following capabilities:
 ‎
 1. Ability to get market data quotes concurrently from 10 ECNs.
 2.‎ Persist and aggregate the quotes
