@@ -72,7 +72,7 @@ In Spring config xml, security configs will be added to springSecurityFilterChai
 **new java class configuration way:**  
 @EnableWebSecurity auto adds "springSecurityFilterChain"
 
-com.pcf.cardinal.rest.security.configuration.CardinalSecurityConfigAdapter extends WebSecurityConfigurerAdapter
+com.acom.cardinal.rest.security.configuration.CardinalSecurityConfigAdapter extends WebSecurityConfigurerAdapter
  
 	@EnableWebSecurity
 	class MySecurityConfig extends WebSecurityConfigurerAdapter {
@@ -226,7 +226,7 @@ Decoded Token:
 > }.[Signature]
 > 
 
-## PCF Cardinal security design ##
+## ACOM Cardinal security design ##
 cardinal-channel-common.cardinal-channel-security module is the security core. Another is cardinal-channel-authentication module.  
 Cardinal micro-services do NOT use Spring-security's session id authentication, Urls authorization, or global method authorization.   
 
@@ -259,16 +259,16 @@ Decoded Token:
 >   "email_verified": true,
 >   "lock_status": "N",
 >   "last_login": "Sat Sep 15 20:11:19 EDT 2018",
->   "iam_role": "Customer_PCF",
+>   "iam_role": "Customer_ACOM",
 >   "iss": "https://LCL_APIGW_DOMAIN/",
 >   "given_name": "g.sottile@gmail.com",
 >   "nonce": " 108f6638-dcb4-401a-a770-05d878319c81",
 >   "iam_auth_assurance_code": "Allow",
 >   "aud": "client_id?",
->   "pcf_cust_id": "0000059923767",
+>   "acom_cust_id": "0000059923767",
 >   "exp": 1537063878,
 >   "iat": 1537056678,
->   "family_name": "Customer_PCF",
+>   "family_name": "Customer_ACOM",
 >   "email": "g.sottile@gmail.com@gmail.com",
 >   "jti": "d023a3d4-e0f8-40e0-9afd-af81bf6d9a5c"
 >   "scope": ["admin", "user"]
