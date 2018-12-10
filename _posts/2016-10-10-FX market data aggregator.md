@@ -144,7 +144,7 @@ controller functionalities:
 ![technology-stack](/images/technology-stack.gif)
 
 ## Enhancement
-To enhance run-time performance, we can replace messaging Queue/Topics design with Multicast socket design to transfer real-time data to clients. 
+To enhance the speed of transferring real-time FX market data quotes to the clients, a solution is to replace messaging Queue/Topics design with Multicast socket design.
 
  
 
