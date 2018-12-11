@@ -15,7 +15,11 @@ The data integration batch job will read the data files from Cloud Storage, tran
 The data integration batch job will be deployed and run on Google Cloud Platform. 
 
 # Non-Functional Requirement
-load balancing, fail-over, log monitor, process metrics, error log report.  
+fault tolerant (auto fail-retry), 
+load balance, 
+failover, 
+process metrics monitoring, 
+centralized log and error report  
 
 
 # Architecture
