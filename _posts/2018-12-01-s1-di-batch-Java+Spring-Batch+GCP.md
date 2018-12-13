@@ -7,8 +7,6 @@ categories: data-integration batch
 
 # Functional Requirement
 
-This document was created at the successful completion and production of my development work.
-
 This document describes the design, program and implementation a batch data integration framework that loads upstream data into Google Cloud BigQuery data warehouse.
 
 The upstream system will extract data into files, and upload into Google Cloud Storage.
