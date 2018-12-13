@@ -7,7 +7,7 @@ categories: tech trading-system
 
 ## Functional and non-functional requirements
  
-I was challenged to architect a FX market data aggregator for a FX trading system. The system MDQ (Market Data Quotes) is required to have the following capabilities:
+To architect and design a FX market data aggregator for a FX trading system. The system is required to have the following capabilities:
 ‎
 1. Ability to get market data quotes concurrently from 10 ECNs.
 2.‎ Persist and aggregate the quotes
@@ -15,7 +15,8 @@ I was challenged to architect a FX market data aggregator for a FX trading syste
 4. Ability for clients to request persisted quotes‎ directly received from ECNs
 5. Ability to handle 10k messages per second.
  
-I will explain the following in this design document: 
+
+This document explains MDQ (Market Data Quotes) system architecture and design, including the following:
  
 1. The various components you will build.
 2. The integration of various components.
