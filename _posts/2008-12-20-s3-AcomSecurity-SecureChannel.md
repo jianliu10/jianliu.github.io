@@ -5,7 +5,7 @@ date:   2008-12-20 00:00:00 -0500
 categories: tech security
 ---
 
-The document describes the design, program and implementation of secure channel communication in Acom software suite comprising of Java/C++/Web applications.  
+I was tasked to design, program and implement secure channels in Acom software suite comprised of 20+ Java/C++/Web applications. This presentation was written upon the successful completion and production of my development work.  
 
 
 {% for i in (1..50) %}
