@@ -17,9 +17,9 @@ The data integration batch job will be deployed and run on Google Cloud Platform
 
 # Non-Functional Requirement
 fault tolerant - automatically fail-retries    
-failover - to avoid single point of failure
-log monitoring    
-process metrics - monitor the health, CPU, memory, disk usage of the batch DI process.    
+failover - to avoid single point of failure  
+log monitoring     
+DI process metrics - monitor the health, CPU, memory, disk usage of the batch DI process.    
 error report - near time error/exception notification to production support.   
 
 
