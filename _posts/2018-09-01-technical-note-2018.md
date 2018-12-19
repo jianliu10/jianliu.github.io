@@ -177,13 +177,14 @@ bean - PersistenceExceptionTranslationPostProcessor. This bean post processor ad
 
 ## thread pool. How will you implement a thread pool yourself ##
  
-## design patterns ( must ask) ##
+## design patterns  ##
 
 give an example, like builder, singleton, prototype, factory, abstract factory, adapter, wrapper, facade, proxy, chain of responsibility, , iterator, mediator, observer, visitor, strategy, memento, template
  
 ## Thread ##
 
-java VOLATILE variable, hashtable vs concurrentHashMap, vector vs arraylist, heap vs stack, methods in java.lang.Object, HashMap key class must be immutable and implements hashcode() and equals()
+java VOLATILE variable, hashtable vs concurrentHashMap, vector vs arraylist, heap vs stack, methods in java.lang.Object.
+HashMap key class must be immutable and implements hashcode() and equals()
 
 thread context switch, process context switch, thread scheduler, cpu time slice (=preemptive scheduling), CPU registors state save/restore, cpu's L1 cache, main L2 cache, main memory
 
@@ -253,6 +254,7 @@ functional interface contains only one abstract interface method. It can have ot
 
 method references: Static method reference, instance method reference of an object of a particular type, instance method reference of an existing object  
 
+Lambda is a single expression annonymous function that is often used as inline function. Java Lambda concept is borrowed from Python. Java internal mechanism is to create an instance of an annonymous class that implements a FunctionalInterface. This ways, java effectively treat a Lambda expression as a function object.
 
 ## Unit test ##
 
@@ -277,26 +279,34 @@ method references: Static method reference, instance method reference of an obje
 
 using the MockMvc in spring-boot-test jar (do not need to start up web application)
 
-> @RunWith(SpringRunner.class)
-> @SpringBootTest(classes={MyApplication.class}, webEnvironment={SpringBootTest.WebEnvironment.MOCK, WebEnvironment.RANDOM_PORT} )
-    
-    @AutoConfigureMockMvc   
-    @Autowired  
+    @RunWith(SpringRunner.class)  
+	@SpringBootTest(classes={MyApplication.class}, webEnvironment={SpringBootTest.WebEnvironment.MOCK, WebEnvironment.RANDOM_PORT} )  
+	@TestPropertySource(locations = "classpath:application-test.properties")    
+    @AutoConfigureMockMvc     
+	
+		
+    @Autowired    
     private MockMvc mockMvc;  
     
 or use manual setup:  
 
-    org.springframework.test.web.servlet.MockMvc mockMvc = org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(accountsController)
-    .setMessageConverters(new StringHttpMessageConverter(), new MappingJackson2HttpMessageConverter())
-    .setControllerAdvice(advice)
-    .build();
+    org.springframework.test.web.servlet.MockMvc mockMvc =   					
+		org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(accountsController)  
+			.setMessageConverters(new StringHttpMessageConverter(), new MappingJackson2HttpMessageConverter())  
+			.setControllerAdvice(advice)
+			.build();
 
-> @TestPropertySource(locations = "classpath:application-test.properties")
+test web request-response:
+			
+    mockMvc.perform(post("/load/input?input_name=YDMD_SP_LDR_AB_Part1&bid=b2");       
 
-        mockMvc.perform(post("/load/input?input_name=YDMD_SP_LDR_AB_Part1&bid=b2");
-        mockMvc.perform(get("/accounts/1/transactions/filterOptions").accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(jsonPath("$.cardholderFilterOption[1]").exists())
-                .andExpect(jsonPath("$.cardholderFilterOption[0].accountCustomerId").value("1"))
+	mockMvc.perform(get("/accounts/1/transactions/filterOptions")  
+			.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+		    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+			.andExpect(jsonPath("$.cardholderFilterOption[1]").exists())
+            .andExpect(jsonPath("$.cardholderFilterOption[0].accountCustomerId").value("1"))
 		
 ### spring-mvc test using io.restassured lib (need to start up web application first)		  
 	@Test
@@ -317,20 +327,24 @@ or use manual setup:
 
 ## oracle ##
 
- heap table(== heap organized table),   
- clustered index (index organized table, the cluster key is the primary key, actual rows are stored in tree nodes),   
- non-clustered index (the tree nodes store the physical locations of the actual rows in disk)  
- b-tree index (on columns with high cardinality), used in frequent DML operations.  
- bitmap index (on columns with low cadinality), used in write-once read-many application, such as overnight batch load in DW. expensive to update bitmap index.  
- 
+- heap table(== heap organized table),   
+- clustered index (index organized table, the cluster key is the primary key, actual rows are stored in tree nodes),   
+- non-clustered index (the tree nodes store the physical locations of the actual rows in disk)  
+- b-tree index (on columns with high cardinality), used in frequent DML operations.  
+- bitmap index (on columns with low cadinality), used in write-once read-many application, such as overnight batch load in DW. expensive to update bitmap index.  
+
+
 ## microservice, design patterns, RESTful API design  ## 
 
-****data join****  
-two desings:  
-- use public REST API to read data from other service, join data from other service and data from this servcie in client application,   
-- or use data event to publish data changes from the data's master service to other services. cache the data in the service local db. then join in the service's local database,  
+**data join**  
+Use two types of designs to handle data join in microservice architecture:  
 
-****distributed transactions design use workflow or sage.****   
+- use public REST API to read data from other service, join data from other service and data from this servcie in client application,   
+- use data event to publish data changes from the data's master service to other services. cache the data in the service local db. then join in the service's local database,  
+
+
+**distributed transactions design**  
+Use workflow or sage designs to handle distributed transactions in microservice architecture.   
  
  
  

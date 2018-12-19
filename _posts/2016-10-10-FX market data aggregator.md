@@ -122,7 +122,7 @@ controller functionalities:
 
 ### Deployment Diagram
 
-![deployment-diagram](/images/deployment-diagram.gif)  
+  
 
 ### Process Flow
 ![process-flow-1](/images/process-flow-1.gif)  
