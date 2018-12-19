@@ -2,7 +2,7 @@
 layout: post
 title:  "Case Study - batch data integration using Java + Spring-boot + Spring-batch on Google Cloud"
 date:   2018-12-01 00:00:00 -0500
-categories: data-integration batch
+categories: tech data-integration
 ---
 
 # Functional Requirement
