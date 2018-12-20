@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Application Security notes - 2018"
-date:   2018-09-01 00:00:00 -0500
+date:   2018-11-01 00:00:00 -0500
 categories: tech security
 ---
 
