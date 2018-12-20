@@ -16,7 +16,7 @@ I was tasked to architect and design a FX market data aggregator for a FX tradin
 5. Ability to handle 10k messages per second.
  
 
-This document explains MDQ (Market Data Quotes) system architecture and design, including the following:
+This document explains MDQ (Market Data Quotes) system architecture and design that I proposed. It includes the following:
  
 1. The various components you will build.
 2. The integration of various components.

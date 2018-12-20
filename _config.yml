@@ -14,9 +14,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Jian Liu's Blog
-email: me@janejianliu.site
+email: me@janejianliu.site 
 description: >- # this means to ignore newlines until "baseurl:"
-  Jian is an experienced senior software developer with diverse technical skills and work experience. She got a Computer Science bachelor degree from Xiamen University and a Computer Science master degree from Zhejiang University.
+  Jian Liu is the original author of all the blog articles. Copyrights are reserved.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://janejianliu.site" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
