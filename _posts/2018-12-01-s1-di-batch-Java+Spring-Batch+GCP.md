@@ -19,8 +19,8 @@ The data integration batch job will be deployed and run on Google Cloud Platform
 fault tolerant - automatically fail-retries    
 failover - to avoid single point of failure  
 log monitoring     
-DI process metrics - monitor the health, CPU, memory, disk usage of the batch DI process.    
-error report - near time error/exception notification to production support.   
+batch process metrics - monitor the health, CPU, memory, disk usage of the batch ETL process.    
+error report - near time error/exception notification to a production support group.   
 
 
 # Architecture
