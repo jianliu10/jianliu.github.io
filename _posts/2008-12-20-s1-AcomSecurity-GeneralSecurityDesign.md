@@ -5,7 +5,7 @@ date:   2008-12-20 00:00:00 -0500
 categories: tech security
 ---
 
-I was tasked to research, design, program and implement secure channels in Acom software suite comprised of 20+ Java/C++/Web applications. This presentation was written upon the successful completion and production of my development work.  
+In year 2008, I was tasked to research, design, program and implement secure channels in Acom software suite comprised of 20+ Java/C++/Web0 applications. This presentation was written upon the successful completion and production of my development work.  
 
 <!--
 [Acom Security - General Security Design](/images/AcomSecurity-GeneralSecurityDesign.ppt)

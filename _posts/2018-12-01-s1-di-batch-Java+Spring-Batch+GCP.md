@@ -7,7 +7,7 @@ categories: tech data-integration
 
 # Functional Requirement
 
-I was tasked to architect, design, program and implement a batch data integration framework that loads upstream data into Google Cloud BigQuery data warehouse. This document explains the key aspects of my development work.
+In year 2018, I was tasked to architect, design, program and implement a batch data integration framework that loads upstream data into Google Cloud BigQuery data warehouse. This document explains the key aspects of my development work.
 
 The upstream system will extract data into files and upload into Google Cloud Storage.
 
