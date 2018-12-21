@@ -80,7 +80,7 @@ adapter service functionalities:
  - pre-aggregation function
 	- intervally pre-aggregate the quotes cached in memory. interval can be set every 0.1 second (configurable interval in millisecond)
 		- set a thread pool type to schedulerThreadPool, which executes tasks with 0.1 second interval. set the thread pool size to  
-			MIN( <total number of FX instruments>, <20*(number of computer CPUs)> ), whichever is less.
+			MIN( total number of FX instruments, 20*(number of computer CPUs) ), whichever is less.
 		- create a pre-aggregation task for every instrument, submit the tasks into a thread pool. 
 		- a pre-aggregation task will execute:
 			- pre-aggredate using the most recent instrument market qutoes from m ESNs stored in "RawMarketQuoteCache" cache.
@@ -103,7 +103,7 @@ aggregator service functionalities:
  - aggregation process
 	- intervally aggregate the quotes cached in memory. interval can be set every 0.1 second (configurable interval in millisecond)
 		- set a thread pool type to schedulerThreadPool, which executes tasks with 0.1 second interval. set the thread pool size to:  
-			MIN( <number of FX instruments in the partition>, <20*(number of computer CPUs)> ), whichever is less.
+			MIN( number of FX instruments in the partition, 20*(number of computer CPUs) ), whichever is less.
 		- create a aggregation task for every instrument, submit the tasks into a thread pool. 
 		- a aggregation task will execute:
 			- aggredate using the most recent instrument pre-aggr market qutoes from m ESNs stored in "PreAggrMarketQuoteCache" cache.
@@ -137,11 +137,11 @@ controller server functionalities:
  
 
 ### Architecture Diagram
-When the total number of ESNs is large, e.g. > 20, we should segregate adapter service functionalities from aggregator functionalities in the way as the above the high performance design.
+When the total number of ESNs is large, e.g. > 50, we should segregate adapter service functionalities from aggregator functionalities in the way as the above design.
 
-However, when the total number of ESNs is small (less than 20). we can use a simplifed version of design, where each adapter serive implements both adapter serive functionalities and aggregator service functionality. each adapter service subscribes to a partition of FX instruments from all ESNs. 
+However, when the total number of ESNs is small (< 20). we use a simplifed version of design, where each adapter serive implements both adapter serive functionalities and aggregator service functionalities. each adapter service subscribes to a partition of FX instruments from all ESNs. 
 
-The following architecture diagram is for the simplified version of design when ESNs number is small. 
+The following architecture diagram is for the simplified version of design when the total number of ESNs is small. 
 
 
 ![architecture](/images/architecture.gif)  
