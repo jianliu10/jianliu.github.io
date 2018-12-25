@@ -1,13 +1,13 @@
 ---
 layout: post
 title:  "Case Study - FX Market Data Aggregator in a FX trading system"
-date:   2016-10-01 00:00:00 -0500
+date:   2016-11-5 00:00:00 -0500
 categories: tech trading-system 
 ---
 
 ## Functional and non-functional requirements
  
-In year 2016, I was tasked to architect and design a FX market data aggregator for a FX trading system. The system is required to have the following capabilities:
+I was tasked to architect and design a FX market data aggregator for a FX trading system. The system is required to have the following capabilities:
 ‎
 1. Ability to get market data quotes concurrently from 10 ECNs.  
 2.‎ Persist and aggregate the quotes

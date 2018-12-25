@@ -1,13 +1,13 @@
 ---
 layout: post
 title:  "Case Study - batch data integration using Java + Spring-boot + Spring-batch on Google Cloud"
-date:   2018-12-01 00:00:00 -0500
+date:   2018-12-28 00:00:00 -0500
 categories: tech data-integration
 ---
 
 # Functional Requirement
 
-In year 2018, I was tasked to architect, design, program and implement a batch data integration framework that loads upstream data into Google Cloud BigQuery data warehouse. This document explains the key aspects of my development work.
+I was tasked to architect, design, program and implement a batch data integration framework that loads upstream data into Google Cloud BigQuery data warehouse. This document explains the key aspects of my development work.
 
 The upstream system will extract data into files and upload into Google Cloud Storage.
 
