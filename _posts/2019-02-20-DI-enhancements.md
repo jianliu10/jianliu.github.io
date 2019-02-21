@@ -36,16 +36,16 @@ There are a few issues in existing promotion data integration component
 
 The issues This enhancement design addresses several issues in the existing Promotion data integration component in DWS. The Technical Debts (issues) are described in the following.
 
-### Technical Debt 1: manual process to add or change dimensional data in DWS 
+### TechnicalDebt-1: manual process to add or change dimensional data in DWS 
 
    The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWS developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWS dimensional data. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
 
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
    
-   ![Load dimensional data using manual process](/images/PromotionDI-EnhancementDesign/loadDimData-ManualProcess.png)
+   ![Load dimensional data using manual process](/images/PromotionDI-EnhancementDesign/loadDimData-ManualProcess.jpg)
 
-### Technical Debt  2: Use visual ETL tool to process complex data transformation logic
+### TechnicalDebt-2: Use visual ETL tool to process complex data transformation logic
 
    The DWS system uses Informatica jobs to extract, transform, and load Fact data. Visual ETL tools like Informatica, Talend work great when the data transformation logic is simple and straightforwd. 
 
@@ -53,7 +53,7 @@ The issues This enhancement design addresses several issues in the existing Prom
 
    The visual ETL tools become unwieldly in complex data transformation logic. For a complex transformation logic, which could have been solved with several lines of Python or Java codes in clear logic flow, it will take many work-around steps in ETL tool to develped. The end result of using visual ETL tool to develop complex transformation logic is a visual flow chart that is highly complex, confusing, difficult to be undertood by other developers and thus difficult to maintain and enhance in the future. With the time going by, even the oroginal developers will have difficulty understanding the highly complex visual flow chart themselves.  
   
-### Technical Debt  3: Use visual ETL tool to process extra large of data traffic volumn without sub-partitions 
+### TechnicalDebt-3: Use visual ETL tool to process extra large of data traffic volumn without sub-partitions 
 
    With today's network speed, visual ETL tool like Informatica and Talend can handle a few millions of fact records with tolerable time performance. 
    
@@ -62,7 +62,7 @@ The issues This enhancement design addresses several issues in the existing Prom
    For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch jobs run.
 
   
-### Technical Debt  4: hard coded codes/types mapping logic from upstream transactional systems to DWS report system
+### TechnicalDebt-4: hard coded codes/types mapping logic from upstream transactional systems to DWS report system
    
    It was initially convenient to hard code codes/types mapping logic in ETL transformation when the number of mappings is small. With the upstream transactional system adds more and more codes/types, the hard coded mapping logic becomes a constant coding labor. Every time there is a new or changed promotion program or promotion location in upstream transactional system, the hard coded mapping logic need to be revisited and changed accordingly. Hard coded mapping logic also makes the visual ETL flow chart bloated with several branches of data process flows that only differs in codes/types mapping logic. 
    
@@ -142,7 +142,7 @@ This is a perfect scenario to move the hard coded mapping logic to a mapping con
 We can see some mappings of codes/types are one-to-one straighforward. other mappings are based on certain field value patterns in a dimension record. To handle field value pattern based mappings, my suggestion is to use regular expressions in the mapping configuration table. In the future, we only need to add or change the mapping configuration table records without touching the ETL codes. This will greatly simplfy the ETL code logic and improve the data process flow readibility, maintenability, and time to production.
 
 
-Sample hard coded mapping snippets in existing ETL Informatica job:
+TechnicalDebt-4: Sample hard coded mapping snippets in existing ETL Informatica job:
 
 For promotionType = 'EndAisle'
 
