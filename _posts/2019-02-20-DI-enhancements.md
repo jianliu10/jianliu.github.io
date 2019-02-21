@@ -34,17 +34,18 @@ PROMO component in DWS provides data for a few key business functions:
 
 There are a few issues in existing promotion data integration component 
 
-The issues This enhancement design addresses several issues in the existing Promotion data integration component in DWS. The issues are described in the following.
+The issues This enhancement design addresses several issues in the existing Promotion data integration component in DWS. The Technical Debts (issues) are described in the following.
 
-### Issue 1: manual process to add or change dimensional data in DWS 
+### Technical Debt 1: manual process to add or change dimensional data in DWS 
 
    The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWS developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWS dimensional data. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
 
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
-   TODO: Diagram - load dimensional data using individual SQL insert/update/delete DML statments  
+   
+   ![Load dimensional data using manual process](/images/PromotionDI-EnhancementDesign/loadDimData-ManualProcess.png)
 
-### Issue 2: Use visual ETL tool to process complex data transformation logic
+### Technical Debt  2: Use visual ETL tool to process complex data transformation logic
 
    The DWS system uses Informatica jobs to extract, transform, and load Fact data. Visual ETL tools like Informatica, Talend work great when the data transformation logic is simple and straightforwd. 
 
@@ -52,7 +53,7 @@ The issues This enhancement design addresses several issues in the existing Prom
 
    The visual ETL tools become unwieldly in complex data transformation logic. For a complex transformation logic, which could have been solved with several lines of Python or Java codes in clear logic flow, it will take many work-around steps in ETL tool to develped. The end result of using visual ETL tool to develop complex transformation logic is a visual flow chart that is highly complex, confusing, difficult to be undertood by other developers and thus difficult to maintain and enhance in the future. With the time going by, even the oroginal developers will have difficulty understanding the highly complex visual flow chart themselves.  
   
-### Issue 3: Use visual ETL tool to process extra large of data traffic volumn without sub-partitions 
+### Technical Debt  3: Use visual ETL tool to process extra large of data traffic volumn without sub-partitions 
 
    With today's network speed, visual ETL tool like Informatica and Talend can handle a few millions of fact records with tolerable time performance. 
    
@@ -61,7 +62,7 @@ The issues This enhancement design addresses several issues in the existing Prom
    For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch jobs run.
 
   
-### Issue 4: hard coded codes/types mapping logic from upstream transactional systems to DWS report system
+### Technical Debt  4: hard coded codes/types mapping logic from upstream transactional systems to DWS report system
    
    It was initially convenient to hard code codes/types mapping logic in ETL transformation when the number of mappings is small. With the upstream transactional system adds more and more codes/types, the hard coded mapping logic becomes a constant coding labor. Every time there is a new or changed promotion program or promotion location in upstream transactional system, the hard coded mapping logic need to be revisited and changed accordingly. Hard coded mapping logic also makes the visual ETL flow chart bloated with several branches of data process flows that only differs in codes/types mapping logic. 
    
@@ -72,11 +73,11 @@ The issues This enhancement design addresses several issues in the existing Prom
 
 ### Automate new or changed dimensional data integration into DWS 
 
-This session proposes two solutions to Issue 1 described in the above. 
+This session proposes two solutions to Technical Debt 1. described in the above. 
 
 #### Basic enhancement - Using business client CSV input files and PL/SQL Stored Procedures
 
-When adding or chaning a large number of dimensional data records, The current approach is to write individual insert/update/delete SQL DML statements for each records to directly load into multiple inter-related final dimensional tables in DWS with surrogate IDs. Assume there are 50 of new or changed programs, and 5 final fact tables to populated, there will be, <number of new or changed programs> * <number of final dimensional tables>, total 250 SQL DML statments to hand written by developers.
+When adding or chaning a large number of dimensional data records, The current approach is to write individual insert/update/delete SQL DML statements for each records to directly load into multiple inter-related final dimensional tables in DWS with surrogate IDs (integer) as foreign key references. Assume there are 50 of new or changed programs, and 5 final fact tables to populated, there will be, <number of new or changed programs> * <number of final dimensional tables>, total 250 SQL DML statments to hand written by developers.
 
 The enhanced approach is to use business client provided CSV input files. The business client provides CSV input files containing new or changed business records, a **generic python script** is developed to read the business CSV input files, load the raw file contents to staging tables in DWS. PL/SQL stored procedures are developed to read dimensional records from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWS.
 
@@ -84,14 +85,14 @@ Assume there are 50 of new or changed programs, the enhanced approach will requi
 
 We can see that using this business CSV input file approach, it still invoves developers' manual work to receive a new csv file from business client, verify the input file format, run the data staging job and PL/SQL jobs.
 
-TODO: Diagram - load dimensional data using CSV input file + PL/SQL Stored Procedures approach
+![Load dimensional data using CSV input file + PL/SQL Stored Procedures](/images/PromotionDI-EnhancementDesign/loadDimData-csvInputFile.jpg) 
 
 
 #### Advanced enhancement - Using business client notifications, actions and approval workflow
 
 This advaned enhancement implements a fully automatic workflow that involves business client only. The approach will not involve the developers in the on-going dimensional data population, maintenance and governance. 
 
-I have rarely seen this advaned enhancement in data warehouse systems. The rarity is mainly because the development of automatic workflow requires technical skills that go beyond DWS team normal skill sets. The workflow is actually an web application development. 
+I have rarely seen this advaned enhancement in data warehouse systems. The rarity is mainly because the development of automatic workflow requires technical skills that go beyond a typical DWS DI team skill sets. The workflow is actually an web application development. 
 
 The high level design of the workflow is as the following:
 
@@ -111,7 +112,7 @@ The high level design of the workflow is as the following:
 6. upon completion of daily new or changed dimensional records, the business client clicks a button to trigger the execution of the PL/SQL stored procedures, which will read the new or changed dimensional data from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWS.
 
 
-TODO: Diagram - automatic dimensional data governance using notification and approval workflow.
+![Automatic dimensional data governance using notification and approval workflow](/images/PromotionDI-EnhancementDesign/loadDimData-notificationApprovalWorkflow.jpg)
 
 
 ### Use python to process complex data transformation logic
@@ -228,7 +229,14 @@ For promotionType = 'Mini Thematic', then
 		
 	
 
-## Technology Stack used in DI component automation enhancements
+# Thought about migrating data integration processes to public cloud
+
+Currently, all the data integration processes are implemented using Informatica visual ETL tool. This post a challenge to migrate the data integration processes to public cloud. 
+
+In order to migrate the data integration processes to public cloud, I think the ETL jobs need to be written using Python or Java. This will leverage the massive scale of lower grade virtual machines in public cloud to accomplish parallel data processing. 
+
+	
+## Technology Stack 
 
 PL/SQL Stored Procedures   
 Python    
@@ -238,7 +246,7 @@ Informatica
 
 # Code Snippets
 
-the codes are proprietory to the retail company.
+the codes are proprietory.
 
 
 # Deployment
