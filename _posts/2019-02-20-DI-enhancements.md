@@ -43,8 +43,9 @@ The issues This enhancement design addresses several issues in the existing Prom
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
    
-   ![Load dimensional data using manual process](/images/PromotionDI-EnhancementDesign/loadDimData-ManualProcess.jpg)
+   ![Load dimensional data using manual process](/images/PromotionDI-EnhancementDesign/loadDimData-manualProcess.jpg)
 
+   
 ### TechnicalDebt-2: Use visual ETL tool to process complex data transformation logic
 
    The DWS system uses Informatica jobs to extract, transform, and load Fact data. Visual ETL tools like Informatica, Talend work great when the data transformation logic is simple and straightforwd. 
