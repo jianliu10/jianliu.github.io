@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - Retail Promotion Data Integration Automation and Enhancements in DWH"
+title:  "Case Study - Retail Promotion Data Integration Automation and Enhancement in DWH"
 date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
@@ -70,11 +70,11 @@ This enhancement design addresses several issues in the existing Promotion data 
    For example, promotion data integation component maps promotion location codes used in updtream SAM system to the promotion subtypes used in DWS report system. There are different codes/types mapping logics depending on the promotion types. 
     
 
-## Design of enhancements in Promotion data integration component 
+## Design of promotion data integration automation and enhancement 
 
 ### Automate new or changed dimensional data integration into DWS 
 
-This session proposes two solutions to Technical Debt 1. described in the above. 
+This session proposes two solutions to TechnicalDebt-1 described in the above. 
 
 #### Basic enhancement - Using business client CSV input files and PL/SQL Stored Procedures
 
@@ -136,9 +136,9 @@ Data integration process always need to map codes/types from upstream transactio
 
 Hard codes mappings of codes/types is a no. No matter how small number of the codes/types is. Always use a configuration table or file to configure the codes/types mappings.
 
-For example, in promotion DI system, there is map logic to map from SAM system promotion location codes to DWS system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
+For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWS system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
 
-This is a perfect scenario to move the hard coded mapping logic to a mapping configuration tables. 
+This is a perfect scenario to move the hard coded mapping logic to a mapping configuration table. 
 
 We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. To handle field value pattern based mappings, my suggestion is to use regular expressions in the mapping configuration table. In the future, we only need to add or change the mapping configuration table records without touching the ETL codes. This will greatly simplify the ETL code logic and improve the data process flow readability, maintainability, and time to production.
 
