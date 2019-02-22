@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - automation enhancements in a promotion data integration component in DWS"
+title:  "Case Study - enhancements in a promotion data integration component in DWS"
 date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
