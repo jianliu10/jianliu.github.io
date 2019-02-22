@@ -34,7 +34,7 @@ PROMO component in DWS provides data for a few key business functions:
 
 There are a few issues in existing promotion data integration component 
 
-The issues This enhancement design addresses several issues in the existing Promotion data integration component in DWS. The Technical Debts (issues) are described in the following.
+This enhancement design addresses several issues in the existing Promotion data integration component in DWS. The Technical Debts (issues) are described in the following.
 
 ### TechnicalDebt-1: manual process to add or change dimensional data in DWS 
 
@@ -91,9 +91,9 @@ We can see that using this business CSV input file approach, it still invoves de
 
 #### Advanced enhancement - Using business client notifications, actions and approval workflow
 
-This advaned enhancement implements a fully automatic workflow that involves business client only. The approach will not involve the developers in the on-going dimensional data population, maintenance and governance. 
+This advanced enhancement implements a fully automatic workflow that involves business client only. The approach will not involve the developers in the on-going dimensional data population, maintenance and governance. 
 
-I have rarely seen this advaned enhancement in data warehouse systems. The rarity is mainly because the development of automatic workflow requires technical skills that go beyond a typical DWS DI team skill sets. The workflow is actually an web application development. 
+I have rarely seen this advanced enhancement in data warehouse systems. The rarity is mainly because the development of automatic workflow requires technical skills that go beyond a typical DWS DI team skill sets. The workflow is actually an web application development. 
 
 The high level design of the workflow is as the following:
 
@@ -105,9 +105,9 @@ The high level design of the workflow is as the following:
 
 4. the web app sends email notification to the business client about the new or invalid dimensional records.
 
-5. business client go to a browser to login to web app
+5. business client go to a browser to log in to web app
 	- the business client fills or corrects the dimensional records. submit and approve the changes. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "changed".
-	- the business client can also query an existing valid dimensioal records, change some fields to new values, submit and approve the change. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "changed".
+	- the business client can also query an existing valid dimensional records, change some fields to new values, submit and approve the change. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "changed".
 	- the business client cal also add a new dimensional records. submit and approve the new records. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "new". 
 
 6. upon completion of daily new or changed dimensional records, the business client clicks a button to trigger the execution of the PL/SQL stored procedures, which will read the new or changed dimensional data from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWS.
@@ -120,7 +120,7 @@ The high level design of the workflow is as the following:
 
 Python has built-in language features for data processing. Python ecosystem includes data processing packages like Pandas and cx_Oracle to handle data extraction, transformation and loading. Using python, developers can write very complex transformation logic in a small chunk of codes. The benefits is an easy to understand and easy to maintain and support code base.
 
-when the data transformation logic is comlex, where visual ETL tool becomes unwieldy, I suggest writing a python script to process the transform logic.  Visual ETL tools like Informatica or Talend provides a UI command line component to invoke the python scripts.
+when the data transformation logic is complex, where visual ETL tool becomes unwieldy, I suggest writing a python script to process the transform logic.  Visual ETL tools like Informatica or Talend provides a UI command line component to invoke the python scripts.
 
 
 ### process extra large of data traffic volumn (hundreds of millions of fact records)  
@@ -136,99 +136,99 @@ Data integration process always need to map codes/types from upstream transactio
 
 Hard codes mappings of codes/types is a no. No matter how small number of the codes/types is. Always use a configuration table or file to configure the codes/types mappings.
 
-For example, in promotion DI system, there is map logic to map from SAM system promotion location codes to DWS system promotion subtype codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appars in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
+For example, in promotion DI system, there is map logic to map from SAM system promotion location codes to DWS system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
 
 This is a perfect scenario to move the hard coded mapping logic to a mapping configuration tables. 
 
-We can see some mappings of codes/types are one-to-one straighforward. other mappings are based on certain field value patterns in a dimension record. To handle field value pattern based mappings, my suggestion is to use regular expressions in the mapping configuration table. In the future, we only need to add or change the mapping configuration table records without touching the ETL codes. This will greatly simplfy the ETL code logic and improve the data process flow readibility, maintenability, and time to production.
+We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. To handle field value pattern based mappings, my suggestion is to use regular expressions in the mapping configuration table. In the future, we only need to add or change the mapping configuration table records without touching the ETL codes. This will greatly simplify the ETL code logic and improve the data process flow readability, maintainability, and time to production.
 
 
-TechnicalDebt-4: Sample hard coded mapping snippets in existing ETL Informatica job:
-
-For promotionType = 'EndAisle'
-
-- during promotion items data integration phase, 
-
-  1. first get end aisle position
-
-			IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'P',1,1)-1))),   IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'A',1,1)-1))), 
-			IIF( (INSTR(END_AISLE_NUMBER,'B',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'B',1,1)-1))), IIF(UPPER(LTRIM(RTRIM(END_AISLE_NUMBER)))='HD', 'HD',END_AISLE_NUMBER))))
-
-  2. get end aisle flight	
-
-			IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0 AND 
-			INSTR(END_AISLE_NUMBER,'A',1) <>0 AND INSTR(END_AISLE_NUMBER,'B',1)<>0), 'PA+B', IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0), (SUBSTR(END_AISLE_NUMBER,(INSTR(END_AISLE_NUMBER,'P')))),
-			IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0 AND INSTR(END_AISLE_NUMBER,'B',1)  <> 0 ), 'A+B',
-			IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0), 'A',
-			IIF( (INSTR(END_AISLE_NUMBER,'B',1) <>0), 'B',
-			NULL)))))
-
-  3. concate end aisle position and end aisle flight
-
-  4. based on step 3 result, mapping the locations to subtypes:
-
-			IIF(VALUE31 = 'HD', 'HD',
-				 IIF(VALUE31 = 'GL', 'GL',
-				 IIF(VALUE31 = '12P', 'EA12P',
-				 IIF((INSTR(VALUE31,'FEM',1,1)) <> 0 , VALUE31,
-				 IIF((INSTR(VALUE31,'PA+B',1,1)) <> 0,'EA' || LPAD(VALUE31,6,'0'),
-				 IIF((INSTR(VALUE31,'PA',1,1)) <> 0, 'EA'||LPAD(VALUE31,4,'0'),
-				  IIF((INSTR(VALUE31,'PB',1,1)) <> 0,'EA'||LPAD(VALUE31,4,'0'),
-				  IIF((INSTR(VALUE31,'A+B',1,1)) <> 0, 'EA'||LPAD(VALUE31,5,'0'),
-				  IIF((INSTR(VALUE31,'A',1,1)) <> 0, 'EA'||LPAD(VALUE31,3,'0'),
-				  IIF((INSTR(VALUE31,'B',1,1)) <> 0, 'EA'||LPAD(VALUE31,3,'0'),
-				  IIF((INSTR(VALUE31,'VL',1,1)) <> 0, 'EA'||VALUE31,
-			IIF((INSTR(VALUE31,'CE',1,1)) = 1, VALUE31,
-			IIF((INSTR(VALUE31,'EZ',1,1)) =1, VALUE31,
-			IIF((INSTR(VALUE31,'S',1,1)) =1, VALUE31,
-			IIF((INSTR(VALUE31,'W',1,1)) =1, VALUE31,
-			'EA'||LPAD(VALUE31,2,'0'))))))))))))))))
-
-- during the promotion locations data integration phase:
-
-			DECODE(TRUE, 
-			INSTR(LOCATION_CODE31,'P') <> 0, lpad(LOCATION_CODE31,3,'0'),
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'GL')  = 1, LOCATION_CODE31,
-			LTRIM(RTRIM(UPPER(LOCATION_NAME31))) = 'GO LOCAL','GL',
-			UPPER(LTRIM(RTRIM(LOCATION_CODE31))) = 'HERO','HD',
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'VL') = 1, 'EA'||LOCATION_CODE31,
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'FEM') > 0, LOCATION_CODE31, 
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'CE')  = 1, LOCATION_CODE31,
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'EZ')  = 1, LOCATION_CODE31,
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'S')  = 1, LOCATION_CODE31,
-			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'W') = 1, LOCATION_CODE31,
-			'EA'||lpad(LOCATION_CODE31,2,'0'))
-
-			DECODE(TRUE,
-				INSTR(LOCATION_CODE34,'P') <> 0, 'EA'||lpad(LOCATION_CODE34,3,'0')||'B', IN (LOCATION_CODE34 ,'4','8','9','12',0) = 1, 'EA'||lpad(LOCATION_CODE34,2,'0')||'B',
-				'EA'||lpad(LOCATION_CODE34,2,'0'))
-
-			DECODE(TRUE,
-			INSTR(LOCATION_CODE5,'P') <> 0, 'EA'||lpad(LOCATION_CODE5,3,'0')||'A+B',
-			'EA'||lpad(LOCATION_CODE5,2,'0')||'A+B')
-
-For promotionType = 'ProductExtender', then
-
-	DECODE(UPPER(LTRIM(RTRIM(DESCRIPTION))),
-	       'SHELF EXTENDERS - COMMUNITY', 'PECM',
-	       'SHELF EXTENDERS - GREEN','PEGR',
-		   'SHELF EXTENDERS - REGULAR', 'PERG', 
-		   'DISCOVERY','PEDI')
-
-For promotionType = 'AirMiles', then 	
-
-		IIF(ACRONYM34='BAM', 'AMRG',IIF(ACRONYM34='BBAM', 'AMBB','AMSB'))
-		
-For promotionType = "LimitedSales", then
-
-		IIF(VALUE39 = 'Super Sale LTO', 'LS',
-		IIF(VALUE39 = 'Flash Sale', 'LF', NULL))
-		
-For promotionType = 'Mini Thematic', then
-
-		'MI'||'-'||substr(VALUE38, -1, 1)	
-		
-	
+> TechnicalDebt-4: Sample hard coded mapping snippets in existing ETL Informatica job:
+> 
+> For promotionType = 'EndAisle'
+> 
+> - during promotion items data integration phase, 
+> 
+>   1. first get end aisle position
+> 
+> 			IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'P',1,1)-1))),   IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'A',1,1)-1))), 
+> 			IIF( (INSTR(END_AISLE_NUMBER,'B',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'B',1,1)-1))), IIF(UPPER(LTRIM(RTRIM(END_AISLE_NUMBER)))='HD', 'HD',END_AISLE_NUMBER))))
+> 
+>   2. get end aisle flight	
+> 
+> 			IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0 AND 
+> 			INSTR(END_AISLE_NUMBER,'A',1) <>0 AND INSTR(END_AISLE_NUMBER,'B',1)<>0), 'PA+B', IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0), (SUBSTR(END_AISLE_NUMBER,(INSTR(END_AISLE_NUMBER,'P')))),
+> 			IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0 AND INSTR(END_AISLE_NUMBER,'B',1)  <0 ), 'A+B',
+> 			IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0), 'A',
+> 			IIF( (INSTR(END_AISLE_NUMBER,'B',1) <>0), 'B',
+> 			NULL)))))
+> 
+>   3. concate end aisle position and end aisle flight
+> 
+>   4. based on step 3 result, mapping the locations to subtypes:
+> 
+> 			IIF(VALUE31 = 'HD', 'HD',
+> 				 IIF(VALUE31 = 'GL', 'GL',
+> 				 IIF(VALUE31 = '12P', 'EA12P',
+> 				 IIF((INSTR(VALUE31,'FEM',1,1)) <0 , VALUE31,
+> 				 IIF((INSTR(VALUE31,'PA+B',1,1)) <0,'EA' || LPAD(VALUE31,6,'0'),
+> 				 IIF((INSTR(VALUE31,'PA',1,1)) <0, 'EA'||LPAD(VALUE31,4,'0'),
+> 				  IIF((INSTR(VALUE31,'PB',1,1)) <0,'EA'||LPAD(VALUE31,4,'0'),
+> 				  IIF((INSTR(VALUE31,'A+B',1,1)) <0, 'EA'||LPAD(VALUE31,5,'0'),
+> 				  IIF((INSTR(VALUE31,'A',1,1)) <0, 'EA'||LPAD(VALUE31,3,'0'),
+> 				  IIF((INSTR(VALUE31,'B',1,1)) <0, 'EA'||LPAD(VALUE31,3,'0'),
+> 				  IIF((INSTR(VALUE31,'VL',1,1)) <0, 'EA'||VALUE31,
+> 			IIF((INSTR(VALUE31,'CE',1,1)) = 1, VALUE31,
+> 			IIF((INSTR(VALUE31,'EZ',1,1)) =1, VALUE31,
+> 			IIF((INSTR(VALUE31,'S',1,1)) =1, VALUE31,
+> 			IIF((INSTR(VALUE31,'W',1,1)) =1, VALUE31,
+> 			'EA'||LPAD(VALUE31,2,'0'))))))))))))))))
+> 
+> - during the promotion locations data integration phase:
+> 
+> 			DECODE(TRUE, 
+> 			INSTR(LOCATION_CODE31,'P') <0, lpad(LOCATION_CODE31,3,'0'),
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'GL')  = 1, LOCATION_CODE31,
+> 			LTRIM(RTRIM(UPPER(LOCATION_NAME31))) = 'GO LOCAL','GL',
+> 			UPPER(LTRIM(RTRIM(LOCATION_CODE31))) = 'HERO','HD',
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'VL') = 1, 'EA'||LOCATION_CODE31,
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'FEM') 0, LOCATION_CODE31, 
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'CE')  = 1, LOCATION_CODE31,
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'EZ')  = 1, LOCATION_CODE31,
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'S')  = 1, LOCATION_CODE31,
+> 			INSTR(UPPER(LTRIM(RTRIM(LOCATION_CODE31))),  'W') = 1, LOCATION_CODE31,
+> 			'EA'||lpad(LOCATION_CODE31,2,'0'))
+> 
+> 			DECODE(TRUE,
+> 				INSTR(LOCATION_CODE34,'P') <0, 'EA'||lpad(LOCATION_CODE34,3,'0')||'B', IN (LOCATION_CODE34 ,'4','8','9','12',0) = 1, 'EA'||lpad(LOCATION_CODE34,2,'0')||'B',
+> 				'EA'||lpad(LOCATION_CODE34,2,'0'))
+> 
+> 			DECODE(TRUE,
+> 			INSTR(LOCATION_CODE5,'P') <0, 'EA'||lpad(LOCATION_CODE5,3,'0')||'A+B',
+> 			'EA'||lpad(LOCATION_CODE5,2,'0')||'A+B')
+> 
+> For promotionType = 'ProductExtender', then
+> 
+> 	DECODE(UPPER(LTRIM(RTRIM(DESCRIPTION))),
+> 	       'SHELF EXTENDERS - COMMUNITY', 'PECM',
+> 	       'SHELF EXTENDERS - GREEN','PEGR',
+> 		   'SHELF EXTENDERS - REGULAR', 'PERG', 
+> 		   'DISCOVERY','PEDI')
+> 
+> For promotionType = 'AirMiles', then 	
+> 
+> 		IIF(ACRONYM34='BAM', 'AMRG',IIF(ACRONYM34='BBAM', 'AMBB','AMSB'))
+> 		
+> For promotionType = "LimitedSales", then
+> 
+> 		IIF(VALUE39 = 'Super Sale LTO', 'LS',
+> 		IIF(VALUE39 = 'Flash Sale', 'LF', NULL))
+> 		
+> For promotionType = 'Mini Thematic', then
+> 
+> 		'MI'||'-'||substr(VALUE38, -1, 1)	
+> 		
+> 	
 
 # Thought about migrating data integration processes to public cloud
 
@@ -260,7 +260,9 @@ job scheduler
 # Conclusion  
 The design ideas described in this document is applicable when the team skill sets and circumstances is ideal.
 
-In practical, designs always need to be adapted to a team skill sets. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis.
+In practical, designs always have to be adapted to a team skills to some extend. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis. 
+
+However considering the team members turnover ratio, the architecture and design motto should still be "DO It Right".
 
 
 
