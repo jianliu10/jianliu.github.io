@@ -60,7 +60,7 @@ This enhancement design addresses several issues in the existing Promotion data 
    
    However, when there are a few hundreds of millions thus tens of billions of bytes of fact data, it will take hours to read the fact data from database, transform, and load them back to database. The time performance is untolerable. The issues lie in a few areas: 1) reading and writing extra large number of fact records from/to database causes IO bandwidth bottleneck; 2) the large memory cache size and concurrent multi-threaded procesing on ETL server demands a machine with high CPU capacity and high RAM capacity. This will be costly in hardware investment. 3) the fact data is not sub-partitioned for parallel processing in a grid cluster.
   
-   For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch jobs run.
+   For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh batch jobs run.
 
   
 ### TechnicalDebt-4: hard coded codes/types mapping logic from upstream transactional systems to DWS report system
@@ -263,7 +263,6 @@ The design ideas described in this document is applicable when the team skill se
 In practical, designs always have to be adapted to a team skills to some extend. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis. 
 
 However considering the team members turnover ratio, the architecture and design motto should still be "DO It Right".
-
 
 
 
