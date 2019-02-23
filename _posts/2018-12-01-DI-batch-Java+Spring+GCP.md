@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - batch data integration using Java + REST-API + Spring-boot + Spring-batch on Google Cloud"
+title:  "Case Study - batch data integration on Google Cloud using Java + REST-API + Spring-boot + Spring-batch"
 date:   2018-12-28 00:00:00 -0500
 categories: tech data-integration
 ---

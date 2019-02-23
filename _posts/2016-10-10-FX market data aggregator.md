@@ -144,35 +144,35 @@ However, when the total number of ESNs is small (< 20). we use a simplifed versi
 The following architecture diagram is for the simplified version of design when the total number of ESNs is small. 
 
 
-![architecture](/images/architecture.gif)  
+![architecture](/images/FXMarketDataAggregatorDesign/architecture.gif)  
 
 ### Component Diagram
 
-![component-diagram](/images/component-diagram.gif)  
+![component-diagram](/images/FXMarketDataAggregatorDesign/component-diagram.gif)  
 
 ### Deployment Diagram
 
-![Deployment-diagram](/images/deployment-diagram.gif)    
+![Deployment-diagram](/images/FXMarketDataAggregatorDesign/deployment-diagram.gif)    
 
 ### Process Flow
-![process-flow-1](/images/process-flow-1.gif)  
+![process-flow-1](/images/FXMarketDataAggregatorDesign/process-flow-1.gif)  
 
-![process-flow-2](/images/process-flow-2.gif)  
+![process-flow-2](/images/FXMarketDataAggregatorDesign/process-flow-2.gif)  
 
 ### Persistence
 
-![persistence](/images/persistence.gif)  
+![persistence](/images/FXMarketDataAggregatorDesign/persistence.gif)  
 
 
 ### Concurrency pseudo code
 
 
-![concurrency-1](/images/concurrency-1.gif)  
-![concurrency-2](/images/concurrency-2.gif)  
+![concurrency-1](/images/FXMarketDataAggregatorDesign/concurrency-1.gif)  
+![concurrency-2](/images/FXMarketDataAggregatorDesign/concurrency-2.gif)  
  
 ## Technology Stack
 
-![technology-stack](/images/technology-stack.gif)
+![technology-stack](/images/FXMarketDataAggregatorDesign/technology-stack.gif)
 
 ## Enhancement
 To enhance the speed of transferring real-time FX market data quotes to the clients, a solution is to replace messaging Queue/Topics design with Multicast socket design.
