@@ -38,7 +38,7 @@ This enhancement design addresses several issues in the existing Promotion data 
 
 ### TechnicalDebt-1: manual process to add or change dimensional data in DWH 
 
-   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
+   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 10 records). 
 
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
