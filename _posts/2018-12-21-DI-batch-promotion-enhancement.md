@@ -134,7 +134,7 @@ Avoid using cursors in PL/SQL SP. Stored Procedure codes writing with cursors ca
 
 Data integration process always need to map codes/types from upstream transactional systems to DWH report system. The data quality of dimensional data is very import for report and BI analysis. 
 
-Hard codes mappings of codes/types is a no. No matter how small number of the codes/types is. Always use a configuration table or file to configure the codes/types mappings.
+Hard codes mappings of codes/types is a no. No matter how small number of the codes/types is, always use a configuration table or file to configure the codes/types mappings.
 
 For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
 
