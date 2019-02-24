@@ -12,21 +12,21 @@ This time, the sales and marketing business wants to add 40 new promotion progra
 
 I was tasked to enhance an 10+ years aged existing Promotion data integration component in a data warehouse. The goal of the enhancement is not only to add new and changed promotion programs and sub-programs for this one-time project, but also to automate the promotion data integration process for the future.
 
-This document describes the as-of state of existing promotion data integration component in DWS, and its enhancement design. 
+This document describes the as-of state of existing promotion data integration component in DWH, and its enhancement design. 
 
 
 ## Abbreviations  
 
-DWS 		- Data Warehouse System  
+DWH 		- Data Warehouse   
 SAM 		- the Merchandizing Sales and Marketing transactional system  
-promotion DI 	- the promotion data integration component in DWS  
+promotion DI 	- the promotion data integration component in DWH  
 PromoTree 	- the retail store promotion management system  
 ORM 		- Online Order Management system  
 
 
-## the as-of state of existing promotion data integration component
+## As-of state of existing promotion data integration component
 
-PROMO component in DWS provides data for a few key business functions:
+PROMO component in DWH provides data for a few key business functions:
 - provide fact-dimensional data for Reports and Business Intelligence Analysis.
 - provide flat store&item level promotional data for downstream retail store promotion management system. 
 - provide flat corporate&item level promotional data for downstream Online Order Management system.
@@ -34,11 +34,11 @@ PROMO component in DWS provides data for a few key business functions:
 
 There are a few issues in existing promotion data integration component 
 
-This enhancement design addresses several issues in the existing Promotion data integration component in DWS. The Technical Debts (issues) are described in the following.
+This enhancement design addresses several issues in the existing Promotion data integration component in DWH. The Technical Debts (issues) are described in the following.
 
-### TechnicalDebt-1: manual process to add or change dimensional data in DWS 
+### TechnicalDebt-1: manual process to add or change dimensional data in DWH 
 
-   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWS developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWS dimensional data. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
+   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
 
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
@@ -48,7 +48,7 @@ This enhancement design addresses several issues in the existing Promotion data 
    
 ### TechnicalDebt-2: Use visual ETL tool to process complex data transformation logic
 
-   The DWS system uses Informatica jobs to extract, transform, and load Fact data. Visual ETL tools like Informatica, Talend work great when the data transformation logic is simple and straightforwd. 
+   The DWH system uses Informatica jobs to extract, transform, and load Fact data. Visual ETL tools like Informatica, Talend work great when the data transformation logic is simple and straightforwd. 
 
    However, the visual ETL tools become unwieldly when the data transformation logic is complex.
 
@@ -63,24 +63,24 @@ This enhancement design addresses several issues in the existing Promotion data 
    For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh batch jobs run.
 
   
-### TechnicalDebt-4: hard coded codes/types mapping logic from upstream transactional systems to DWS report system
+### TechnicalDebt-4: hard coded codes/types mapping logic from upstream transactional systems to DWH report system
    
    It was initially convenient to hard code codes/types mapping logic in ETL transformation when the number of mappings is small. With the upstream transactional system adds more and more codes/types, the hard coded mapping logic becomes a constant coding labor. Every time there is a new or changed promotion program or promotion location in upstream transactional system, the hard coded mapping logic need to be revisited and changed accordingly. Hard coded mapping logic also makes the visual ETL flow chart bloated with several branches of data process flows that only differs in codes/types mapping logic. 
    
-   For example, promotion data integation component maps promotion location codes used in updtream SAM system to the promotion subtypes used in DWS report system. There are different codes/types mapping logics depending on the promotion types. 
+   For example, promotion data integation component maps promotion location codes used in updtream SAM system to the promotion subtypes used in DWH report system. There are different codes/types mapping logics depending on the promotion types. 
     
 
 ## Design of promotion data integration automation and enhancement 
 
-### Automate new or changed dimensional data integration into DWS 
+### Automate new or changed dimensional data integration into DWH 
 
 This session proposes two solutions to TechnicalDebt-1 described in the above. 
 
 #### Basic enhancement - Using business client CSV input files and PL/SQL Stored Procedures
 
-When adding or chaning a large number of dimensional data records, The current approach is to write individual insert/update/delete SQL DML statements for each records to directly load into multiple inter-related final dimensional tables in DWS with surrogate IDs (integer) as foreign key references. Assume there are 50 of new or changed programs, and 5 final fact tables to populated, there will be, <number of new or changed programs> * <number of final dimensional tables>, total 250 SQL DML statments to hand written by developers.
+When adding or chaning a large number of dimensional data records, The current approach is to write individual insert/update/delete SQL DML statements for each records to directly load into multiple inter-related final dimensional tables in DWH with surrogate IDs (integer) as foreign key references. Assume there are 50 of new or changed programs, and 5 final fact tables to populated, there will be, <number of new or changed programs> * <number of final dimensional tables>, total 250 SQL DML statments to hand written by developers.
 
-The enhanced approach is to use business client provided CSV input files. The business client provides CSV input files containing new or changed business records, a **generic python script** is developed to read the business CSV input files, load the raw file contents to staging tables in DWS. PL/SQL stored procedures are developed to read dimensional records from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWS.
+The enhanced approach is to use business client provided CSV input files. The business client provides CSV input files containing new or changed business records, a **generic python script** is developed to read the business CSV input files, load the raw file contents to staging tables in DWH. PL/SQL stored procedures are developed to read dimensional records from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWH.
 
 Assume there are 50 of new or changed programs, the enhanced approach will requires business client to provide a csv file with 50 lines of records.
 
@@ -93,24 +93,24 @@ We can see that using this business CSV input file approach, it still invoves de
 
 This advanced enhancement implements a fully automatic workflow that involves business client only. The approach will not involve the developers in the on-going dimensional data population, maintenance and governance. 
 
-I have rarely seen this advanced enhancement in data warehouse systems. The rarity is mainly because the development of automatic workflow requires technical skills that go beyond a typical DWS DI team skill sets. The workflow is actually an web application development. 
+I have rarely seen this advanced enhancement in data warehouse systems. The rarity is mainly because the development of automatic workflow requires technical skills that go beyond a typical DWH DI team skill sets. The workflow is actually an web application development. 
 
 The high level design of the workflow is as the following:
 
 1. developed a standalone web application that running forever. It is not a scheduled job.
 
-2. the scheduled ETL batch jobs will extract the dimensional information from upstream data feeds, and populate the DWS dimensional tables with as-it-is data quality or even blank fields values which are necessary in DWS report system. If the upstream data feed introduces a new programs, the ETL jobs will add a new records to  dimensional table with many key field unpopulated.
+2. the scheduled ETL batch jobs will extract the dimensional information from upstream data feeds, and populate the DWH dimensional tables with as-it-is data quality or even blank fields values which are necessary in DWH report system. If the upstream data feed introduces a new programs, the ETL jobs will add a new records to  dimensional table with many key field unpopulated.
 
-3. the web app polls the dimensional tables in DWS a few times a day. If it detects any dimensional records with invalid field values or missing required field values, it will put the invalid dimensional records into a notification queue.
+3. the web app polls the dimensional tables in DWH a few times a day. If it detects any dimensional records with invalid field values or missing required field values, it will put the invalid dimensional records into a notification queue.
 
 4. the web app sends email notification to the business client about the new or invalid dimensional records.
 
 5. business client go to a browser to log in to web app
-	- the business client fills or corrects the dimensional records. submit and approve the changes. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "changed".
-	- the business client can also query an existing valid dimensional records, change some fields to new values, submit and approve the change. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "changed".
-	- the business client cal also add a new dimensional records. submit and approve the new records. The changed dimensional records will be saved to DWS staging tables with FLAG column value set as "new". 
+	- the business client fills or corrects the dimensional records. submit and approve the changes. The changed dimensional records will be saved to DWH staging tables with FLAG column value set as "changed".
+	- the business client can also query an existing valid dimensional records, change some fields to new values, submit and approve the change. The changed dimensional records will be saved to DWH staging tables with FLAG column value set as "changed".
+	- the business client cal also add a new dimensional records. submit and approve the new records. The changed dimensional records will be saved to DWH staging tables with FLAG column value set as "new". 
 
-6. upon completion of daily new or changed dimensional records, the business client clicks a button to trigger the execution of the PL/SQL stored procedures, which will read the new or changed dimensional data from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWS.
+6. upon completion of daily new or changed dimensional records, the business client clicks a button to trigger the execution of the PL/SQL stored procedures, which will read the new or changed dimensional data from staging tables, transform them, and load them into the multiple inter-related final dimensional tables in DWH.
 
 
 ![Automatic dimensional data governance using notification and approval workflow](/images/PromotionDI-EnhancementDesign/loadDimData-notificationApprovalWorkflow.jpg)
@@ -132,11 +132,11 @@ Avoid using cursors in PL/SQL SP. Stored Procedure codes writing with cursors ca
 
 ### Use mapping configuration tables instead of hard coded codes/types mapping logic
 
-Data integration process always need to map codes/types from upstream transactional systems to DWS report system. The data quality of dimensional data is very import for report and BI analysis. 
+Data integration process always need to map codes/types from upstream transactional systems to DWH report system. The data quality of dimensional data is very import for report and BI analysis. 
 
 Hard codes mappings of codes/types is a no. No matter how small number of the codes/types is. Always use a configuration table or file to configure the codes/types mappings.
 
-For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWS system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
+For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
 
 This is a perfect scenario to move the hard coded mapping logic to a mapping configuration table. 
 
