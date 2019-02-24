@@ -6,7 +6,7 @@ categories: tech data-integration
 ---
 
 ## Background
-Promotion is a key part of Merchandizing Sales and Marketing system. For a large retail company with 700+ retail stores, the look-forward promotion data need to be sent to the stores for properly goods stock preparation.
+Promotion is a key part of Merchandizing Sales and Marketing system. For a large retail company with 700+ retail stores, the look-forward promotion data need to be sent to the stores for properly goods stock preparation and goods display locations arrangement.
 
 This time, the sales and marketing business wants to add 40 new promotion programs, change 10 existing promotion programs, and add 50 new promotion sub-programs.
 
@@ -38,7 +38,7 @@ This enhancement design addresses several issues in the existing Promotion data 
 
 ### TechnicalDebt-1: manual process to add or change dimensional data in DWH 
 
-   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 10 records). 
+   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
 
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
@@ -58,9 +58,9 @@ This enhancement design addresses several issues in the existing Promotion data 
 
    With today's network speed, visual ETL tool like Informatica and Talend can handle a few millions of fact records with tolerable time performance. 
    
-   However, when there are a few hundreds of millions thus tens of billions of bytes of fact data, it will take hours to read the fact data from database, transform, and load them back to database. The time performance is untolerable. The issues lie in a few areas: 1) reading and writing extra large number of fact records from/to database causes IO bandwidth bottleneck; 2) the large memory cache size and concurrent multi-threaded procesing on ETL server demands a machine with high CPU capacity and high RAM capacity. This will be costly in hardware investment. 3) the fact data is not sub-partitioned for parallel processing in a grid cluster.
+   However, when there are a few hundreds of millions thus tens of billions of bytes of fact data, it will take hours to read the fact data from database, transform, and load them back to database. The time performance is untolerable. The issues lie in a few areas: 1) reading and writing extra large number of fact records from/to database causes IO bandwidth bottleneck; 2) the large memory cache size and concurrent multi-threaded procesing on ETL jobs demands a machine with high CPU capacity and high RAM capacity. This will be costly in hardware investment. 3) the fact data is not sub-partitioned for parallel processing in a grid cluster.
   
-   For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh batch jobs run.
+   For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch job run which will generate not only look-forward monthly promotion turn data, but look-forward 4 weeks and 30 days drilldown promotion data.
 
   
 ### TechnicalDebt-4: hard coded codes/types mapping logic from upstream transactional systems to DWH report system
@@ -72,7 +72,7 @@ This enhancement design addresses several issues in the existing Promotion data 
 
 ## Design of promotion data integration automation and enhancement 
 
-### Automate new or changed dimensional data integration into DWH 
+### Automate the integration of new and changed dimensional data into DWH 
 
 This session proposes two solutions to TechnicalDebt-1 described in the above. 
 
@@ -84,7 +84,7 @@ The enhanced approach is to use business client provided CSV input files. The bu
 
 Assume there are 50 of new or changed programs, the enhanced approach will requires business client to provide a csv file with 50 lines of records.
 
-We can see that using this business CSV input file approach, it still invoves developers' manual work to receive a new csv file from business client, verify the input file format, run the data staging job and PL/SQL jobs.
+We can see that using this business CSV input file approach, it still invoves developers' manual work to receive a new csv file from business client, verify the data format, and run a shell script that executes the python script and the PL/SQL SPs.
 
 ![Load dimensional data using CSV input file + PL/SQL Stored Procedures](/images/PromotionDI-EnhancementDesign/loadDimData-csvInputFile.jpg) 
 
@@ -120,7 +120,7 @@ The high level design of the workflow is as the following:
 
 Python has built-in language features for data processing. Python ecosystem includes data processing packages like Pandas and cx_Oracle to handle data extraction, transformation and loading. Using python, developers can write very complex transformation logic in a small chunk of codes. The benefits is an easy to understand and easy to maintain and support code base.
 
-when the data transformation logic is complex, where visual ETL tool becomes unwieldy, I suggest writing a python script to process the transform logic.  Visual ETL tools like Informatica or Talend provides a UI command line component to invoke the python scripts.
+when the data transformation logic is complex, where visual ETL tool becomes unwieldy, I suggest writing a python script to process the transform logic.  Visual ETL tools like Informatica or Talend provides a command line UI component to invoke python scripts.
 
 
 ### process extra large of data traffic volumn (hundreds of millions of fact records)  
@@ -242,6 +242,7 @@ In order to migrate the data integration processes to public cloud, I think the 
 PL/SQL Stored Procedures   
 Python    
 Informatica  
+Shell Script
 (Optional) business client notification and approval workflow - Java, JEE, Spring-web.   
 
 
@@ -252,17 +253,17 @@ the codes are proprietory.
 
 # Deployment
 Database server  
-Informatica server  
 Application server  
+Informatica server  
 job scheduler   
 
 
 # Conclusion  
 The design ideas described in this document is applicable when the team skill sets and circumstances is ideal.
 
-In practical, designs always have to be adapted to a team skills to some extend. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis. 
+In practical, designs have to be adapted to a team skills to some extend. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis. 
 
-However considering the team members turnover ratio, the architecture and design motto should still be "DO It Right".
+However considering the team members turnover ratio, the architecture and design motto should always be **"DO It Right"**.
 
 
 
