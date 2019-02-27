@@ -22,21 +22,19 @@ PromoTree 	- the retail store promotion management system
 ORM 		- Online Order Management system  
 
 
-## As-of state of existing data integration component
+## Common challenges in data integration process in DWH
 
 PROMO-DI component in DWH provides data for a few key business functions:
 - provide fact-dimensional data for Reports and Business Intelligence Analysis.
 - provide flat store&item level promotional data for downstream retail store promotion management system. 
 - provide flat corporate&item level promotional data for downstream Online Order Management system.
 
-
 In the first half of this document, I will explain four challenges in PROMO-DI data integration component. These challenges are common to most of data warehouse systems. In the second half of the document, I will propose solutions to these challenges. 
 
-The challenges are described in the following.
 
-### Challenge-1: manual process to add or change dimensional data in DWH 
+### Challenge-1: manual DML SQL process to add or change dimensional data in DWH 
 
-   The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
+   The data integration component usually adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
 
    However, when the number of new or changed dimensional records is big (hundreds of records), this approach is heavy coding labored, non-visualized, hard to trace the DML statments in script.
 
@@ -58,7 +56,7 @@ The challenges are described in the following.
    
    However, when there are a few hundreds of millions thus tens of billions of bytes of fact data, it will take hours to read the fact data from database, transform, and load them back to database. The time performance is untolerable. The issues lie in a few areas: 1) reading and writing extra large number of fact records from/to database causes IO bandwidth bottleneck; 2) the large memory cache size and concurrent multi-threaded procesing on ETL jobs demands a machine with high CPU capacity and high RAM capacity. This will be costly in hardware investment. 3) the fact data is not sub-partitioned for parallel processing in a grid cluster.
   
-   For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch job run which will generate not only look-forward monthly promotion turn data, but look-forward 4 weeks and 30 days drilldown promotion data.
+   For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch job run which will generate not only look-forward monthly promotion turn data, but look-forward 4 weeks and 30 days drilldown promotion data. 
 
   
 ### Challenge-4: hard coded codes/types mapping logic from upstream transactional systems to DWH report system
@@ -70,7 +68,7 @@ The challenges are described in the following.
 
 ## Design of promotion data integration automation and enhancement 
 
-### Automate the integration of new and changed dimensional data into DWH 
+### Automate the integration process of new and changed dimensional data into DWH 
 
 This session proposes two solutions to Challenge-1 described in the above. 
 
