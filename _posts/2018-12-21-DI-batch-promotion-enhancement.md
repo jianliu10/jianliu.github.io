@@ -226,7 +226,7 @@ job scheduler
 
 # Conclusion  
 
-The design ideas described in this document is applicable when the team skill sets and circumstances is ideal.
+The design ideas described in this document are applicable when the team skill sets and circumstances is ideal.
 
 
 
