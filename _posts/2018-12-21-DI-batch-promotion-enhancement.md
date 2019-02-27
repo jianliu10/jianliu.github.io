@@ -10,7 +10,7 @@ I was tasked to enhance an 10+ years aged existing data integration component PR
 
 This document describes the four challenges in PROMO-DI data integration component in DWH, and its automation & enhancement design. 
 
-The four challenges are common for most of data warehouse system. I wrote this document for data engineering research purpose only.
+The four challenges are common for most of data warehouse systems. I wrote this document for data engineering research purpose only.
 
 
 ## Abbreviations  
@@ -61,7 +61,7 @@ In the first half of this document, I will explain four challenges in PROMO-DI d
   
 ### Challenge-4: hard coded codes/types mapping logic from upstream transactional systems to DWH report system
    
-   It was initially convenient to hard code codes/types mapping logic in ETL transformation when the number of mappings is small. With the upstream transactional system adds more and more codes/types, the hard coded mapping logic becomes a constant coding labor. Every time there is a new or changed promotion program or promotion location in upstream transactional system, the hard coded mapping logic need to be revisited and changed accordingly. Hard coded mapping logic also makes the visual ETL flow chart bloated with several branches of data process flows that only differs in codes/types mapping logic. 
+   It was initially convenient to hard code codes/types mapping logic in ETL transformation when the number of mappings is small. With the upstream transactional system adds more and more codes/types, the hard coded mapping logic becomes a constant coding labor. Every time there is a new or changed promotion program or promotion location in upstream transactional system, the hard coded mapping logic need to be revisited and changed accordingly. 
    
    For example, promotion data integation component maps promotion location codes used in updtream SAM system to the promotion subtypes used in DWH report system. There are different codes/types mapping logics depending on the promotion types. 
     
@@ -205,8 +205,8 @@ To handle field value pattern based mappings, patterned based regular expression
 
 PL/SQL Stored Procedures   
 Python    
-Informatica  
-Shell Script
+Informatica
+Shell Script  
 (Optional) business client notification and approval workflow - Java, JEE, Spring-boot, Spring, ReactJS.   
 
 
