@@ -1,42 +1,38 @@
 ---
 layout: post
-title:  "Case Study - Retail Promotion Data Integration Automation and Enhancement in DWH"
+title:  "Case Study - Retail Data Integration Automation and Enhancement in DWH"
 date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
 
 ## Background
-Promotion is a key part of Merchandizing Sales and Marketing system. For a large retail company with 700+ retail stores, the look-forward promotion data need to be sent to the stores for properly goods stock preparation and goods display locations arrangement.
+I was tasked to enhance an 10+ years aged existing data integration component PROMO-DI in a data warehouse. The goal of the enhancement is not only to add new business features for this one-time project, but also to automate the data integration process for the future.
 
-This time, the sales and marketing business wants to add 40 new promotion programs, change 10 existing promotion programs, and add 50 new promotion sub-programs.
-
-I was tasked to enhance an 10+ years aged existing Promotion data integration component in a data warehouse. The goal of the enhancement is not only to add new and changed promotion programs and sub-programs for this one-time project, but also to automate the promotion data integration process for the future.
-
-This document describes the as-of state of existing promotion data integration component in DWH, and its enhancement design. 
+This document describes the as-of state of PROMO-DI data integration component in DWH, and its automation & enhancement design proposals.
 
 
 ## Abbreviations  
 
 DWH 		- Data Warehouse   
 SAM 		- the Merchandizing Sales and Marketing transactional system  
-promotion DI 	- the promotion data integration component in DWH  
+PROMO-DI 	- the promotion data integration component in DWH  
 PromoTree 	- the retail store promotion management system  
 ORM 		- Online Order Management system  
 
 
-## As-of state of existing promotion data integration component
+## As-of state of existing data integration component
 
-PROMO component in DWH provides data for a few key business functions:
+PROMO-DI component in DWH provides data for a few key business functions:
 - provide fact-dimensional data for Reports and Business Intelligence Analysis.
 - provide flat store&item level promotional data for downstream retail store promotion management system. 
 - provide flat corporate&item level promotional data for downstream Online Order Management system.
 
 
-There are a few issues in existing promotion data integration component 
+In the first half of this document, I will explain four challenges in PROMO-DI data integration component. These challenges are common to most of data warehouse systems. In the second half of the document, I will propose solutions to these challenges. 
 
-This enhancement design addresses several issues in the existing Promotion data integration component in DWH. The Technical Debts (issues) are described in the following.
+The challenges are described in the following.
 
-### TechnicalDebt-1: manual process to add or change dimensional data in DWH 
+### Challenge-1: manual process to add or change dimensional data in DWH 
 
    The existing system adopts an approach that is commonly used by developers in data warehouse system. Since the DWH developers are good at writing SQLs, they wrote the individual SQL insert/update/delete DML statments to add/change dimensional data in DWH dimensional tables. This approach is simple and works great when the number of new or changed dimensional records is small (less than 20 records). 
 
@@ -46,7 +42,7 @@ This enhancement design addresses several issues in the existing Promotion data 
    ![Load dimensional data using manual process](/images/PromotionDI-EnhancementDesign/loadDimData-manualProcess.jpg)
 
    
-### TechnicalDebt-2: Use visual ETL tool to process complex data transformation logic
+### Challenge-2: Use visual ETL tool to process complex data transformation logic
 
    The DWH system uses Informatica jobs to extract, transform, and load Fact data. Visual ETL tools like Informatica, Talend work great when the data transformation logic is simple and straightforwd. 
 
@@ -54,7 +50,7 @@ This enhancement design addresses several issues in the existing Promotion data 
 
    The visual ETL tools become unwieldly in complex data transformation logic. For a complex transformation logic, which could have been solved with several lines of Python or Java codes in clear logic flow, it will take many work-around steps in ETL tool to develped. The end result of using visual ETL tool to develop complex transformation logic is a visual flow chart that is highly complex, confusing, difficult to be undertood by other developers and thus difficult to maintain and enhance in the future. With the time going by, even the oroginal developers will have difficulty understanding the highly complex visual flow chart themselves.  
   
-### TechnicalDebt-3: Use visual ETL tool to process extra large of data traffic volumn without sub-partitions 
+### Challenge-3: Use visual ETL tool to process extra large of data traffic volumn without sub-partitions 
 
    With today's network speed, visual ETL tool like Informatica and Talend can handle a few millions of fact records with tolerable time performance. 
    
@@ -63,7 +59,7 @@ This enhancement design addresses several issues in the existing Promotion data 
    For example, in the current promotion data integration system, it generates promotion data not only by monthly promotion turn, also by weekly, and by daily. The reason of generating weekly and daily promotion data is to provide a sales revenue weekly and daily drilldown view for report and BI analysis. In each monthly promotion turn, there are avg 170k promotion items records, avg 467k promotion locations records. By multiplying by 4, there are 680k and 1,840k weekly records per month. By multiplying by 30, there are 5,100k and 14,010k daily records per month. Assume each record avg 500 bytes, the size of promotion data generation can reach up to tens of billions of bytes in a fresh daily batch job run which will generate not only look-forward monthly promotion turn data, but look-forward 4 weeks and 30 days drilldown promotion data.
 
   
-### TechnicalDebt-4: hard coded codes/types mapping logic from upstream transactional systems to DWH report system
+### Challenge-4: hard coded codes/types mapping logic from upstream transactional systems to DWH report system
    
    It was initially convenient to hard code codes/types mapping logic in ETL transformation when the number of mappings is small. With the upstream transactional system adds more and more codes/types, the hard coded mapping logic becomes a constant coding labor. Every time there is a new or changed promotion program or promotion location in upstream transactional system, the hard coded mapping logic need to be revisited and changed accordingly. Hard coded mapping logic also makes the visual ETL flow chart bloated with several branches of data process flows that only differs in codes/types mapping logic. 
    
@@ -74,7 +70,7 @@ This enhancement design addresses several issues in the existing Promotion data 
 
 ### Automate the integration of new and changed dimensional data into DWH 
 
-This session proposes two solutions to TechnicalDebt-1 described in the above. 
+This session proposes two solutions to Challenge-1 described in the above. 
 
 #### Basic enhancement - Using business client CSV input files and PL/SQL Stored Procedures
 
@@ -127,45 +123,23 @@ when the data transformation logic is complex, where visual ETL tool becomes unw
 
 I suggest using PL/SQL stored procedures to read/process/write extra larget of data. This avoids the IO network bottleneck, which is caused by the reading/writing extra large volumn of data to/from database to ETL client side jobs. PL/SQL will keep reading and writing data local to the database server.
 
-Avoid using cursors in PL/SQL SP. Stored Procedure codes writing with cursors can not be optimized by database engine execution plan. Instead, writing big SQLs and using temporary tables to process the large data in PL/SQL SPs.
-
 
 ### Use mapping configuration tables instead of hard coded codes/types mapping logic
 
 Data integration process always need to map codes/types from upstream transactional systems to DWH report system. The data quality of dimensional data is very import for report and BI analysis. 
 
-Hard codes mappings of codes/types is a no. No matter how small number of the codes/types is, always use a configuration table or file to configure the codes/types mappings.
+For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase. 
 
-For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase.
+We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. 
 
-This is a perfect scenario to move the hard coded mapping logic to a mapping configuration table. 
-
-We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. To handle field value pattern based mappings, my suggestion is to use regular expressions in the mapping configuration table. In the future, we only need to add or change the mapping configuration table records without touching the ETL codes. This will greatly simplify the ETL code logic and improve the data process flow readability, maintainability, and time to production.
+To handle field value pattern based mappings, patterned based regular expressions can be configured in the mapping configuration table. However, this belongs to advanced level software engineering. I hope ETL tool vendor complany like Informatia and Talend can provide built-in feature for pattern based mapping configurations in their product in the future. Before Informatica or Talend provodes built-in feature for this need, hard coded mappings might be a simpler feasible solution since it avoids over-enginnering.
 
 
-> TechnicalDebt-4: Sample hard coded mapping snippets in existing ETL Informatica job:
+> Challenge-4: Sample hard coded mapping snippets in existing ETL Informatica job:
 > 
 > For promotionType = 'EndAisle'
 > 
 > - during promotion items data integration phase, 
-> 
->   1. first get end aisle position
-> 
-> 			IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'P',1,1)-1))),   IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'A',1,1)-1))), 
-> 			IIF( (INSTR(END_AISLE_NUMBER,'B',1) <>0), (SUBSTR(END_AISLE_NUMBER,0,(INSTR(END_AISLE_NUMBER,'B',1,1)-1))), IIF(UPPER(LTRIM(RTRIM(END_AISLE_NUMBER)))='HD', 'HD',END_AISLE_NUMBER))))
-> 
->   2. get end aisle flight	
-> 
-> 			IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0 AND 
-> 			INSTR(END_AISLE_NUMBER,'A',1) <>0 AND INSTR(END_AISLE_NUMBER,'B',1)<>0), 'PA+B', IIF( (INSTR(END_AISLE_NUMBER,'P',1) <>0), (SUBSTR(END_AISLE_NUMBER,(INSTR(END_AISLE_NUMBER,'P')))),
-> 			IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0 AND INSTR(END_AISLE_NUMBER,'B',1)  <0 ), 'A+B',
-> 			IIF( (INSTR(END_AISLE_NUMBER,'A',1) <>0), 'A',
-> 			IIF( (INSTR(END_AISLE_NUMBER,'B',1) <>0), 'B',
-> 			NULL)))))
-> 
->   3. concate end aisle position and end aisle flight
-> 
->   4. based on step 3 result, mapping the locations to subtypes:
 > 
 > 			IIF(VALUE31 = 'HD', 'HD',
 > 				 IIF(VALUE31 = 'GL', 'GL',
@@ -224,19 +198,9 @@ We can see some mappings of codes/types are one-to-one straight forward. other m
 > 		IIF(VALUE39 = 'Super Sale LTO', 'LS',
 > 		IIF(VALUE39 = 'Flash Sale', 'LF', NULL))
 > 		
-> For promotionType = 'Mini Thematic', then
-> 
-> 		'MI'||'-'||substr(VALUE38, -1, 1)	
 > 		
 > 	
 
-# Thought about migrating data integration processes to public cloud
-
-Currently, all the data integration processes are implemented using Informatica visual ETL tool. This post a challenge to migrate the data integration processes to public cloud. 
-
-In order to migrate the data integration processes to public cloud, I think the ETL jobs need to be written using Python or Java. This will leverage the massive scale of lower grade virtual machines in public cloud to accomplish parallel data processing. 
-
-	
 ## Technology Stack 
 
 PL/SQL Stored Procedures   
@@ -263,7 +227,7 @@ The design ideas described in this document is applicable when the team skill se
 
 In practical, designs have to be adapted to a team skills to some extend. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis. 
 
-However considering the team members turnover ratio, the architecture and design motto should always be **"DO It Right"**.
+However considering the team members turnover, the architecture and design motto should always be **"DO It Right"**.
 
 
 
