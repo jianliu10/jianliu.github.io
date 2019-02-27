@@ -209,7 +209,7 @@ PL/SQL Stored Procedures
 Python    
 Informatica  
 Shell Script
-(Optional) business client notification and approval workflow - Java, JEE, Spring-web.   
+(Optional) business client notification and approval workflow - Java, JEE, Spring-boot, Spring, ReactJS.   
 
 
 # Code Snippets
@@ -225,11 +225,9 @@ job scheduler
 
 
 # Conclusion  
+
 The design ideas described in this document is applicable when the team skill sets and circumstances is ideal.
 
-In practical, designs have to be adapted to a team skills to some extend. At the end, the team will be the one supporting and maintaining the data integration and data warehouse system on on-going basis. 
-
-However considering the team members turnover, the architecture and design motto should always be **"DO It Right"**.
 
 
 
