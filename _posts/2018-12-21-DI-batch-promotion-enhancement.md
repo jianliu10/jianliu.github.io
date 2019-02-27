@@ -1,14 +1,16 @@
 ---
 layout: post
-title:  "Case Study - Retail Data Integration Automation and Enhancement in DWH"
+title:  "Case Study - Data Integration Automation and Enhancement in a Data Warehouse"
 date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
 
 ## Background
-I was tasked to enhance an 10+ years aged existing data integration component PROMO-DI in a data warehouse. The goal of the enhancement is not only to add new business features for this one-time project, but also to automate the data integration process for the future.
+I was tasked to enhance an 10+ years aged existing data integration component PROMO-DI in a data warehouse. The goal of the development work was not only to add new business features for this one-time project, but also to enhance and automate the data integration process for the future.
 
-This document describes the as-of state of PROMO-DI data integration component in DWH, and its automation & enhancement design proposals.
+This document describes the four challenges in PROMO-DI data integration component in DWH, and its automation & enhancement design. 
+
+The four challenges are common for most of data warehouse system. I wrote this document for data engineering research purpose only.
 
 
 ## Abbreviations  
@@ -132,7 +134,7 @@ For example, in promotion DI system, there is mapping logic to map from SAM syst
 
 We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. 
 
-To handle field value pattern based mappings, patterned based regular expressions can be configured in the mapping configuration table. However, this belongs to advanced level software engineering. I hope ETL tool vendor complany like Informatia and Talend can provide built-in feature for pattern based mapping configurations in their product in the future. Before Informatica or Talend provodes built-in feature for this need, hard coded mappings might be a simpler feasible solution since it avoids over-enginnering.
+To handle field value pattern based mappings, patterned based regular expressions can be configured in the mapping configuration table. However, this belongs to advanced level software engineering. I hope ETL tool vendor complany like Informatia and Talend can provide built-in feature for pattern based mapping configurations in their product in the future. Before Informatica or Talend provodes such a built-in feature, hard coded mappings might be a simpler feasible solution since it avoids over-enginnering.
 
 
 > Challenge-4: Sample hard coded mapping snippets in existing ETL Informatica job:
