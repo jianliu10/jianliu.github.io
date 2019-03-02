@@ -124,11 +124,11 @@ when the data transformation logic is complex, where visual ETL tool becomes unw
 I suggest using PL/SQL stored procedures to read/process/write extra large of data volumn i.e. hundreds of millions of fact records. This avoids the network IO bottleneck, which is caused by the reading/writing extra large volumn of data to/from database to ETL client side jobs. PL/SQL Stored Procedure will keep reading and writing data local to the database server.
 
 
-### Use mapping configuration tables instead of hard coded codes/types mapping logic
+### Use mapping configuration table instead of hard coded codes/types mapping logic
 
 Data integration process always need to map codes/types from upstream transactional systems to DWH report system. The data quality of dimensional data is very import for report and BI analysis. 
 
-For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase. We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. 
+For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. Each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase. We can see some mappings of codes/types are one-to-one straight forward, the other mappings are based on certain field value patterns in a dimension record. 
 
 To handle field value pattern based mappings, patterned based regular expressions can be configured in the mapping configuration table. 
 
