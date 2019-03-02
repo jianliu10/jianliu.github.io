@@ -121,7 +121,7 @@ when the data transformation logic is complex, where visual ETL tool becomes unw
 
 ### Use PL/SQL Stored Procedure to process extra large of data traffic volumn  
 
-I suggest using PL/SQL stored procedures to read/process/write extra large of data volumn (hundreds of millions of fact records). This avoids the network IO bottleneck, which is caused by the reading/writing extra large volumn of data to/from database to ETL client side jobs. PL/SQL Stored Procedure will keep reading and writing data local to the database server.
+I suggest using PL/SQL stored procedures to read/process/write extra large of data volumn i.e. hundreds of millions of fact records. This avoids the network IO bottleneck, which is caused by the reading/writing extra large volumn of data to/from database to ETL client side jobs. PL/SQL Stored Procedure will keep reading and writing data local to the database server.
 
 
 ### Use mapping configuration tables instead of hard coded codes/types mapping logic
