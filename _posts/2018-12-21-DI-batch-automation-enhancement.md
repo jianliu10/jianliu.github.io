@@ -95,7 +95,7 @@ The high level design of the workflow is as the following:
 
 1. developed a standalone web application that running forever. It is not a scheduled job.
 
-2. the scheduled ETL batch jobs will extract the dimensional information from upstream data feeds, and populate the DWH dimensional tables with as-it-is data quality or even blank fields values which are necessary in DWH report system. If the upstream data feed introduces a new programs, the ETL jobs will add a new records to  dimensional table with many key field unpopulated.
+2. the scheduled ETL batch jobs will extract the dimensional information from upstream data feeds, and populate the DWH dimensional tables with as-it-is data quality or even blank fields values which are necessary in DWH report system. If the upstream data feed introduces a new programs, the ETL jobs will add a new records to  dimensional table with many key fields unpopulated.
 
 3. the web app polls the dimensional tables in DWH a few times a day. If it detects any dimensional records with invalid field values or missing required field values, it will put the invalid dimensional records into a notification queue.
 
@@ -119,20 +119,18 @@ Python has built-in language features for data processing. Python ecosystem incl
 when the data transformation logic is complex, where visual ETL tool becomes unwieldy, I suggest writing a python script to process the transform logic.  Visual ETL tools like Informatica or Talend provides a command line UI component to invoke python scripts.
 
 
-### process extra large of data traffic volumn (hundreds of millions of fact records)  
+### Use PL/SQL Stored Procedure to process extra large of data traffic volumn  
 
-I suggest using PL/SQL stored procedures to read/process/write extra larget of data. This avoids the IO network bottleneck, which is caused by the reading/writing extra large volumn of data to/from database to ETL client side jobs. PL/SQL will keep reading and writing data local to the database server.
+I suggest using PL/SQL stored procedures to read/process/write extra large of data volumn (hundreds of millions of fact records). This avoids the network IO bottleneck, which is caused by the reading/writing extra large volumn of data to/from database to ETL client side jobs. PL/SQL Stored Procedure will keep reading and writing data local to the database server.
 
 
 ### Use mapping configuration tables instead of hard coded codes/types mapping logic
 
 Data integration process always need to map codes/types from upstream transactional systems to DWH report system. The data quality of dimensional data is very import for report and BI analysis. 
 
-For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase. 
+For example, in promotion DI system, there is mapping logic to map from SAM system promotion location codes to DWH system promotion sub-type codes. The sample hard coded mapping snippets are as the following. each similar mapping logic appears in two places, one place is in corporation items transformation phase , the other place is in corporation locations transformation phase. We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. 
 
-We can see some mappings of codes/types are one-to-one straight forward. other mappings are based on certain field value patterns in a dimension record. 
-
-To handle field value pattern based mappings, patterned based regular expressions can be configured in the mapping configuration table. However, this belongs to advanced level software engineering. I hope ETL tool vendor complany like Informatia and Talend can provide built-in feature for pattern based mapping configurations in their product in the future. Before Informatica or Talend provodes such a built-in feature, hard coded mappings might be a simpler feasible solution since it avoids over-enginnering.
+To handle field value pattern based mappings, patterned based regular expressions can be configured in the mapping configuration table. 
 
 
 > Challenge-4: Sample hard coded mapping snippets in existing ETL Informatica job:
