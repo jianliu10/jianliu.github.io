@@ -21,6 +21,8 @@ categories: tech java-spring
 see java classes : WebMvcConfigurer, WebMvcConfigurerAdapter, WebMvcConfigurationSupport, WebMvcAutoConfiguration, WebMvcAutoConfigurationAdapter  
 
 @PropertySources = {,,}, 
+
+configuration beans and regular beans.
     
 ## spring Rest-API ws exception handling ##
 @ControllerAdvice, @ExceptionHandler, ResponseEntity<Object>, ResponseEntityExceptionHandler  
