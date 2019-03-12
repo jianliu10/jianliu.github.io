@@ -254,13 +254,56 @@ If performance under high load is important, you'll want AspectJ which is 9-35x 
 interface default method, interface static method, method reference  
 functional interface contains only one abstract interface method. It can have other default and/or static interface methods.  
 
-method references: Static method reference, instance method reference of an object of a particular type, instance method reference of an existing object  
+method references: 
+- constructor reference:   .collect(Collectors.toCollection(TreeSet::new))
+- Static method reference, 
+- instance method reference of an object of a particular type,    Arrays.stream(a).map(Object::toString)
+- instance method reference of an existing object  
+
+public final class Collectors
+extends Object
+utility class that create Collector implementation classes that implement various useful reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, grouping, partitioning, etc.
+The following are examples of using the predefined collectors to perform common mutable reduction tasks:
+
+
+     // Accumulate names into a List
+     List<String> list = people.stream().map(Person::getName).collect(Collectors.toList());
+
+     // Accumulate names into a TreeSet
+     Set<String> set = people.stream().map(Person::getName).collect(Collectors.toCollection(TreeSet::new));
+
+     // Convert elements to strings and concatenate them, separated by commas
+     String joined = things.stream()
+                           .map(Object::toString)
+                           .collect(Collectors.joining(", "));
+
+     // Compute sum of salaries of employee
+     int total = employees.stream()
+                          .collect(Collectors.summingInt(Employee::getSalary)));
+
+     // Group employees by department
+     Map<Department, List<Employee>> byDept
+         = employees.stream()
+                    .collect(Collectors.groupingBy(Employee::getDepartment));
+
+     // Compute sum of salaries by department
+     Map<Department, Integer> totalByDept
+         = employees.stream()
+                    .collect(Collectors.groupingBy(Employee::getDepartment,
+                                                   Collectors.summingInt(Employee::getSalary)));
+
+     // Partition students into passing and failing
+     Map<Boolean, List<Student>> passingFailing =
+         students.stream()
+                 .collect(Collectors.partitioningBy(s -> s.getGrade() >= PASS_THRESHOLD));
+		
+
 
 Lambda is a single expression annonymous function that is often used as inline function. Java Lambda concept is borrowed from Python. Java internal mechanism is to create an instance of an annonymous class that implements a FunctionalInterface. This ways, java effectively treat a Lambda expression as a function object.
 
 ## Unit test ##
 
- @RunWith(Spring4JunitRunner.class) -- deprecated. Replace with SpringRunner.class  
+ SpringRunner.class is an alias for the SpringJUnit4ClassRunner.class. This class requires JUnit 4.12 or higher.
 
  @RunWith(SpringRunner.class) -- it will create a spring app context container containing all the scanned beans. the test class is a bean in the container.   
  It can code in hybrid:  can use @Autowired to inject real(not mocked) beans in container. If we want to inject some mocked beans, we can use @InjectMocks, @Mock, @Spy,   MockitoAnnotations.initMocks(this)  
@@ -283,7 +326,7 @@ using the MockMvc in spring-boot-test jar (do not need to start up web applicati
 
     @RunWith(SpringRunner.class)  
 	@SpringBootTest(classes={MyApplication.class}, webEnvironment={SpringBootTest.WebEnvironment.MOCK, WebEnvironment.RANDOM_PORT} )  
-	@TestPropertySource(locations = "classpath:application-test.properties")    
+	@TestPropertySource(locations={"classpath:application-test.properties"})    
     @AutoConfigureMockMvc     
 	
 		
