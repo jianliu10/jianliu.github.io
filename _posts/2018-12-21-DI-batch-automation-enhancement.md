@@ -18,8 +18,9 @@ The four challenges are common for most of data warehouse systems. I wrote this 
 DWH 		- Data Warehouse   
 SAM 		- the Merchandizing Sales and Marketing transactional system  
 PROMO-DI 	- the promotion data integration component in DWH  
-PromoTree 	- the retail store promotion management system  
-ORM 		- Online Order Management system  
+PromoLocation	- the retail store promotion location management system  
+OMS 		- Online Order Management system  
+WMS			- Warehouse Management System
 
 
 ## Common challenges in data integration process in DWH
