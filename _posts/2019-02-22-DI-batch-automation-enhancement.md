@@ -5,7 +5,8 @@ date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
 
-## Background
+## Background  
+
 I was tasked to enhance an 10+ years aged existing data integration component PROMO-DI in a data warehouse. The goal of the development work was not only to add new business features for this one-time project, but also to enhance and automate the data integration process for the future.
 
 This document describes the four challenges in PROMO-DI data integration component in DWH, and its automation & enhancement design. 
