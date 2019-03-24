@@ -30,11 +30,16 @@ At the time I wrote this document, Google Cloud Platform is my study interest. T
 The business context is assumed to be a large global retail company with ++ billions of annual revenues. The business needs to integrate various data into a centrl master data store to support many business operation systems, finance system, report system, and business intelligence analysis system.
 
 This document will use the following business operational systems as sample data sources:  
-SAM 		   : the Merchandizing Sales and Marketing transactional system  
-PromoLocation  : the retail store promotion location management system  
-OMS 		   : Online Order Management system  
-WMS			   : Warehouse Management System
-web clicks
+SAM 		   
+: the Merchandizing Sales and Marketing transactional system  
+PromoLocation  
+: the retail store promotion location management system  
+OMS 		   
+: Online Order Management system  
+WMS			   
+: Warehouse Management System
+webclicks
+: web clicks
 
 The data source systems supply the data in the channels:
 - end of day data channelled via batch files

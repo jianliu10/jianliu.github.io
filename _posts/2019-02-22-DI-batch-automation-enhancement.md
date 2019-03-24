@@ -16,13 +16,20 @@ The four challenges are common for most of data warehouse systems. I wrote this 
 
 ## Abbreviations  
 
-DWH 		   : Data Warehouse   
-PROMO-DI 	   : the promotion data integration component in DWH  
-SAM 		   : the Merchandizing Sales and Marketing transactional system  
-PromoLocation  : the retail store promotion location management system  
-OMS 		   : Online Order Management system  
-WMS			   : Warehouse Management System
-web clicks
+DWH 		   
+: Data Warehouse   
+PROMO-DI 	   
+: the promotion data integration component in DWH  
+SAM 		   
+: the Merchandizing Sales and Marketing transactional system  
+PromoLocation  
+: the retail store promotion location management system  
+OMS 		   
+: Online Order Management system  
+WMS			   
+: Warehouse Management System
+webclicks
+: web clicks
 
 
 ## Common challenges in data integration process in DWH
