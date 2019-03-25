@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - Data Integration Automation and Enhancement in a Data Warehouse"
+title:  "Case Study - Enterprise Data Integration Automation and Enhancement in Data Warehouse"
 date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
@@ -9,9 +9,7 @@ categories: tech data-integration
 
 I was tasked to enhance an 10+ years aged existing data integration component PROMO-DI in a data warehouse. The goal of the development work was not only to add new business features for this one-time project, but also to enhance and automate the data integration process for the future.
 
-This document describes the four challenges in PROMO-DI data integration component in DWH, and its automation & enhancement design. 
-
-The four challenges are common for most of data warehouse systems. I wrote this document for data engineering research purpose only.
+There are some common challenges in enterprise large data warehouse systems. This document describes the four challenges in PROMO-DI data integration component in DWH, and its automation & enhancement design. 
 
 
 ## Abbreviations  
