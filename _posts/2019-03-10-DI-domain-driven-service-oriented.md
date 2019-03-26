@@ -41,8 +41,8 @@ This document will use the following business operational systems as sample data
   Sales of Day. Intraday data feed.
 - OMS   
   Order Management system. real-time order data integration  
-- WMS   
-  Warehouse Management System. real-time inventory data integration
+- IMS   
+  Inventory Management System. real-time inventory data integration
 
 
 The data source systems supply the data in the channels:  
