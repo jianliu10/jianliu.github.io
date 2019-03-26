@@ -12,18 +12,19 @@ This research and design paper was written based on my development work experien
 There are structured data and unstructured data.
 
 There are three types of data APIs:
-- batch API 
+- batch API   
   end of day batch files and their sensors.
-- REST API 
+- REST API    
   intraday request-response JSON data by calling operational service REST API
-- event messaging API 
+- event messaging API    
   real-time streaming data integration. example web clicks, capital market trades.
 
-The design document tries to probe into the following design areas:
-- use domain driven service oriented design in data integration. A service integrates all types of data APIs in one domain.
-- SQL database or columnar data warehouse to store structured data
-- NoSQL database to store unstructured data
-- A data service for reporting and BI Analysis
+The design document tries to probe into the following design areas:  
+
+- use domain driven service oriented design in data integration. A domain integration service integrates all types of data APIs in its domain.
+- SQL database or columnar data warehouse to store structured data  
+- NoSQL database to store unstructured data  
+- A back-end data service to serve data for front-end reporting and BI Analysis  
 
 At the time I wrote this document, I used Google Cloud Platform as PAAS and SAAS. Thus you will find Google Cloud specific products and services in this document.
 
@@ -34,13 +35,13 @@ The business context is assumed to be a large global retail company with ++ bill
 
 This document will use the following business operational systems as sample data sources:  
 
-- MPTS
+- MPTS   
   The Merchandizing Promotion Tracking system. Both end of day data feed for weekly promotions, and intraday data feed for time limited flash sales and super sales  
-- SOD
+- SOD   
   Sales of Day. Intraday data feed.
-- OMS
+- OMS   
   Order Management system. real-time order data integration  
-- WMS
+- WMS   
   Warehouse Management System. real-time inventory data integration
 
 
@@ -60,17 +61,17 @@ The master data store data are to be fed back or used in the systems:
 
 ## Non-Functional Requirements
 
-- fault tolerant 
+- fault tolerant   
   automatic failure-retries to avoid sporadic network unstability.   
-- failover 
+- failover   
   to avoid single point of failure  
 - scalability  
   start up multiple instances of same integration service to support load balancing and fail over.
-- integration service instance registry
-- log aggregation and monitoring     
-- application monitoring 
+- integration service instance registry  
+- log aggregation and monitoring       
+- application monitoring   
   monitor the runtime health, CPU, memory, disk usage of the application processes.    
-- error report 
+- error report   
   near time error/exception notification to a support group.   
 
 
