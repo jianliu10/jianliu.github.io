@@ -31,10 +31,14 @@ The business context is assumed to be a large global retail company with ++ bill
 
 This document will use the following business operational systems as sample data sources:  
 
-MPTS : the Merchandizing Promotion Tracking system. Both end of day data feed for weekly promotions, and intraday data feed for time limited flash sales and super sales  
-SOD : Sales of Day. Intraday data feed.
-OMS : Order Management system. real-time order data integration  
-WMS	: Warehouse Management System. real-time inventory data integration
+- MPTS
+  The Merchandizing Promotion Tracking system. Both end of day data feed for weekly promotions, and intraday data feed for time limited flash sales and super sales  
+- SOD
+  Sales of Day. Intraday data feed.
+- OMS
+  Order Management system. real-time order data integration  
+- WMS
+  Warehouse Management System. real-time inventory data integration
 
 
 The data source systems supply the data in the channels:
@@ -53,13 +57,18 @@ The master data store data are to be fed back or used in the systems:
 
 ## Non-Functional Requirements
 
-fault tolerant - automatic failure-retries to avoid sporadic network unstability.   
-failover - to avoid single point of failure  
-scale out - to support load balancing and failover.
-integration service instance registry
-log aggregation and monitoring     
-application monitoring - monitor the runtime health, CPU, memory, disk usage of the application processes.    
-error report - near time error/exception notification to a support group.   
+- fault tolerant 
+  automatic failure-retries to avoid sporadic network unstability.   
+- failover 
+  to avoid single point of failure  
+- scale out 
+  to support load balancing and failover.
+- integration service instance registry
+- log aggregation and monitoring     
+- application monitoring 
+  monitor the runtime health, CPU, memory, disk usage of the application processes.    
+- error report 
+  near time error/exception notification to a support group.   
 
 
 # Architecture
