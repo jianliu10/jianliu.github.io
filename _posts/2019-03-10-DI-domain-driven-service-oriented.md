@@ -18,39 +18,36 @@ There are three types of data APIs:
 
 The design document tries to probe into the following design areas:
 - use domain driven service oriented design in data integration. A service integrates all types of data APIs in one domain.
-- SQL database or columnar data warehouse to stored structured data
-- NoSQL database to stored unstructured data
+- SQL database or columnar data warehouse to store structured data
+- NoSQL database to store unstructured data
 - A data service for reporting and BI Analysis
 
-At the time I wrote this document, Google Cloud Platform is my study interest. Thus you will find Google Cloud specific products and services in this document.
+At the time I wrote this document, I used Google Cloud Platform as PAAS and SAAS. Thus you will find Google Cloud specific products and services in this document.
 
 
 ## Functional Requirements
 
-The business context is assumed to be a large global retail company with ++ billions of annual revenues. The business needs to integrate various data into a centrl master data store to support many business operation systems, finance system, report system, and business intelligence analysis system.
+The business context is assumed to be a large global retail company with ++ billions of annual revenues. The business needs to integrate various data into a centrl master data store to support many business operation systems, finance system, report system, forcasting system, and business intelligence analysis system.
 
 This document will use the following business operational systems as sample data sources:  
-SAM 		   
-: the Merchandizing Sales and Marketing transactional system  
-PromoLocation  
-: the retail store promotion location management system  
-OMS 		   
-: Online Order Management system  
-WMS			   
-: Warehouse Management System
-webclicks
-: web clicks
+
+MPTS : the Merchandizing Promotion Tracking system. Both end of day data feed for weekly promotions, and intraday data feed for time limited flash sales and super sales  
+SOD : Sales of Day. Intraday data feed.
+OMS : Order Management system. real-time order data integration  
+WMS	: Warehouse Management System. real-time inventory data integration
+
 
 The data source systems supply the data in the channels:
-- end of day data channelled via batch files
-- intraday channelled via REST-API
-- real-time streaming data channelled via event messaging middleware
+- end of day data feed via batch file channel
+- intraday data feed via REST-API channel
+- real-time streaming data feed via event messaging middleware channel
 
 
-The data are to be fed back or used in the systems:
+The master data store data are to be fed back or used in the systems:
 - operational systems
 - finance system
 - reporting system
+- forcasting system
 - business intelligence system
 
 
@@ -59,7 +56,7 @@ The data are to be fed back or used in the systems:
 fault tolerant - automatic failure-retries to avoid sporadic network unstability.   
 failover - to avoid single point of failure  
 scale out - to support load balancing and failover.
-service registry
+integration service instance registry
 log aggregation and monitoring     
 application monitoring - monitor the runtime health, CPU, memory, disk usage of the application processes.    
 error report - near time error/exception notification to a support group.   
@@ -69,40 +66,69 @@ error report - near time error/exception notification to a support group.
 
 Diagram - enterprise data integation SOA architecture
 
-# Design
 
-## batch file sensor 
+# Technical Design
+
+
+## batch file sensors
+ 
 
 ## REST-API 
+
 ### OpenAPI 2.0 Protocol
+
 
 ### Postman test tool
 
-## event messaging middleware - Kafka
+
+## real-time event messaging middleware - Kafka
+
 
 ## fault tolerance - failure and retry
 
-## scale out
 
-## failover
+## integration service instance scalability, load balancing, and fail over
 
-## service registry
+
+## integration service instance registry 
+
+service instance registry service is provided Google Cloud
+
 
 ## log aggregation and monitoring
 
+log aggregation and monitoring service is provided by Google Cloud
+
+
 ## near-time error notification
 
+near-time error notification service is provided by Google Cloud
 
 
 # Code Snippets
 
 the codes are proprietory
 
-# Technology Stack
-Java, JEE, Spring-boot, Spring, Python, REST-API, OpenAPI, JSON, Shell Script
-Google Cloud Platform: cloud storage, cloud Pub/Sub (Kafka), appengine-flex, BigQuery columnar data warehouse, 
 
-# Deployment
+# Technology Stack
+
+- Java ETL, Spring-boot, Spring, 
+- Python ETL, 
+- REST-API, OpenAPI, JSON, 
+- Shell Script
+- Google Cloud Services
+	- cloud storage, 
+	- cloud Pub/Sub (Kafka), 
+	- cloud BigQuery columnar data warehouse, 
+	- cloud logstash
+	- cloud appendine-flex
+	- cloud kurbernetes cluster of compute engines
+	- cloud dataflow or Spark
+
+
+# Deployment on Google Cloud
+
 
 # Conclusion
+
 
