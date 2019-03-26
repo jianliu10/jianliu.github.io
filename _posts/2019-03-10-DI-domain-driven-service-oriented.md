@@ -92,17 +92,15 @@ Diagram - enterprise data integation SOA architecture
 
 ## integration service instance registry 
 
-service instance registry service is provided Google Cloud
+
 
 
 ## log aggregation and monitoring
 
-log aggregation and monitoring service is provided by Google Cloud
 
 
-## near-time error notification
 
-near-time error notification service is provided by Google Cloud
+## real-time error notification
 
 
 # Code Snippets
@@ -112,11 +110,12 @@ the codes are proprietory
 
 # Technology Stack
 
-- Java ETL, Spring-boot, Spring, 
-- Python ETL, 
-- REST-API, OpenAPI, JSON, 
+## Data integration technology stack
+
+- Python, Java
+- REST-API, OpenAPI2, JSON, 
 - Shell Script
-- Google Cloud Services
+- Google Cloud Platform and Services
 	- cloud storage, 
 	- cloud Pub/Sub (Kafka), 
 	- cloud BigQuery columnar data warehouse, 
@@ -125,7 +124,14 @@ the codes are proprietory
 	- cloud kurbernetes cluster of compute engines
 	- cloud dataflow or Spark
 
+	
+## Report and BI technology stack
 
+- Tableau
+- Java, Spring-boot, Spring for data service back-end
+- AngularJS for front-end customized reports that cannot be handled by tableau
+
+	
 # Deployment on Google Cloud
 
 
