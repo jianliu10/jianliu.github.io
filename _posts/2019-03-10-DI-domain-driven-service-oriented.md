@@ -75,18 +75,18 @@ The master data store data are to be fed back or used in the systems:
   near time error/exception notification to a support group.   
 
 
-# Architecture
+## Architecture
 
 Diagram - enterprise data integation SOA architecture
 
 
-# Technical Design
+## Technical Design
 
 
-## batch file sensors
+### batch file sensors
  
 
-## REST-API 
+### operational system REST-API 
 
 ### OpenAPI 2.0 Protocol
 
@@ -94,36 +94,36 @@ Diagram - enterprise data integation SOA architecture
 ### Postman test tool
 
 
-## real-time event messaging middleware - Kafka
+### real-time event messaging middleware - Kafka
 
 
-## fault tolerance - failure and retry
+### fault tolerance - failure and retry
 
 
-## integration service instance scalability, load balancing, and fail over
+### integration service instance scalability, load balancing, and fail over
 
 
-## integration service instance registry 
-
-
-
-
-## log aggregation and monitoring
+### integration service instance registry 
 
 
 
 
-## real-time error notification
+### log aggregation and monitoring
 
 
-# Code Snippets
+
+
+### real-time error notification
+
+
+## Code Snippets
 
 the codes are proprietory
 
 
-# Technology Stack
+## Technology Stack
 
-## Data integration technology stack
+### Data integration technology stack
 
 - Python, Java
 - service REST-API, OpenAPI2, JSON data, 
@@ -138,16 +138,16 @@ the codes are proprietory
 	- cloud dataflow or Spark
 
 	
-## Report and BI technology stack
+### Report and BI technology stack
 
 - Tableau
 - Java, Spring-boot, Spring, REST-API for back-end data service 
 - AngularJS for front-end customized web reports that cannot be handled by Tableau
 
 	
-# Deployment on Google Cloud
+## Deployment on Google Cloud
 
 
-# Conclusion
+## Conclusion
 
 
