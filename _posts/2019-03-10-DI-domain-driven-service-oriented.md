@@ -12,9 +12,12 @@ This research and design paper was written based on my development work experien
 There are structured data and unstructured data.
 
 There are three types of data APIs:
-- batch API - end of day batch files and their sensors.
-- REST API - intraday request-response
-- event messaging API - real-time streaming data integration. example web clicks, capital market trades.
+- batch API 
+  end of day batch files and their sensors.
+- REST API 
+  intraday request-response JSON data by calling operational service REST API
+- event messaging API 
+  real-time streaming data integration. example web clicks, capital market trades.
 
 The design document tries to probe into the following design areas:
 - use domain driven service oriented design in data integration. A service integrates all types of data APIs in one domain.
@@ -41,7 +44,7 @@ This document will use the following business operational systems as sample data
   Warehouse Management System. real-time inventory data integration
 
 
-The data source systems supply the data in the channels:
+The data source systems supply the data in the channels:  
 - end of day data feed via batch file channel
 - intraday data feed via REST-API channel
 - real-time streaming data feed via event messaging middleware channel
@@ -61,8 +64,8 @@ The master data store data are to be fed back or used in the systems:
   automatic failure-retries to avoid sporadic network unstability.   
 - failover 
   to avoid single point of failure  
-- scale out 
-  to support load balancing and failover.
+- scalability  
+  start up multiple instances of same integration service to support load balancing and fail over.
 - integration service instance registry
 - log aggregation and monitoring     
 - application monitoring 
@@ -122,7 +125,7 @@ the codes are proprietory
 ## Data integration technology stack
 
 - Python, Java
-- REST-API, OpenAPI2, JSON, 
+- service REST-API, OpenAPI2, JSON data, 
 - Shell Script
 - Google Cloud Platform and Services
 	- cloud storage, 
@@ -137,8 +140,8 @@ the codes are proprietory
 ## Report and BI technology stack
 
 - Tableau
-- Java, Spring-boot, Spring for data service back-end
-- AngularJS for front-end customized reports that cannot be handled by tableau
+- Java, Spring-boot, Spring, REST-API for back-end data service 
+- AngularJS for front-end customized web reports that cannot be handled by Tableau
 
 	
 # Deployment on Google Cloud
