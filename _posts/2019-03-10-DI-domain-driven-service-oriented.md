@@ -39,7 +39,7 @@ The deployment process among different type of modulees for the same business do
 
 ## Benifits of business domain driven data integration service design  
 
-The benefits of using business domain driven data intergration service design include:
+The benefits of business domain driven data intergration service design include:
 
 - Centralize the business logics for data cleaning, validation, transformation into a single domain data integration service component, regarless of the domain data delivery channels (batch file API, REST API, event messaging API).   
   This removes the business logic discrepencies and conflicts that happen when data processing codes are scattered in multiples processes including batch file jobs, REST API process instance, event messaging process instance.
@@ -54,6 +54,10 @@ The benefits of using business domain driven data intergration service design in
   The deployment is agile. There will be no deployment coordination among ETL jobs instance (Talend, Informatica), Java/python REST API process instance, java/python event messaging process instance.
 
 - The above benefits will lead to better data quality in data integration result.
+
+## Limit of business domain driven data integration service design
+
+Whethere the business domain driven data integration service desing can be applied to dataflow/spark framework is still unclear to me. At this time, I think it is not applicable.
 
 
 ## Functional Requirements
@@ -158,7 +162,7 @@ the codes are proprietory
 	- cloud Pub/Sub (Kafka), 
 	- cloud BigQuery columnar data warehouse, 
 	- cloud logstash
-	- cloud appendine-flex
+	- cloud appengine-flex
 	- cloud kurbernetes cluster of compute engines
 	- cloud dataflow or Spark
 
