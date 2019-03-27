@@ -35,7 +35,7 @@ The traditional data processing design is to modulize the data processing work b
 
 The drawback of this approach is that there are duplicated data processing business logics in different modules. There causes business logic discrepencies and conflicts in modules.
 
-The deployment process among different type of modolues of the same business domain need to be coordinated.
+The deployment process among different type of modulees for the same business domain need to be coordinated.
 
 ## Benifits of business domain driven data integration service design  
 
