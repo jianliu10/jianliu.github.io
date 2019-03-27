@@ -42,16 +42,16 @@ The deployment process among different type of modulees for the same business do
 The benefits of using business domain driven data intergration service design include:
 
 - Centralize the business logics for data cleaning, validation, transformation into a single domain data integration service component, regarless of the domain data delivery channels (batch file API, REST API, event messaging API).   
-  This removes the business logic discrepencies and conflicts that happen when data processing codes are scattered in multiples processes including batch file job, REST API job, event messaging job.
+  This removes the business logic discrepencies and conflicts that happen when data processing codes are scattered in multiples processes including batch file jobs, REST API process instance, event messaging process instance.
 
 - development autonomy  
   A small group of developers working on a single business domain data integration is allowed to use the technologies that they are most productive with. 
   They can pioneer into some cutting edges technologies in  the domain data integration service without impacting other domain data integration services that are owned by other groups of developers.
 
 - deployment agility  
-  The development autonomy leads to decoupling among the differnet domain data integration services.   
-  The bug fix is quick since the codes are centralize in one domain data integration service component regardless of the domain data delivery channels.   
-  The deployment is agile. There will be no deployment coordination among ETL tools instance (Talend, Informatica), Java/python REST API process instance, java/python event messaging process instance.
+  the centralization of domain business data processing logics into one place leads to the decoupling among the differnet domain data integration services.   
+  The bug fix is quick since the codes are centralized in one domain data integration service component regardless of the domain data delivery channels.   
+  The deployment is agile. There will be no deployment coordination among ETL jobs instance (Talend, Informatica), Java/python REST API process instance, java/python event messaging process instance.
 
 - The above benefits will lead to better data quality in data integration result.
 
