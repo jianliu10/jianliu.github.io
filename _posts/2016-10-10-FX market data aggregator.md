@@ -11,7 +11,7 @@ I was tasked by a Pension Plan Investment Board to architect and design a FX mar
 
 The system is required to have the following capabilities:
 ‎
-1. Ability to get market data quotes concurrently from 10 ECNs
+1. Ability to get market data quotes concurrently from 10 ECNs  
 2.‎ Persist and aggregate the quotes
 3. Disseminate the aggregate quotes to 5 clients on a real time basis
 4. Ability for clients to request persisted quotes‎ directly received from ECNs
