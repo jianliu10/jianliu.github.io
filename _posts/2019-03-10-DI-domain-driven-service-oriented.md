@@ -33,23 +33,23 @@ At the time I wrote this document, I used Google Cloud Platform as PAAS and SAAS
 
 The traditional data processing design is to modulize the data processing work based on their delivery channels. If a upstream domain system deliveries its different data using different types of channels, there are different data processing modules for each channel. These modules usually are developed with different programming languages and technologies. These different modules normally replicate the data processing business logics in their own context for loss coupling and development autonomy.
 
-The drawback of this approach is that there are duplicated data processing business logics in different modules. There causes business logic discrepencies and conflicts in modules.
+The drawback of this approach is that there are duplicated data processing business logics in different modules. There causes business logic discrepencies among modules.
 
-The deployment process among different type of modulees for the same business domain need to be coordinated.
+The deployment process among different types of modules for the same business domain need to be coordinated.
 
 ## Benifits of business domain driven data integration service design  
 
 The benefits of business domain driven data intergration service design include:
 
 - Centralize the business logics for data cleaning, validation, transformation into a single domain data integration service component, regarless of the domain data delivery channels (batch file API, REST API, event messaging API).   
-  This removes the business logic discrepencies and conflicts that happen when data processing codes are scattered in multiples processes including batch file jobs, REST API process instance, event messaging process instance.
+  This removes the business logic discrepencies that happen when data processing codes are scattered in multiples processes including batch file jobs, REST API process instance, event messaging process instance.
 
 - development autonomy  
   A small group of developers working on a single business domain data integration is allowed to use the technologies that they are most productive with. 
   They can pioneer into some cutting edges technologies in  the domain data integration service without impacting other domain data integration services that are owned by other groups of developers.
 
 - deployment agility  
-  the centralization of domain business data processing logics into one place leads to the decoupling among the differnet domain data integration services.   
+  the centralization of domain business data processing logics into one place leads to the decoupling from other domain data integration services.   
   The bug fix is quick since the codes are centralized in one domain data integration service component regardless of the domain data delivery channels.   
   The deployment is agile. There will be no deployment coordination among ETL jobs instance (Talend, Informatica), Java/python REST API process instance, java/python event messaging process instance.
 
@@ -57,7 +57,7 @@ The benefits of business domain driven data intergration service design include:
 
 ## Limit of business domain driven data integration service design
 
-Whethere the business domain driven data integration service desing can be applied to dataflow/spark framework is still unclear to me. At this time, I think it is not applicable.
+Whether the business domain driven data integration service design can be applied to dataflow/spark framework is still unclear to me. I will provide my thought when I gain more hand-on work experience on dataflow/Spark framework.
 
 
 ## Functional Requirements
@@ -92,7 +92,7 @@ The master data store data are to be fed back or used in the systems:
 
 - fault tolerant   
   automatic failure-retries to avoid sporadic network unstability.   
-- failover   
+- fail over   
   to avoid single point of failure  
 - scalability  
   start up multiple instances of same integration service to support load balancing and fail over.
