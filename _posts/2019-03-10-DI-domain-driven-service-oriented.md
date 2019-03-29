@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - business domain driven data integration services in enterprise master data"
+title:  "Case Study - business domain driven data integration services in enterprise data center"
 date:   2019-03-10 00:00:00 -0500
 categories: tech data-integration
 ---

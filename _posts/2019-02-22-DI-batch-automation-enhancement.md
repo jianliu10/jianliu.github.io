@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - Enterprise Data Integration Automation and Enhancement in Data Warehouse"
+title:  "Case Study - Data Integration Automation and Enhancement in Enterprise Data Warehouse"
 date:   2019-2-22 00:00:00 -0500
 categories: tech data-integration
 ---
