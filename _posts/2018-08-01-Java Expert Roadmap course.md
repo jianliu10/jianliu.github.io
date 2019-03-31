@@ -5,19 +5,21 @@ date:   2018-08-01 00:00:00 -0500
 categories: tech java-spring
 ---
 
-# Foundamental
+## Foundamental Chapter
 
-## JVM
+### JVM
 
-**  JVM内存结构 **  
+** JVM memory structure **  
 
+heap, stack, direct memory, difference of heap and stack
 堆、栈、方法区、直接内存、堆和栈区别。
 
-** Java内存模型 **  
+** Java memory model **  
+memory visibility, 
 内存可见性、重排序、顺序一致性、volatile、锁、final。
 
-**  垃圾回收 **  
-内存分配策略、垃圾收集器（G1）、GC算法、GC参数、对象存活的判定 。
+**  garbage collection **  
+memory allocation stragety, garbase collector (G1), GC algorithms, GC parameters, garbage collectable objects
 
 **  JVM参数及调优 **  
 Java对象模型
@@ -34,14 +36,14 @@ jps, jstack, jmap、jstat, jconsole, jinfo, jhat, javap, btrace、TProfiler。
 
 
 
-## Compiler and Decompiler
+### Compiler and Decompiler
 
 
 javac 、javap 、jad 、CRF。
 
 
 
-## Java Basics
+### Java Basics
 
 
 **  阅读源代码 **  
@@ -133,7 +135,7 @@ Java中语法糖原理、解语法糖。
 
 
 
-## Java Concurrent Programming
+### Java Concurrent Programming
 
 **  什么是线程，与进程的区别**  
 
@@ -169,9 +171,9 @@ synchronized和lock之间关系；
 守护线程和非守护线程的区别以及用法。
 
 
-# Advanced
+## Advanced Chapter
 
-## Java Lower Level Knowledge
+### Java Lower Level Knowledge
 
 
 字节码、class文件格式
@@ -186,7 +188,7 @@ CPU缓存，L1，L2，L3和伪共享
 
 
 
-## 设计模式
+### Design Patterns
 
 
 **  Design Patterns **    
@@ -201,7 +203,7 @@ Singleton, Factory, Adapter, Wrapper, Chain of Responsibility, Builder, Visitor,
 **  nio和reactor设计模式**  
 
 
-## Network Programming
+### Network Programming
 
 **  tcp、udp、http、https等常用协议**  
 三次握手与四次关闭、流量控制和拥塞控制、OSI七层模型、tcp粘包与拆包
@@ -228,7 +230,7 @@ cookie被禁用，如何实现session
 **  反向代理**  
 
 
-## Commonly Used Frameworks
+### Commonly Used Frameworks
 
 **  Servlet线程安全问题**  
 
@@ -252,7 +254,7 @@ Spring Boot的starter原理，自己实现一个starter
 **  Spring Security**  
 
 
-## Application Servers
+### Application Servers
 
 JBoss  
 tomcat  
@@ -261,15 +263,15 @@ Weblogic
 Websphere
 
 
-## Tools
+### Tools
 
 git & svn  
 maven & gradle  
 
 
-# Expert
+## Expert Chapter
 
-## New Technologies
+### New Technologies
 
 **  Java 8**  
 lambda表达式、Stream API、
@@ -286,12 +288,12 @@ Jigsaw、Jshell、Reactive Streams
 **  Spring Boot 2.0**  
 
 
-## Performance Optimization
+### Performance Optimization
 
 使用单例、使用Future模式、使用线程池、选择就绪、减少上下文切换、减少锁粒度、数据压缩、结果缓存
 
 
-## Troubleshooting
+### Troubleshooting
 
 **  dump获取**  
 线程Dump、内存Dump、gc情况
@@ -320,7 +322,7 @@ HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool Out
 
 
 
-## Foundamental Compilation
+### Foundamental Compilation
 
 **  编译与反编译**  
 
@@ -331,7 +333,7 @@ HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool Out
 **  词法分析，语法分析（LL算法，递归下降算法，LR算法），语义分析，运行时环境，中间代码，代码生成，代码优化**  
 
 
-## OS
+### OS
 
 **  Linux的常用命令**  
 
@@ -344,7 +346,7 @@ HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool Out
 **  虚拟内存与主存**  
 
 
-## Database
+### Database
 
 **  MySql 执行引擎**  
 
@@ -375,7 +377,7 @@ h2, hsql, derby
 **  性能调优**  
 
 
-## Data Structure and Algorithm
+### Data Structure and Algorithm
 
 **  简单的数据结构**  
 栈、队列、链表、数组、哈希表、
@@ -388,7 +390,7 @@ h2, hsql, derby
 
 
 
-## BigData
+### BigData
 
 **  Zookeeper**  
 基本概念、常见用法
@@ -407,7 +409,7 @@ HDFS、MapReduce
 **  数据挖掘，mahout**  
 
 
-## Network Security
+### Network Security
 
 **  什么是XSS**  
 XSS的防御
@@ -433,9 +435,9 @@ memcached为什么可以导致DDos攻击、什么是反射型DDoS
 
 
 
-#Architecture
+## Architecture
 
-## Distributed Processing
+### Distributed Processing
 
 数据一致性、服务治理、服务降级
 
@@ -456,7 +458,7 @@ mfs、fastdfs
 
 
 
-## Micro Services
+### Micro Services
 
 SOA、Conway's Law
 
@@ -469,7 +471,7 @@ Spring Boot
 Spring Cloud
 
 
-## High Concurrency
+### High Concurrency
 
 
 database partition, table partition
@@ -479,7 +481,7 @@ messaging, topic, queue
 ActiveMQ, RabbitMQ, Kafka, Solace, MQ
 
 
-## Monitor and Metrics
+### Monitor and Metrics
 
 
 **  监控什么**  
@@ -495,36 +497,35 @@ CPU、内存、磁盘I/O、网络I/O等
 **  Dapper**  
 
 
-## Load Balance
+### Load Balance
 
 tomcat负载均衡、Nginx负载均衡
 
 
-## DNS
+### DNS
 
 DNS原理、DNS的设计
 
 
-## CDN
+### CDN
 
 数据一致性
 
 
 
-#Extension
+## Extension Chapter
 
-## Cloud
+### Cloud
 
-IaaS、SaaS、PaaS、虚拟化技术、openstack、Serverlsess
+IaaS、SaaS、PaaS、virtualization, openstack、Serverlsess
 
-
-## Search Engine
+### Search Engine
 
 
 Solr、Lucene、Nutch、Elasticsearch
 
 
-## Authenrozation Management
+### Authenrozation Management
 
 Shiro
 
