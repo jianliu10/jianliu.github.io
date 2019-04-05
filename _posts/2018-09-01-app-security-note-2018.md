@@ -236,8 +236,10 @@ Cardinal micro-services do NOT use Spring-security's session id authentication, 
       ...  
     }  
   
-in its void configure(HttpSecurity httpSecurity) method implementation, the only useful httpSecurity config is "csrf().disable()", ".addFilterBefore(jwtAuthenticationTokenFilter()". The rest httpSecurity configs are never used because jwtAuthenticationTokenFilter filter handles all the JWT authentications and Url authorizations. The filter returns/throws immediately from the SpringSecurityFilterChain chain.  
+
+CSRF - Cross Site Request Forgery
   
+in its void configure(HttpSecurity httpSecurity) method implementation, the only useful httpSecurity config is "csrf().disable()", ".addFilterBefore(jwtAuthenticationTokenFilter()". The rest httpSecurity configs are never used because jwtAuthenticationTokenFilter filter handles all the JWT authentications and Url authorizations. The filter returns/throws immediately from the SpringSecurityFilterChain chain.  
   
 cardinal ThreadLocal ExecutionContext.java is used, instead of Spring's SecurityContext.  
 JwtAuthenticationTokenFilter is the only filter used for JWT authentication and cardinal priopriatory Urls authorization.  

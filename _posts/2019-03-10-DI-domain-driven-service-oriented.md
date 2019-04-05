@@ -26,7 +26,7 @@ The design document tries to probe into the following design areas:
 - NoSQL database to store unstructured data  
 - A back-end data service to serve data for front-end reporting and BI Analysis  
 
-At the time I wrote this document, I used Google Cloud Platform as PAAS and SAAS. Thus you will find Google Cloud specific products and services in this document.
+At the time I wrote this document, I used Google Cloud Platform as IaaS, PaaS and SaaS. Thus you will find Google Cloud specific products and services in this document.
 
 
 ## Traditional data processing design

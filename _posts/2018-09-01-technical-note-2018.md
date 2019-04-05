@@ -8,9 +8,15 @@ categories: tech java-spring
 # 2018 technical notes #
 
 ## Spring framework two essential features:
-IOC or DI: Inversion of Control, Dependency Injection
-AOP: Aspect Oriented Programming
+- IOC : Inversion of Control,  
+  @Component, auto create beans in container based on declaration
+- DI : Dependency Injection,  
+  auto search for beans and assign beans to variables.
+  @Autowired, @Qualifier, field injection, constructor/method parameter injection, 
+  @Value - inject values from property files
+- AOP: Aspect Oriented Programming
 
+Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 
 ## spring-boot ##
  (spring-boot-starter-web -> spring-mvcweb -> config filter chain -> last servlet is DispatcherServerlet -> route to a controller;   
@@ -165,6 +171,7 @@ Solution: use SQL parameters in sql, named parameter or positional parameter. Pr
 	- get(class, id) is basic programming. It always eager fetch. get() return null object, no exception. 
 	- load(class,id) is advanced programming. It always lazy fetch. If ID not exists in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
 
+- @OnetoOne, @OneToMany, @ManyToMany
  
 ## Spring annotations @component vs @bean difference
 
@@ -327,6 +334,8 @@ There are two category of functional objects:
 ## java 8 streaming
  
 Collectors class is a factory class. It creates Collector instances that implement various reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, grouping, partitioning, etc.
+
+filter, map, flatmap, sort, findfirst, findlast, collect
 
 ** public final class Collectors extends Object
 
