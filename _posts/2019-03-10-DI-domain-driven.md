@@ -78,8 +78,8 @@ The data source systems supply the data in the channels:
 The master data store data are to be fed back or used in the systems:
 - operational systems
 - finance system
-- reporting system
-- forcasting system
+- reporting analysis
+- forcasting / predictive analysis
 - machine learning system
 
 
@@ -146,6 +146,7 @@ the codes are proprietory
 
 - Python, Java, Scala, shell scripts
 - REST-API
+- Spark framework for batch and real-time data ingestion and analysis.
 - Google Cloud Platform:
 	- cloud storage, 
 	- cloud Pub/Sub (Kafka), 
@@ -154,15 +155,20 @@ the codes are proprietory
 	- cloud logstash
 	- cloud appengine-flex, compute engine
 	- cloud kurbernetes container management
-	- cloud dataflow ??
+	- cloud dataflow 
 
 	
 ### Report and BI technology stack
 
-- Tableau
-- Java, Spring-boot, Spring, REST-API for back-end data service 
-- AngularJS for front-end customized web reports that cannot be handled by Tableau
-
+- for cloud BigQuery columnar data warehouse, use 
+	- Tableau
+	- Java, Spring-boot, Spring, REST-API for back-end data service 
+	- AngularJS for front-end customized web reports that cannot be handled by Tableau
+	
+- for HDFS data lake, use
+	- Spark SQL for structure analysis
+	- Spark machine learning
+	- 
 	
 ## Deployment on Google Cloud
 
