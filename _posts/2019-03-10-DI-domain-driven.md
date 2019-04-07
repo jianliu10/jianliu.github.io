@@ -1,15 +1,17 @@
 ---
 layout: post
-title:  "Case Study - business domain driven data integration services in enterprise data center"
+title:  "Case Study - business domain driven data integration in enterprise data lake"
 date:   2019-03-10 00:00:00 -0500
 categories: tech data-integration
 ---
 
 ## Abstract  
 
-This research and design paper was written based on my development work experience in data integration projects in multiple enterprise master data management.  
+This research and design paper was written based on my development work experience in data integration projects in multiple enterprise data management.  
 
-There are structured data and unstructured data.
+enterprise data lake - a single source of truth that is secure, governed and fast.
+
+There are structured data, semi-structured and unstructured data.
 
 There are three types of data delivery channels:
 - batch API   
@@ -55,10 +57,6 @@ The benefits of business domain driven data intergration service design include:
 
 - The above benefits will lead to better data quality in data integration result.
 
-## Limit of business domain driven data integration service design
-
-Whether the business domain driven data integration service design can be applied to dataflow/spark framework is still unclear to me. I will provide my thought when I gain more hand-on work experience on dataflow/Spark framework.
-
 
 ## Functional Requirements
 
@@ -66,14 +64,11 @@ The business context is assumed to be a large global retail company with ++ bill
 
 This document will use the following business operational systems as sample data sources:  
 
-- MPTS - marketing business domain   
-  The Merchandizing Promotion Tracking system. Both end of day data feed for weekly promotions, and intraday data feed for time limited flash sales and super sales  
-- SOD - store Sales business domain  
-  Sales of Day. Intraday data feed.
-- OMS - online order business domain  
-  online Order Management system. real-time order data integration  
-- WMS - Inventory business domain  
-  Warehouse Inventory Management System. real-time inventory data integration
+- Sales system, including store sales transactions and online orders transactions.
+- Marketing Tracking system, including promotions and advertising
+- Inventory Management System
+- Shipment tracking system
+
 
 The data source systems supply the data in the channels:  
 - end of day data feed via batch file channel
@@ -85,7 +80,7 @@ The master data store data are to be fed back or used in the systems:
 - finance system
 - reporting system
 - forcasting system
-- business intelligence system
+- machine learning system
 
 
 ## Non-Functional Requirements
@@ -116,11 +111,6 @@ Diagram - enterprise data integation SOA architecture
  
 
 ### operational system REST-API 
-
-### OpenAPI 2.0 Protocol
-
-
-### Postman test tool
 
 
 ### real-time event messaging middleware - Kafka
@@ -154,17 +144,17 @@ the codes are proprietory
 
 ### Data integration technology stack
 
-- Python, Java
-- service REST-API, OpenAPI2, JSON data, 
-- Shell Script
-- Google Cloud Platform and Services
+- Python, Java, Scala, shell scripts
+- REST-API
+- Google Cloud Platform:
 	- cloud storage, 
 	- cloud Pub/Sub (Kafka), 
+	- cloud Dataproc cluster preinstalled with Spark and Hadoop
 	- cloud BigQuery columnar data warehouse, 
 	- cloud logstash
-	- cloud appengine-flex
-	- cloud kurbernetes cluster of compute engines
-	- cloud dataflow or Spark
+	- cloud appengine-flex, compute engine
+	- cloud kurbernetes container management
+	- cloud dataflow ??
 
 	
 ### Report and BI technology stack

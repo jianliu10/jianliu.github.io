@@ -465,6 +465,13 @@ test web request-response:
 - b-tree index (on columns with high cardinality), used in frequent DML(upsert/delete) operations.  
 - bitmap index (on columns with low cadinality), used in write-once read-many application, such as overnight batch load in DW. expensive to update bitmap index.  
 
+types of dimensional data, types of fact data/table?
+
+execution plan, analyze execute time.  what is hash join?
+
+difference of Oracle 11g and 12c?
+what is Oracle exedata?
+
 
 ## microservice, design patterns, RESTful API design  
 
