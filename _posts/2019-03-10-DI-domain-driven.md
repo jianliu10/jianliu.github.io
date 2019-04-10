@@ -1,41 +1,48 @@
 ---
 layout: post
-title:  "Case Study - unified data integration platform in enterprise data hub"
+title:  "Case Study - use Spark as unified data processing platform in enterprise big data hub"
 date:   2019-03-10 00:00:00 -0500
 categories: tech data-integration
 ---
 
 ## Abstract  
 
-This research and design article was written based on my development work experience in data integration projects in multiple enterprise data management.  
+The document discusss how Spark is used as a unified data integration and analytics platform in enterprise big data warehouse and/or big data lake.
 
-* data lake vs data warehosue *
+This document was written based on my development work experience in data integration projects in multiple enterprise data hub. 
+
+
+## Background
+
+**data lake vs data warehosue**
 
 Big data lake is a vast pool of raw data, the purpose of which is not yet defined. It is ideal for machine learning by data scientists.
 
-Big data warehouse stores processed structure data. All of the data in a data warehouse are used for specific purposes within the organization. It is ideal for line of business (LOB) reporting and analytics by  business professionals.
+Big data warehouse stores processed structured data and semi-structured (JSON, XML) data. All of the data in a data warehouse are used for specific purposes within the organization. It is ideal for reporting and analytics by LOB business professionals.
 
 
-* There are structured data, semi-structured and unstructured data. *
+**There are structured data, semi-structured and unstructured data**
 
-* There are three types of data delivery channels *
-- batch API   
-  end of day batch files and their sensors.
+**There are three types of data delivery channels**
+- batch file API   
+  end of day or intraday batch data.
 - REST API    
-  intraday request-response JSON data
+  end of day or intraday request-response JSON data
 - event messaging API    
-  real-time streaming data integration. example web order transactions, capital market trades.
-
-The design document tries to probe into the following design areas:  
-
-- use business domain driven service oriented design in enterprise data integration. A specific domain integration service integrates all types of data APIs in its business domain.
-- SQL database or columnar data warehouse to store structured data  
-- NoSQL database to store unstructured data  
-
-This document uses Google Cloud Platform as cloud provider.
+  real-time streaming data. Example logs, online order transactions, capital market trades.
 
 
-## Traditional data processing design
+## Spark data processing platform  
+
+Spark is a general purpose computing platform, which is fast and run on cloud. Spark is used as unified data processing and analytics engine. 
+
+Spark support :
+- integrate with varioud sources and sinks, including csv, text, json, jdbc, kafka, Apache Flume
+- batch and real-time data processing
+- structured, semi-structured, and non-structured data
+
+
+## Traditional data processing
 
 The traditional data processing design is to modulize the data processing work based on their delivery channels. If a upstream domain system deliveries its different data using different types of channels, there are different data processing modules for each channel. These modules usually are developed with different programming languages and technologies. These different modules normally replicate the data processing business logics in their own context for loss coupling and development autonomy.
 
@@ -43,9 +50,10 @@ The drawback of this approach is that there are duplicated data processing busin
 
 The deployment process among different types of modules for the same business domain need to be coordinated.
 
-## Benifits of business domain driven data integration service design  
 
-The benefits of business domain driven data intergration service design include:
+## Benifits of unified data processing platform  
+
+The benefits of unified data processing platform include:
 
 - Centralize the business logics for data cleaning, validation, transformation into a single domain data integration service component, regarless of the domain data delivery channels (batch file API, REST API, event messaging API).   
   This removes the business logic discrepencies that happen when data processing codes are scattered in multiples processes including batch file jobs, REST API process instance, event messaging process instance.
@@ -106,7 +114,7 @@ The master data store data are to be fed back or used in the systems:
 
 ## Architecture
 
-Diagram - enterprise data integation SOA architecture
+Diagram - enterprise big data processing architecture
 
 
 ## Technical Design
