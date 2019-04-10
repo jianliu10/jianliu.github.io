@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "Case Study - use Spark as unified data processing platform in enterprise big data hub"
+title:  "Case Study - Spark 2 as unified data processing platform in enterprise big data hub"
 date:   2019-03-10 00:00:00 -0500
 categories: tech data-integration
 ---
 
 ## Abstract  
 
-The document discusss how Spark is used as a unified data integration and analytics platform in enterprise big data warehouse and/or big data lake.
+The document discusss how Spark 2 is used as a unified data integration and analytics platform in enterprise big data warehouse and/or big data lake.
 
 This document was written based on my development work experience in data integration projects in multiple enterprise data hub. 
 
@@ -57,17 +57,6 @@ The benefits of unified data processing platform include:
 
 - Centralize the business logics for data cleaning, validation, transformation into a single domain data integration service component, regarless of the domain data delivery channels (batch file API, REST API, event messaging API).   
   This removes the business logic discrepencies that happen when data processing codes are scattered in multiples processes including batch file jobs, REST API process instance, event messaging process instance.
-
-- development autonomy  
-  A small group of developers working on a single business domain data integration is allowed to use the technologies that they are most productive with. 
-  They can pioneer into some cutting edges technologies in  the domain data integration service without impacting other domain data integration services that are owned by other groups of developers.
-
-- deployment agility  
-  the centralization of domain business data processing logics into one place leads to the decoupling from other domain data integration services.   
-  The bug fix is quick since the codes are centralized in one domain data integration service component regardless of the domain data delivery channels.   
-  The deployment is agile. There will be no deployment coordination among ETL jobs instance (Talend, Informatica), Java/python REST API process instance, java/python event messaging process instance.
-
-- The above benefits will lead to better data quality in data integration result.
 
 
 ## Functional Requirements
