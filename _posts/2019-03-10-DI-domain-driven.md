@@ -31,7 +31,6 @@ The design document tries to probe into the following design areas:
 - use business domain driven service oriented design in enterprise data integration. A specific domain integration service integrates all types of data APIs in its business domain.
 - SQL database or columnar data warehouse to store structured data  
 - NoSQL database to store unstructured data  
-- A back-end data service to serve data for front-end reporting and BI Analysis  
 
 This document uses Google Cloud Platform as cloud provider.
 
