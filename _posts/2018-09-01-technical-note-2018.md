@@ -457,20 +457,73 @@ test web request-response:
     }
 
 	
-## oracle ##
+## database 
 
+### index
 - heap table(== heap organized table),   
 - clustered index (index organized table, the cluster key is the primary key, actual rows are stored in tree nodes),   
 - non-clustered index (the tree nodes store the physical locations of the actual rows in disk)  
 - b-tree index (on columns with high cardinality), used in frequent DML(upsert/delete) operations.  
 - bitmap index (on columns with low cadinality), used in write-once read-many application, such as overnight batch load in DW. expensive to update bitmap index.  
 
-types of dimensional data, types of fact data/table?
-
+### performance tunning  
 execution plan, analyze execute time.  what is hash join?
 
-difference of Oracle 11g and 12c?
-what is Oracle exedata?
+
+## Oracle
+
+### Oracle 11G vs 12C
+
+Oracle 11g was released in 2008. G stands for grid. 
+- No cloud service, It Has no pluggable databases, there is no multitenant architecture, No in-memory capabilities, Has no JSON type support, Comparatively lower performance in I/O throughput and response time.
+
+Oracle 12c was released in 2014, C stands for cloud.    
+- It is Oracle’s first RDBMS designed for the cloud. It provides Oracle database cloud service, 
+- It provides pluggable databases to support rapid provisioning and portability. Therefore, It is suitable for self-service provisioning and database as a service. It allows running multiple databases on the same hardware while maintaining the security and isolation among the databases.
+- there is multitenant architecture. It enables an Oracle database to function as a multitenant container database (CDB)
+- Has in-memory capabilities that provide real-time analytics, 
+- Has native JSON type support, 
+- Comparatively higher performance in I/O throughput and response time.
+
+### Oracle exadata?
+
+Oracle exadata is database cloud, either private cloud or public cloud.
+
+Hardware - The Oracle Exadata Database Machine is engineered to deliver dramatically better performance, cost effectiveness, and availability for Oracle databases. Exadata features a modern cloud-based architecture with scale-out high-performance database servers, scale-out intelligent storage servers with state-of-the-art PCI flash, and an ultra-fast InfiniBand networking that connects all servers and storage.  
+
+Software - Unique software algorithms in Exadata implement database intelligence in storage, compute, and InfiniBand networking to deliver higher performance and capacity at lower costs than other platforms.  
+
+Exadata runs all types of database workloads including Online Transaction Processing (OLTP), Data Warehousing (DW), In-Memory Analytics as well as consolidation of mixed workloads. 
+
+Exadata can be purchased and deployed on premises as the ideal foundation for a private database cloud, or can be acquired using a subscription model and deployed in the Oracle Public Cloud or Cloud at Customer with all infrastructure management performed by Oracle.
+
+
+## data warehouse 
+
+### dimension types & dimension table types
+
+Types of Dimensions :
+- Conformed Dimension - creating consistency. The same dim table can be referenced by the multiple fact tables.
+- Degenerate Dimension – A degenerate dimension is when the dimension attribute is stored as part of the fact table and not in a separate dimension table. Usually used when a dimension has only one attribute.
+- Junk Dimension – A junk dimension is a single table with a combination of different and unrelated attributes to avoid having a large number of foreign keys in the fact table. 
+- Role play dimension – It is a dimension table that has multiple valid relationships with a fact table. For example, a fact table may include foreign keys for both ship date and delivery date. But the same dimension attributes apply to each foreign key so the same dimension tables can be joined to the foreign keys.
+
+* Slowly Changing Dimensions table types:
+- Type 1  is to over write the old value. (no history, overwrite the row) 
+- Type 2 is to add a new row. (keep history. Add columns "active_flag, effective_start_date, effective_end_date", multiple rows) 
+- Type 3 is to create a new column. (new value, old value in one rows)
+
+
+### fact types & fact tabel types
+
+Types of Facts:
+- Additive: Additive facts are facts that can be summed up through all of the dimensions in the fact table.
+- Semi-Additive: Semi-additive facts are facts that can be summed up for some of the dimensions in the fact table, but not the others.
+- Non-Additive: Non-additive facts are facts that cannot be summed up for any of the dimensions present in the fact table.
+
+Types of Fact Tables:
+- Cumulative: This type of fact table describes what has happened over a period of time. For example, this fact table may describe the total sales by product by store by day. The facts for this type of fact tables are mostly additive facts. The first example presented here is a cumulative fact table.
+- Snapshot: This type of fact table describes the state of things in a particular instance of time, and usually includes more semi-additive and non-additive facts. The second example presented here is a snapshot fact table.
 
 
 ## microservice, design patterns, RESTful API design  

@@ -1,19 +1,24 @@
 ---
 layout: post
-title:  "Case Study - business domain driven data integration in enterprise data lake"
+title:  "Case Study - unified data integration platform in enterprise data hub"
 date:   2019-03-10 00:00:00 -0500
 categories: tech data-integration
 ---
 
 ## Abstract  
 
-This research and design paper was written based on my development work experience in data integration projects in multiple enterprise data management.  
+This research and design article was written based on my development work experience in data integration projects in multiple enterprise data management.  
 
-enterprise data lake - a single source of truth that is secure, governed and fast.
+* data lake vs data warehosue *
 
-There are structured data, semi-structured and unstructured data.
+Big data lake is a vast pool of raw data, the purpose of which is not yet defined. It is ideal for machine learning by data scientists.
 
-There are three types of data delivery channels:
+Big data warehouse stores processed structure data. All of the data in a data warehouse are used for specific purposes within the organization. It is ideal for line of business (LOB) reporting and analytics by  business professionals.
+
+
+* There are structured data, semi-structured and unstructured data. *
+
+* There are three types of data delivery channels *
 - batch API   
   end of day batch files and their sensors.
 - REST API    
@@ -28,7 +33,7 @@ The design document tries to probe into the following design areas:
 - NoSQL database to store unstructured data  
 - A back-end data service to serve data for front-end reporting and BI Analysis  
 
-At the time I wrote this document, I used Google Cloud Platform as IaaS, PaaS and SaaS. Thus you will find Google Cloud specific products and services in this document.
+This document uses Google Cloud Platform as cloud provider.
 
 
 ## Traditional data processing design
@@ -60,7 +65,7 @@ The benefits of business domain driven data intergration service design include:
 
 ## Functional Requirements
 
-The business context is assumed to be a large global retail company with ++ billions of annual revenues. The business needs to integrate various data into a centrl master data store to support many business operation systems, finance system, report system, forcasting system, and business intelligence analysis system.
+The business context is assumed to be a large global retail company with ++ billions of annual revenues. The business needs to integrate various data into a centrl master data store to support many business operation systems, finance system, report system, forcasting system, and business intelligence analytics system.
 
 This document will use the following business operational systems as sample data sources:  
 
@@ -68,6 +73,7 @@ This document will use the following business operational systems as sample data
 - Marketing Tracking system, including promotions and advertising
 - Inventory Management System
 - Shipment tracking system
+- logs
 
 
 The data source systems supply the data in the channels:  
@@ -78,8 +84,8 @@ The data source systems supply the data in the channels:
 The master data store data are to be fed back or used in the systems:
 - operational systems
 - finance system
-- reporting analysis
-- forcasting / predictive analysis
+- reporting analytics
+- forcasting / predictive analytics
 - machine learning system
 
 
@@ -144,13 +150,13 @@ the codes are proprietory
 
 ### Data integration technology stack
 
-- Python, Java, Scala, shell scripts
+- Scala, Java, Python, shell scripts
+- Spark, Hive, HDFS
 - REST-API
-- Spark framework for batch and real-time data ingestion and analysis.
 - Google Cloud Platform:
 	- cloud storage, 
 	- cloud Pub/Sub (Kafka), 
-	- cloud Dataproc cluster preinstalled with Spark and Hadoop
+	- cloud Dataproc cluster preinstalled with Spark and Hadoop ecosystem
 	- cloud BigQuery columnar data warehouse, 
 	- cloud logstash
 	- cloud appengine-flex, compute engine
@@ -160,15 +166,13 @@ the codes are proprietory
 	
 ### Report and BI technology stack
 
-- for cloud BigQuery columnar data warehouse, use 
+- for big data warehouse, use 
 	- Tableau
-	- Java, Spring-boot, Spring, REST-API for back-end data service 
-	- AngularJS for front-end customized web reports that cannot be handled by Tableau
 	
-- for HDFS data lake, use
-	- Spark SQL for structure analysis
-	- Spark machine learning
-	- 
+- for big data lake, use
+	- Spark SQL for structure analytics
+	- Spark ML machine learning
+	
 	
 ## Deployment on Google Cloud
 
