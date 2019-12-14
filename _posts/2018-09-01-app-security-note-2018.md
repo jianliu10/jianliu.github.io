@@ -21,8 +21,10 @@ JWT  + 100% stateless session,
 or a hybrid of JWT + session store (keep JWT token size moderate, store non-frequently used session data in a shared session store like distributed cache Redis or Infinispan)  
 JWT token stores the session state. JWT token is passed between browser and micro-services.   JWT token is passed in HTTP Header.  
   
-OAuth2 is used for authorization with scopes (access_token JWT),  OAuth2 access_token.   httpheader "Authorization: bearer <access_token>", has scp (scopes) claim.  
+OAuth2 is used for authorization with scopes (access_token JWT),  OAuth2 access_token.   httpheader "Authorization: bearer <access_token>", has scp (scopes) claim. 
+ 
 "OpenID Connect" is used for authentication and identity user details (id_token JWT)  
+
 JWT: Json Web Token (header, claims, signature.  
   JSON Web Token (JWT) spec, along with the JSON Web Signature (JWS) and JSON Web Encryption (JWE) specs, which complement the actual data format with signatures and encryption.  
   
@@ -38,17 +40,21 @@ front-end can not verify JWT token. Only back-end knowing the Algorithm Secret k
   
 **Algorithm:**  
 RSA256, which use publicKey/privateKey  
-HMAC256, which use a secret  
+HMAC256, which use hashing with a secret  
 HS256, which use a secret. HS256 is simply an HMAC + SHA256 algorithm with Base64 encoding  
   
-## Spring Security authentication and Urls authorization ##  
+## Spring Security authentication and Urls authorization 
+
+- Session Based Authentication (cookie SESSIONID, session stored in server memory, RDBMS, or distributed cache)
+- Token Based Authentication (JWT)
   
 @Configuration @EnableWebSecurity  
 see WebSecurityConfigurer, WebSecurityConfigurerAdapter  
   
-aven dependency: spring-boot-starter-security  
+maven dependency: spring-boot-starter-security  
   
 auto rediect from http->https or from https->http depending on the dest Uri requires secure channel or not.  
+  
   
 **Legacy xml config **  
   
@@ -67,53 +73,138 @@ web-info/web.xml configs "springSecurityFilterChain":
   
 In Spring config xml, security configs will be added to springSecurityFilterChain;  
   
-	<interceptor-url pattern="/customers/**" access="isAuthenticated() and hasROle("USER") requires-channel="https"/>  
+	<interceptor-url pattern="/customers/**" access="isAuthenticated() and hasRole("USER") requires-channel="https"/>  
   
 **new java class configuration **  
 @EnableWebSecurity auto adds "springSecurityFilterChain"  
   
-com.acom.cardinal.rest.security.configuration.CardinalSecurityConfigAdapter extends WebSecurityConfigurerAdapter  
+Spring SecurityContext is thread-bound (thread local)  
+SecurityContextHolder -> ThreadLocal<SecurityContext> obj -> Authentication object -> Principle, list of GrantedAuthority objects  
+
+sample: com.acom.cardinal.rest.security.configuration.CardinalSecurityConfigAdapter extends WebSecurityConfigurerAdapter  
+
+Sample: https://dzone.com/articles/spring-security-5-form-login-with-database-provide
   
+	@Configuration
 	@EnableWebSecurity  
 	class MySecurityConfig extends WebSecurityConfigurerAdapter {  
 		@Override  
 		protected void configure(HttpSecurity http) throws Exception {  
-		  http.authorizeRequests()  
-			  .antMatchers("/customers/**").hasRole("USER")  
-			  .antMatchers("/public/**").permitAll()  
-			  .anyRequest().authenticated()  
+		  http
+		          .authorizeRequests()  
+				  .antMatchers("/customers/**").hasRole("USER")  
+				  .antMatchers("/public/**").permitAll()  
+				  .anyRequest().authenticated()  
 			  .and()  
-			  //following enables https for the specified URL pattern  
-			  .requiresChannel()  
-			  .antMatchers("/customers/**").requiresSecure()  
-			  .antMatchers("/accounts/**").requiresSecure()  
-			  //.anyRequest().requiresSecure()  # for all requests to go through https  
+				//following enables https for the specified URL pattern  
+				  .requiresChannel()  
+				  .antMatchers("/customers/**").requiresSecure()  
+				  .antMatchers("/accounts/**").requiresSecure()  
+				  //.anyRequest().requiresSecure()  # for all requests to go through https  
 			.and()  
-			.httpBasic().disable()  
-			.formLogin()  
-			.loginPage("/iam/signin").permitAll()  
-			.failureUrl("/error")  
-			.defaultSuccessUrl("/app/dashboard")  
-			.and()  
-			.logout()  
-			.logoutRequestMatcher(new AntPathRequestMatcher("iam/logout"))  
-			.logoutSuccessUrl("/iam/signin");			  
+				.httpBasic().disable()  
+				.formLogin()
+				.loginPage("/login").usernameParameter("username").passwordParameter("password").permitAll() // controller request mapping 
+                .loginProcessingUrl("/doLogin")	 // spring-security intercepts this url, and invoke builtin login workflow.
+                .successForwardUrl("/postLogin")  // controller request mapping 
+                .failureUrl("/loginFailed") 	// controller request mapping 
+             .and()
+                .logout()
+				.logoutUrl("/doLogout")  	// spring-security intercepts this url, and invoke builtin logout workflow.
+				.logoutSuccessUrl("/logout").permitAll()	// controller request mapping 
+			.and()
+                .csrf().disable();				
 		}  
+		
 		@Override  
 		public void configure(WebSecurity web) throws Exception {  
 			// these Urls do not require authentication checks.  
 			web.ignoring().antMatchers(authenticationJwtUnsecuredUrls);  
 		}		  
+		
+		@Bean
+		public UserDetailsService userDetailsService() {
+			return new UserDetailsServiceImpl();
+		}
+		@Bean
+		public BCryptPasswordEncoder passwordEncoder() {
+			return new BCryptPasswordEncoder();
+		}
+		@Bean
+		public DaoAuthenticationProvider authenticationProvider() {
+			DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+			authProvider.setUserDetailsService(userDetailsService());
+			authProvider.setPasswordEncoder(passwordEncoder());
+			return authProvider;
+		}		
+		
 		@Override  
 		protected void configure(AuthenticationManagerBuilder auth) throws Exception {  
+			/*
 			// Create a default account for tests  
 			auth.inMemoryAuthentication()  
 					.withUser("admin")  
 					.password("password")  
 					.roles("ADMIN");  
-		}		  
+			*/
+			auth.authenticationProvider(authenticationProvider());
+		}
 	}  
 	  
+	import org.springframework.security.core.userdetails.UserDetails;
+	import org.springframework.security.core.userdetails.UserDetailsService;
+	public class DaoAuthenticationProvider implements AuthenticationProvider {
+	}
+	  
+	public class CustomAuthenticationProvider implements AuthenticationProvider {
+	 
+		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+			String username = authentication.getPrincipal() + "";
+			String password = authentication.getCredentials() + "";
+
+			User user = userRepo.findOne(username);
+			if (user == null) {
+				throw new BadCredentialsException("1000");
+			}
+			if (user.isDisabled()) {
+				throw new DisabledException("1001");
+			}
+			if (!encoder.matches(password, user.getPassword())) {
+				throw new BadCredentialsException("1000");
+			}
+			List<Right> userRights = rightRepo.getUserRights(username);
+			
+			return new UsernamePasswordAuthenticationToken(username, password, 
+				userRights.stream().map(x -> new SimpleGrantedAuthority(x.getName())).collect(Collectors.toList()));
+		}
+	}
+
+	@Controller
+	public class LoginController {
+	}
+	
+login.jsp file	
+	<form action="doLogin" method="post">
+        <fieldset>
+            <legend>Please sign in</legend>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger">
+                    <spring:message code="AbstractUserDetailsAuthenticationProvider.badCredentials"/>
+                    <br/>
+                </div>
+            </c:if>
+            <div class="form-group">
+                <input class="form:input-large" placeholder="User Name"
+                       name='username' type="text">
+            </div>
+            <div class="form-group">
+                <input class=" form:input-large" placeholder="Password"
+                       name='password' type="password" value="">
+            </div>
+            <input class="btn" type="submit"
+                   value="Login">
+        </fieldset>
+    </form>
 	  
 ## how to handle JWT token leak	 ##  
 store blacklist for revoked tokens or set a short expiration date for tokens.  
@@ -158,14 +249,14 @@ Security meta-annotation
 By default, Spring AOP proxying is used to apply method security – if a secured method A is called by another method within the same class, security in A is ignored altogether. This means method A will execute without any security checking. The same applies to private methods  
   
 Spring SecurityContext is thread-bound (thread local)  
-SecurityContextHolder -> thread local SecurityContext obj -> Authentication object -> list of GrantedAuthority objects  
+SecurityContextHolder -> ThreadLocal<SecurityContext> obj -> Authentication object -> Principle, list of GrantedAuthority objects  
   
 Examples:  
   
     @Secured("ROLE_VIEWER")  
     public String getUsername() {  
-    SecurityContext securityContext = SecurityContextHolder.getContext();  
-    return securityContext.getAuthentication().getName();  
+		SecurityContext securityContext = SecurityContextHolder.getContext();  
+		return securityContext.getAuthentication().getName();  
     }  
   
     @Secured({ "ROLE_VIEWER", "ROLE_EDITOR" })  
@@ -176,19 +267,19 @@ Examples:
   
     @PreAuthorize("#username == authentication.principal.username")  
     public String getMyRoles(String username) {  
-    //...  
+		//...  
     }	  
   
     @PostAuthorize("returnObject.username == authentication.principal.nickName")  
     public CustomUser loadUserDetail(String username) {  
-    return userRoleRepository.loadUserByUserName(username);  
+		return userRoleRepository.loadUserByUserName(username);  
     }  
   
     @PreFilter (value = "filterObject != authentication.principal.username",  filterTarget = "usernames")  
     public String joinUsernamesAndRoles(List<String> usernames, List<String> roles) { ... }  
     @PostFilter("filterObject != authentication.principal.username")  
     public List<String> getAllUsernamesExceptCurrent() {  
-    return userRoleRepository.getAllUsernames();  
+		return userRoleRepository.getAllUsernames();  
     }  
   
 Test:  
@@ -239,7 +330,7 @@ Cardinal micro-services do NOT use Spring-security's session id authentication, 
 
 CSRF - Cross Site Request Forgery
   
-in its void configure(HttpSecurity httpSecurity) method implementation, the only useful httpSecurity config is "csrf().disable()", ".addFilterBefore(jwtAuthenticationTokenFilter()". The rest httpSecurity configs are never used because jwtAuthenticationTokenFilter filter handles all the JWT authentications and Url authorizations. The filter returns/throws immediately from the SpringSecurityFilterChain chain.  
+in its void configure(HttpSecurity httpSecurity) method implementation, the only useful httpSecurity config is "csrf().disable()", ".addFilterBefore(jwtAuthenticationTokenFilter())". The rest httpSecurity configs are never used because jwtAuthenticationTokenFilter filter handles all the JWT authentications and Url authorizations. The filter returns/throws immediately from the SpringSecurityFilterChain chain.  
   
 cardinal ThreadLocal ExecutionContext.java is used, instead of Spring's SecurityContext.  
 JwtAuthenticationTokenFilter is the only filter used for JWT authentication and cardinal priopriatory Urls authorization.  

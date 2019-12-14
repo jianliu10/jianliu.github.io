@@ -7,7 +7,7 @@ categories: tech trading-system
 
 ## Functional and non-functional requirements
  
-I was tasked by a Pension Plan Investment Board to architect and design a FX market data aggregator for a FX trading system. I was awarded a consulting contract with this solution design proposal. 
+I was tasked to architect and design a FX market data aggregator for a FX trading system. 
 
 The system is required to have the following capabilities:
 ‎

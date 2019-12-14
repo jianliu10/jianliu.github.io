@@ -24,12 +24,9 @@ Big data warehouse stores processed structured data and semi-structured (JSON, X
 **There are structured data, semi-structured and unstructured data**
 
 **There are three types of data delivery channels**
-- batch file API   
-  end of day or intraday batch data.
-- REST API    
-  end of day or intraday request-response JSON data
-- event messaging API    
-  real-time streaming data. Example logs, online order transactions, capital market trades.
+- batch file API for end of day data intake
+- REST API, SOAP API for synchronous real-time data intake, such as online order transactions
+- event messaging API for asynchronous real-time streaming data intake. Example logs. 
 
 
 ## Spark data processing platform  
@@ -63,13 +60,19 @@ The benefits of unified data processing platform include:
 
 The business context is assumed to be a large global retail company with ++ billions of annual revenues. The business needs to integrate various data into a centrl master data store to support many business operation systems, finance system, report system, forcasting system, and business intelligence analytics system.
 
-This document will use the following business operational systems as sample data sources:  
+This document will use the following business service applications as sample data sources:  
 
-- Sales system, including store sales transactions and online orders transactions.
-- Marketing Tracking system, including promotions and advertising
-- Inventory Management System
-- Shipment tracking system
-- logs
+- Catalog service. 
+  Changes infrequently. extracted as end of day REST API JSON data.
+- Marketing service, including weeky promotions, daily super sales, and hourly flash sales
+  Changes weekly and adjusted daily. end of day batch file
+- Orders service. online orders transactions
+  real-time streaming data
+- Inventory service
+  real-time streaming data
+- logs from all service applications
+  real-time streaming data
+- search service
 
 
 The data source systems supply the data in the channels:  

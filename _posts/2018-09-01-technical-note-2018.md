@@ -7,11 +7,16 @@ categories: tech java-spring
 
 # 2018 technical notes #
 
+## design patterns  
+
+builder, singleton, prototype, factory, abstract factory, adapter, wrapper, facade, proxy, chain of responsibility, , iterator, mediator, observer, visitor, strategy, memento, template
+ 
+
 ## Spring framework two essential features:
 - IOC : Inversion of Control,  
   @Component, auto create beans in container based on declaration
 - DI : Dependency Injection,  
-  auto search for beans and assign beans to variables.
+  container engine auto search for beans with specific type or name, and assign beans to variables.
   @Autowired, @Qualifier, field injection, constructor/method parameter injection, 
   @Value - inject values from property files
 - AOP: Aspect Oriented Programming
@@ -24,9 +29,9 @@ Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 
 > @SpringBootApplication(scanBasePackages={,,}   
 > @SpringBootApplication is a convenience annotation that adds all of the following:   
-> @Configuration, @EnableAutoConfiguration, @EnableWebMvc, @ComponentScan  
+> @Configuration, @EnableAutoConfiguration, @ComponentScan, @EnableWebMvc,   
 > @EnableAutoConfiguration tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.  
-> @EnableWebMvc annotation is added automatically when it sees spring-webmvc on the classpath. This flags the app as a web app and activates key behaviors such as DispatcherServlet.  
+> @EnableWebMvc annotation is added automatically when it sees spring-webmvc jar on the classpath. This flags the app as a web app and activates key behaviors such as DispatcherServlet.  
 
 see java classes : WebMvcConfigurer, WebMvcConfigurerAdapter, WebMvcConfigurationSupport, WebMvcAutoConfiguration, WebMvcAutoConfigurationAdapter  
 
@@ -39,13 +44,14 @@ Spring has two types of beans:
 
 ## Spring REST-API WS server side 
    
-### Exception handling 
+### @ControllerAdvice 
 
-annotations: @ControllerAdvice, @ExceptionHandler   
+#### ExceptionHandler   
 classes: ResponseEntity<Object>, ResponseEntityExceptionHandler  
 
 	@ControllerAdvice
-	public class MyResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+	public class MyResponseEntityExceptionHandler  {
+	
 		@ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
 		protected ResponseEntity<Object> handleConflict(
 		  RuntimeException ex, WebRequest request) {
@@ -55,7 +61,38 @@ classes: ResponseEntity<Object>, ResponseEntityExceptionHandler
 	} 
  
 
- ### maps from URI to controller object and methods
+ #### ResponseBodyAdvice
+@ControllerAdvice
+public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
+
+    @Override
+    public T beforeBodyWrite(T body, MethodParameter returnType, MediaType selectedContentType,
+        Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+		...
+        surrogateMapping.surrogate(fieldsWithSurrogateId, body);
+
+        return body;
+    }
+ 
+
+#### RequestBodyAdvice
+@ControllerAdvice
+public class DecryptionAdvice implements RequestBodyAdvice {
+
+    @Override
+    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
+        return inputMessage;
+    }
+
+    @Override
+    public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        encryptionUtil.decryptFieldsInObject(body, CaseInsensitiveMap.forMap(inputMessage.getHeaders().toSingleValueMap()));
+        return body;
+    }
+} 
+
+
+### maps from URI to controller object and methods
 
 @EnableWebMvc will auto created two beans RequestMappingHandlerMapping and RequestMappingHandlerAdapter
   
@@ -122,7 +159,7 @@ xml based configuration sample:
 		<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller" />
 	
 	
-## Spring REST-API WS client side, using RestTemplate	
+## Spring REST-API WS client side, using RestTemplate, or use swagger-code-gen to generate feign client.	
 
 	@Autowired RestTemplate restTemplate
 	
@@ -147,7 +184,11 @@ Spring application supports both JSON as well as XML. It will even support XML r
 
 ## Postman tool  
 Content-Type header is “application/xml” or “application/json”    
-Accept header as “application/xml”  or “application/json”    
+Accept header as “application/xml”  or “application/json”  
+
+import or export test case collection to a json file.
+
+command line to run postman test case collection: newman run <path to postman-collection.json>  
 
     	 
 ## SQL injection ##
@@ -172,6 +213,13 @@ Solution: use SQL parameters in sql, named parameter or positional parameter. Pr
 	- load(class,id) is advanced programming. It always lazy fetch. If ID not exists in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
 
 - @OnetoOne, @OneToMany, @ManyToMany
+ 
+## Spring @Component
+In Spring @Component, @Service, @Controller, and @Repository are Stereotype annotations
+@Component: generic annotation
+@Controller: url request mapping
+@Service: business logic
+@Repository: Persistence layer(Data Access Layer) 
  
 ## Spring annotations @component vs @bean difference
 
@@ -219,46 +267,6 @@ Case Study: read from database (sql or stored procedure), write to a csv file.
 MRI sample - /business-process-jobs/src/main/resources/com/tdsecurities/stars/bpe/file-extract
 
 
-## design patterns  
-
-builder, singleton, prototype, factory, abstract factory, adapter, wrapper, facade, proxy, chain of responsibility, , iterator, mediator, observer, visitor, strategy, memento, template
- 
-
-## thread pool. 
-How will you implement a thread pool yourself.
-Executors class is a factory class that create different types of thread pools..
-Executor interface,  ExecutorService implements Executor, A ExecutorService instance is a thread pool.
- 
- 
-## Thread 
-
-java VOLATILE variable is thread safe.   
-hashmap not thread safe. hashtable vs concurrentHashMap both are thread safe.   
-arraylist not thread safe. vector is thread safe.  
-memory space: heap vs stack
-methods in java.lang.Object.  
-
-HashMap key class must be immutable and implements hashcode() and equals()  
-
-thread context switch, process context switch,   
-thread scheduler, cpu time slice (=preemptive scheduling),   
-CPU registors state save/restore, cpu's L1 cache, main L2 cache, main memory
-
-
-### hardware thread, software thread   
-https://www.codeguru.com/cpp/sample_chapter/article.php/c13533/Why-Too-Many-Threads-Hurts-Performance-and-What-to-do-About-It.htm
-
-Number of hardware threads = (number of CPUS) * (number of cores per CPU) * (number of hardware threads per core : ususally 1 thread per core, 2 thread per core if CPU processor supports HyperThreading)
-
-One hardware thread can run many software threads. In modern operating systems, this is often done by time-slicing. CPU L1 cache memory, main L2 cache memory contention if too many software threads -> slow down performance
-
- 
-## task-based programming 
-
-executors.newWorkStealingThreadPool,    
-task scheduling, work stealing, parallelism, forkjointask, forkjoinpool, 
- 
- 
 ## AOP  
 
 AOP is a way for adding behavior to existing code without modifying that code. annotation driven, non-invasiveness.    
@@ -283,7 +291,7 @@ Spring-AOP is one of the essential parts of the spring framework. the spring fra
 
 @Interface, @Aspect @Component or META-INFO/aop.xml,  @Around/@Before/@After, ProceedingJointPoint.proceed(), @Pointcut("execution(public * foo..*.*(..))"), @Pointcut("@annotation(annotation class name)"), @Pointcut("within(<package> or <interface>)")
 
-<aop:aspectj-autoproxy/>: It enables @AspectJ style of aspect declaration, but AspectJ runtime is not used. It still use Spring AOP proxies. 
+<aop:aspectj-autoproxy/>: It enables @AspectJ style of aspect declaration, but AspectJ runtime is not used. It still use Spring AOP proxies because of 'aop:" namespace. 
 
 
 ### AspectJ - configed by @enableAspectJAOPProxy on a @configuration class.
@@ -312,67 +320,6 @@ there are two major differences btwn Spring AOP and AspectJ AOP:
   If performance under high load is important, you'll want AspectJ which is 9-35x faster than Spring AOP. whether your aspects will be mission critical.
 
  
-## @FunctionalInterface 
-
-A java Interface class can contains default method, static method, abstract method  
-A functional interface contains only one interface abstract method. It can contains other default and/or static interface methods.  
-
-Functional object - Implementation of a @FunctionalInterface interface. 
-A functional object can be assigned to a variable/parameter with a @FunctionalInterface interface type.
-
-There are two category of functional objects:
-- method reference: 
-	- constructor reference:   .collect(Collectors.toCollection(TreeSet::new))
-	- Static method reference, 
-	- instance method reference of an object of a particular type,    Arrays.stream(a).map(Object::toString)
-	- instance method reference of an existing object  
-
-- lambda expression:
-  Lambda is a single expression annonymous function that is often used as inline function. Java Lambda concept is borrowed from Python. Java internal mechanism is to create an instance of an annonymous class that implements a @FunctionalInterface interface. This ways, java effectively treat a Lambda expression as a function object.
-
-  
-## java 8 streaming
- 
-Collectors class is a factory class. It creates Collector instances that implement various reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, grouping, partitioning, etc.
-
-filter, map, flatmap, sort, findfirst, findlast, collect
-
-** public final class Collectors extends Object
-
-The following are examples of using the predefined collectors to perform common mutable reduction tasks:
-
-     // Accumulate names into a List
-     List<String> list = people.stream().map(Person::getName).collect(Collectors.toList());
-
-     // Accumulate names into a TreeSet
-     Set<String> set = people.stream().map(Person::getName).collect(Collectors.toCollection(TreeSet::new));
-
-     // Convert elements to strings and concatenate them, separated by commas
-     String joined = things.stream()
-                           .map(Object::toString)
-                           .collect(Collectors.joining(", "));
-
-     // Compute sum of salaries of employee
-     int total = employees.stream()
-                          .collect(Collectors.summingInt(Employee::getSalary)));
-
-     // Group employees by department
-     Map<Department, List<Employee>> byDept
-         = employees.stream()
-                    .collect(Collectors.groupingBy(Employee::getDepartment));
-
-     // Compute sum of salaries by department
-     Map<Department, Integer> totalByDept
-         = employees.stream()
-                    .collect(Collectors.groupingBy(Employee::getDepartment,
-                                                   Collectors.summingInt(Employee::getSalary)));
-
-     // Partition students into passing and failing
-     Map<Boolean, List<Student>> passingFailing =
-         students.stream()
-                 .collect(Collectors.partitioningBy(s -> s.getGrade() >= PASS_THRESHOLD));
-		
-
 ## Unit test 
 
 ### @RunWith(SpringRunner.class)  
@@ -383,11 +330,10 @@ It will create a spring app context container containing all the scanned beans. 
 It can be coded in hybrid:  
 - The beans can use @Autowired to inject real(not mocked) beans in container. 
 - If we want to inject some mocked beans, we can use @InjectMocks, @Mock, @Spy 
- 
- 
-### @RunWith(MockitoJUnitRunner.class)
+- need to call MockitoAnnotations.initMocks(this) explicitly to inject mocks in @Before setup() method
 
-It will not create spring app context container. the test calsss can not use @Autowired. dependency are assigned explicitly in @setup method.
+@Mock - create a stub (a dummy object with no state, void method body).
+@Spy - create a real object with memeber varialbes and method implementations.
 
 Sample:
 
@@ -401,6 +347,13 @@ Sample:
      public void setup() {  
     	MockitoAnnotations.initMocks(this);  
      }  
+
+	 
+### @RunWith(MockitoJUnitRunner.class)
+
+It will not create spring app context container. the test calsss can not use @Autowired. dependency are assigned explicitly in @setup method.
+do NOT need to call 'MockitoAnnotations.initMocks(this)' explicitly to injfect mocks in @Before setup() method
+
      
 	 
 ## spring-mvc unit test 
@@ -410,7 +363,7 @@ Sample:
 use @AutoConfigureMockMvc:
 
     @RunWith(SpringRunner.class)  
-	@SpringBootTest(classes={MyApplication.class}, webEnvironment={SpringBootTest.WebEnvironment.MOCK, WebEnvironment.RANDOM_PORT} )  
+	@SpringBootTest(classes={MyApplication.class}, webEnvironment=WebEnvironment.MOCK )  
 	@TestPropertySource(locations={"classpath:application-test.properties"})    
     @AutoConfigureMockMvc     
 		
@@ -459,16 +412,63 @@ test web request-response:
 	
 ## database 
 
+### tables
+
+- heap organized table (heap table), This is a standard Oracle table; 
+  A heap-organized table is a table with rows stored in no particular order. the term "heap" is used to differentiate it from an index-organized table or external table. If a row is moved within a heap-organized table, the row's ROWID will also change.  
+  
+- index organized table (clustered index), the cluster key is the primary key, actual rows are stored in tree nodes.   
+
+- external table
+  An external table is a table whose data is NOT stored within the Oracle database. Data is loaded from a file via an access driver (normally ORACLE_LOADER) when the table is accessed. One can think of an external table as a view that allows running SQL queries against files on a filesystem without the need to first loaded the data into the database.
+			CREATE TABLE t1 
+			( c1 NUMBER,  
+			  c2 VARCHAR2(30)
+			)
+			ORGANIZATION EXTERNAL
+			( default directory my_data_dir
+			  access parameters
+			  ( records delimited by newline
+				fields terminated by ','
+			  )
+			  location ('report.csv')  
+			);
+
 ### index
-- heap table(== heap organized table),   
-- clustered index (index organized table, the cluster key is the primary key, actual rows are stored in tree nodes),   
+- clustered index (index organized table)
 - non-clustered index (the tree nodes store the physical locations of the actual rows in disk)  
 - b-tree index (on columns with high cardinality), used in frequent DML(upsert/delete) operations.  
 - bitmap index (on columns with low cadinality), used in write-once read-many application, such as overnight batch load in DW. expensive to update bitmap index.  
 
-### performance tunning  
-execution plan, analyze execute time.  what is hash join?
 
+### performance tunning  
+execute the sql -> run "explain plan" -> analyze the dumped execution plan.
+
+Speed (hash join is faster since it access memory than b-tree index on disk:
+	HASH JOIN > SORT-MERGE join > NESTED LOOPS join with b-tree index on second table. 
+memory consumption in temp tablespece (hash join use more memory):
+	HASH JOIN == SORT-MERGE join > NESTED LOOPS join with b-tree index on second table. 
+
+analyze execute time, cost-based optimization (always in Oracle)
+
+
+### Oracle HASH Joins
+
+HASH joins are the usual choice of the Oracle optimizer when the memory is set up to accommodate them. In a HASH join, Oracle accesses one table (usually the smaller of the joined results) and builds a hash table on the join key in memory. It then scans the other table in the join (usually the larger one) and probes the hash table for matches to it. Oracle uses a HASH join efficiently only if the parameter PGA_AGGREGATE_TARGET is set to a large enough value. If MEMORY_TARGET is used, the PGA_AGGREGATE_TARGET is included in the MEMORY_TARGET, but you may still want to set a minimum.
+
+If you set the SGA_TARGET, you must set the PGA_AGGREGATE_TARGET as the SGA_TARGET does not include the PGA (unless you use MEMORY_TARGET as just described). The HASH join is similar to a NESTED LOOPS join in the sense that there is a nested loop that occurs—Oracle first builds a hash table to facilitate the operation and then loops through the hash table. When using an ORDERED hint, the first table in the FROM clause is the table used to build the hash table.
+
+HASH joins can be effective when the lack of a useful index renders NESTED LOOPS joins inefficient. The HASH join might be faster than a SORT-MERGE join, in this case, because only one row source needs to be sorted, and it could possibly be faster than a NESTED LOOPS join because probing a hash table in memory can be faster than traversing a b-tree index.
+
+As with SORT-MERGE joins and CLUSTER joins, HASH joins work only on equijoins. As with SORT-MERGE joins, HASH joins use memory resources and can drive up I/O in the temporary tablespace if the sort memory is not sufficient (which can cause this join method to be extremely slow).
+
+Finally, HASH joins are available only when cost-based optimization is used (which should be 100 percent of the time for your application running on Oracle 11g).
+
+Table 1 illustrates the method of executing the query shown in the listing that follows when a HASH join is used.
+
+	select /*+ ordered */ ename, dept.deptno
+	from emp, dept
+	where emp.deptno = dept.deptno
 
 ## Oracle
 
@@ -478,24 +478,33 @@ Oracle 11g was released in 2008. G stands for grid.
 - No cloud service, It Has no pluggable databases, there is no multitenant architecture, No in-memory capabilities, Has no JSON type support, Comparatively lower performance in I/O throughput and response time.
 
 Oracle 12c was released in 2014, C stands for cloud.    
-- It is Oracle’s first RDBMS designed for the cloud. It provides Oracle database cloud service, 
-- It provides pluggable databases to support rapid provisioning and portability. Therefore, It is suitable for self-service provisioning and database as a service. It allows running multiple databases on the same hardware while maintaining the security and isolation among the databases.
+- designed for the cloud. It provides Oracle database cloud service, 
+- It provides pluggable databases to support rapid provisioning and portability. It allows running multiple databases on the same hardware while maintaining the security and isolation among the databases.
 - there is multitenant architecture. It enables an Oracle database to function as a multitenant container database (CDB)
-- Has in-memory capabilities that provide real-time analytics, 
-- Has native JSON type support, 
+- ** Has in-memory capabilities that provide real-time analytics, **
+- added JSON data type support, 
 - Comparatively higher performance in I/O throughput and response time.
+
 
 ### Oracle exadata?
 
-Oracle exadata is database cloud, either private cloud or public cloud.
+The Oracle Exadata is engineered to deliver **dramatically better performance**, cost effectiveness, and high availability for Oracle databases. 
 
-Hardware - The Oracle Exadata Database Machine is engineered to deliver dramatically better performance, cost effectiveness, and availability for Oracle databases. Exadata features a modern cloud-based architecture with scale-out high-performance database servers, scale-out intelligent storage servers with state-of-the-art PCI flash, and an ultra-fast InfiniBand networking that connects all servers and storage.  
+Oracle exadata is
+- cloud-based architecture, running on private cloud or public cloud.
+- scale-out high performance database servers
+- scale-out storage servers with state-of-art PCI flash
+- ultra-fast InfiniBan networking that connect all servers and storage
+- Unique software algorithms implement database intelligence in compute, storage, and networking to deliver higher performance and capacity at lower costs  
 
-Software - Unique software algorithms in Exadata implement database intelligence in storage, compute, and InfiniBand networking to deliver higher performance and capacity at lower costs than other platforms.  
+Exadata runs all types of database workloads including 
+- Online Transaction Processing (OLTP), 
+- Data Warehousing (DW), 
+- In-Memory Analytics 
 
-Exadata runs all types of database workloads including Online Transaction Processing (OLTP), Data Warehousing (DW), In-Memory Analytics as well as consolidation of mixed workloads. 
-
-Exadata can be purchased and deployed on premises as the ideal foundation for a private database cloud, or can be acquired using a subscription model and deployed in the Oracle Public Cloud or Cloud at Customer with all infrastructure management performed by Oracle.
+Exadata can be purchased and deployed 
+- on premises as the foundation for a private database cloud
+- or using a subscription model and deployed in the Oracle 'Public Cloud' or 'Cloud at Customer' with all infrastructure management performed by Oracle.
 
 
 ## data warehouse 
@@ -503,9 +512,9 @@ Exadata can be purchased and deployed on premises as the ideal foundation for a 
 ### dimension types & dimension table types
 
 Types of Dimensions :
-- Conformed Dimension - creating consistency. The same dim table can be referenced by the multiple fact tables.
-- Degenerate Dimension – A degenerate dimension is when the dimension attribute is stored as part of the fact table and not in a separate dimension table. Usually used when a dimension has only one attribute.
-- Junk Dimension – A junk dimension is a single table with a combination of different and unrelated attributes to avoid having a large number of foreign keys in the fact table. 
+- Conformed Dimension - separate dimension tables. creating consistency. The same dim table can be referenced by the multiple fact tables.
+- Degenerated Dimension – the dimension attributes are stored as part of the fact table and not in a separate dimension table. Usually used when a dimension has only one attribute.
+- Junk Dimension – A junk dimension is a single dimensional table with a combination of different and unrelated attributes. This is to avoid having a large number of foreign keys in the fact table. 
 - Role play dimension – It is a dimension table that has multiple valid relationships with a fact table. For example, a fact table may include foreign keys for both ship date and delivery date. But the same dimension attributes apply to each foreign key so the same dimension tables can be joined to the foreign keys.
 
 * Slowly Changing Dimensions table types:
@@ -516,10 +525,10 @@ Types of Dimensions :
 
 ### fact types & fact tabel types
 
-Types of Facts:
-- Additive: Additive facts are facts that can be summed up through all of the dimensions in the fact table.
-- Semi-Additive: Semi-additive facts are facts that can be summed up for some of the dimensions in the fact table, but not the others.
-- Non-Additive: Non-additive facts are facts that cannot be summed up for any of the dimensions present in the fact table.
+Types of Fact attributes:
+- Additive: Additive fact attributes can be summed up through ALL of the dimensions in the fact table.
+- Semi-Additive: Semi-additive facts attributes can be summed up for some of the dimensions in the fact table, but not the others.
+- Non-Additive: Non-additive facts attributes cannot be summed up for any of the dimensions present in the fact table.
 
 Types of Fact Tables:
 - Cumulative: This type of fact table describes what has happened over a period of time. For example, this fact table may describe the total sales by product by store by day. The facts for this type of fact tables are mostly additive facts. The first example presented here is a cumulative fact table.
@@ -532,10 +541,11 @@ Types of Fact Tables:
 
 Use two types of designs to handle data join in microservice architecture:  
 - use public REST API to read data from other service, join data from other service and data from this servcie in the application,   
-- use data event to publish data changes from the data's master service to other services. save the data in the service local db. then join in the service's local database,  
+- use data event to publish data changes from the data's master service to other services. save the data in the other service local db. then join in the service's local database,  
 
 
 ### distributed transactions design
-Use workflow or sage designs to handle distributed transactions in microservice architecture.   
+Always avoid distributed transactions. Instread, always use local transaction.
+
  
  
