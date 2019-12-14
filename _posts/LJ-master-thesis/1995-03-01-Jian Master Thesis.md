@@ -1,4 +1,4 @@
----layout: posttitle:  "Research and Implementation of the Data Definition, Data Manipulation and Schema Evolution in an OOEDBMS"date:   1995-03-01 00:00:00 -0500categories: jian home---# 浙 江 大 学 硕 士 学 位 论 文
+---layout: posttitle:  "Research and Implementation of the Data Definition, Data Manipulation and Schema Evolution in an OOEDBMS"date:   1998-03-01 00:00:00 -0500categories: jian home---# 浙 江 大 学 硕 士 学 位 论 文
 
 ----------
 
