@@ -7,6 +7,38 @@ categories: tech java-spring
 
 # 2019 technical notes #
 
+## AWS cloud
+
+- IAM policies
+- EC2
+- SNS, SQS, subscription filter
+- S3, S3 object life cycle, S3 event notification in SNS topics, S3 server access logs, S3 object level loggging using CloudTrail
+- Spring-boot v2 app, ELB, ALB, target group
+- lambda function
+- step function
+- Cloudwatch logs, 
+- Cloudwatch rules: event scheduler
+- Cloudwatch alert metrics
+- Cloudwatch Insight
+- RDS: PostgresSQL database
+- DocumentDB (alike MongoDB)
+- HERD enterprise data lake
+- Swagger 2 API. API client auto generation.
+- Spring-data for PostgresSQL, Spring-data for MongoDB
+- Spring framework v5
+- log delivery stream using Kienes firehose + lambda + DynamoDB
+- Splunk log monitor
+- security group: firewall rules
+- Jenkins jobs for build and deployment to AWS cloud for spring-boot app, lambda function, step function, S3 ref-data, Cloudwatch rules, RDS database, log delivery stream to AWS cloud.
+- Athenia: create HIVE tables and HQL query for data stored in S3 bucket
+
+### AWS cloud big data
+
+- ECS
+- EMR
+- Spark
+
+
 ## the art of scalability
 storage layer - partitions
 service layer - functional decomposition into micro-services
@@ -39,25 +71,6 @@ It is used in distributed system, including sharding, load balancing, distribute
 consistent hash ring is used in Cassandra, Memcached and Redis.
 
 
-## Spark
-
-### csv / json data sources
-
-you can read CSV / JSON files in single-line or multi-line mode. In single-line mode, a file can be split into many parts and read in parallel.
-
-If a JSON object occupies multiple lines, you must enable multi-line mode for Spark to load the file. Files will be loaded as a whole entity and cannot be split.
-
-### database data source
-
-https://docs.databricks.com/spark/latest/data-sources/index.html
-https://docs.databricks.com/spark/latest/data-sources/sql-databases.html
-
-If running within the spark-shell use the --jars option and provide the location of your JDBC driver jar file on the command line.
-spark-shell --jars ./mysql-connector-java-5.0.8-bin.jar
-
-Once the spark-shell has started, we can now insert data from a Spark DataFrame into our database
-
-	
 ## Kafka
 
 
