@@ -7,7 +7,7 @@ categories: tech cloud
 
 # Google cloud notes #
 
-## AWS cloud technologies used in my consulting projects
+## Google cloud technologies used in my consulting projects
 
 - HADOOP HDFS
 - GCP cloud storage
