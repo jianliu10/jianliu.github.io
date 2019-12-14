@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Case Study - FX Market Data Aggregator in a FX trading system"
+title:  "FX Market Data Aggregator in a FX trading system"
 date:   2016-11-5 00:00:00 -0500
 categories: tech trading-system 
 ---
