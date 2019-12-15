@@ -13,10 +13,15 @@ Number of hardware threads = (number of CPUS) * (number of cores per CPU) * (num
 One hardware thread can run many software threads. In modern operating systems, this is often done by time-slicing. CPU L1 cache memory, main L2 cache memory contention if too many software threads -> slow down performance
 
 
-## thread pool. 
+## thread pool
+
 How will you implement a thread pool yourself.
 Executors class is a factory class that create different types of thread pools..
 Executor interface,  ExecutorService implements Executor, A ExecutorService instance is a thread pool.
+
+	return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
+								  new LinkedBlockingQueue<Runnable>(processorBoundQueueCapacity), threadFactory,
+								  new ThreadPoolExecutor.AbortPolicy());
  
  
 ## Thread 
@@ -42,6 +47,12 @@ CPU registors state save/restore, cpu's L1 cache (on CPU chip), main L2 cache (o
 
 ## thread deadlock and starvation
 
+deadlock: lock order.
+
+starvation:
+	- lock starvation
+	- cpu startvation
+
 
 ## task-based programming 
 
@@ -53,11 +64,13 @@ task scheduling, work stealing, parallelism, forkjointask, forkjoinpool,
  
 ## Java 8 - @FunctionalInterface 
 
-A java Interface class can contains default method, static method, abstract method  
-A functional interface contains only one interface abstract method. It can contains other default and/or static interface methods.  
+A java Interface class can contains default method, static method, abstract method.
+  
+A functional interface contains only one abstract method. It can contains other default and/or static interface methods.  
 
-Functional object - Implementation of a @FunctionalInterface interface. 
-A functional object can be assigned to a variable/parameter with a @FunctionalInterface interface type.
+Functional object - Implementation of a functional interface. 
+
+A functional object can be assigned to a variable/parameter with a function interface type.
 
 There are two category of functional objects:
 - method reference: 
@@ -67,7 +80,7 @@ There are two category of functional objects:
 	- instance method reference of an existing object  
 
 - lambda expression:
-  Lambda is a single expression annonymous function that is often used as inline function. Java Lambda concept is borrowed from Python. Java internal mechanism is to create an instance of an annonymous class that implements a @FunctionalInterface interface. This ways, java effectively treat a Lambda expression as a function object.
+  Lambda is a single expression annonymous function that is often used as inline function. Java internal mechanism is to create an instance of an annonymous concrete class that implements a function interface type. This ways, java effectively treat a Lambda expression as a functional object.
 
   Sample - use a lambda expression with Callable:
   
@@ -85,15 +98,18 @@ There are two category of functional objects:
 ### java.util.stream.Collectors class
 
 Collectors class is a factory class. It creates Collector instances that implement various reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, grouping, partitioning, etc.
+
 	public final class Collectors extends Object
 
 ### java.util.stream.Stream class
  
-Stream static factory methods:
+Stream static factory methods:  
 	of, concat, empty, generate, iterate, 
-Stream transformation methods (a pipeline step that returns a Stream instance)
+	
+Stream transformation methods (a pipeline step that returns a Stream instance)  
 	filter, map, flatmap, distinct, sorted, limit, skip, peek(consumer)
-Stream action methods (a pipeline step that returns a non-Stream instance):
+	
+Stream action methods (a pipeline step that returns a non-Stream instance):  
 	findFirst, findLast, findAny
 	allMatch, anyMatch, noneMatch
 	forEach(consumer)
@@ -114,7 +130,8 @@ The following are examples of using the predefined collectors to perform common 
      List<String> list = people.stream().map(Person::getName).collect(Collectors.toList());
 
      // Accumulate names into a TreeSet
-     Set<String> set = people.stream().map(Person::getName).collect(Collectors.toCollection(TreeSet::new));
+     Set<String> set = people.stream().map(Person::getName).collect(
+												Collectors.toCollection(TreeSet::new));
 
      // Convert elements to strings and concatenate them, separated by commas
      String joined = things.stream()
@@ -147,27 +164,28 @@ The following are examples of using the predefined collectors to perform common 
 
 https://www.callicoder.com/java-8-completablefuture-tutorial/
 
-see sample code in: C:\UserData\capco\cardinal-prime\cardinal-channel-accounts\cardinal-accounts-srvprovider\src\main\java\com\pcf\cardinal\accounts\srvprovider\AccountsServiceProvider.java
+see sample code in: C:\UserData\cap??\cardinal-prime\cardinal-channel-accounts\cardinal-accounts-srvprovider\src\main\java\com\p??\cardinal\accounts\srvprovider\AccountsServiceProvider.java
 
 CompletableFuture<T> implements Future<T>, CompletionStage<T>
 
 ### Running asynchronous computation using runAsync() and supplyAsync():
 
-	CompletableFuture<Void> CompletableFuture.runAsync(()) -> {})
+	CompletableFuture<Void> CompletableFuture.runAsync(() -> {})
 	CompletableFuture<T> CompletableFuture.supplyAsync(() -> {return a instance of type T))
 
 You can pass your own Executor argument to the runAsync() or supplyAsync() method call. If not specified, CompletableFuture executes these tasks in a thread obtained from the global ForkJoinPool.commonPool()
 	
 ### Transforming and acting on a CompletableFuture
+
 - attach a callback to the CompletableFuture using thenApply(), thenAccept() and thenRun():
 
-	CompletableFuture<S> CompletableFuture.thenApply(T -> S)
-	CompletableFuture<Void> CompletableFuture.thenAccept(T -> void)
-	CompletableFuture<Void> CompletableFuture.thenRun(() -> {})
+		CompletableFuture<S> CompletableFuture.thenApply(T -> S)
+		CompletableFuture<Void> CompletableFuture.thenAccept(T -> void)
+		CompletableFuture<Void> CompletableFuture.thenRun(() -> {})
 	
 - async callback
 
-	CompletableFuture<S> CompletableFuture.thenApplyAsync(T -> S)
+		CompletableFuture<S> CompletableFuture.thenApplyAsync(T -> S)
 	
 - CompletableFuture.get() method is blocking. It waits until the Future is completed and returns the result after its completion.
 
@@ -241,7 +259,9 @@ sample 1 - CompletableFuture.allOf():
 
 	
 sample 2 - CompletableFuture.anyOf():
+
 	CompletableFuture<String> future1, future2, future3
+	
 	CompletableFuture<Object> anyOfFuture = CompletableFuture.anyOf(future1, future2, future3);
 	anyOfFuture.get();
 
