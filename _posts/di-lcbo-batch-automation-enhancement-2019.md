@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Data Integration Automation and Enhancement in Enterprise Data Warehouse"
-date:   2019-2-22 00:00:00 -0500
+date:   2019-03-01 00:00:00 -0500
 categories: tech data-integration
 ---
 

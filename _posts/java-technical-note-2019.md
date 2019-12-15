@@ -1,16 +1,17 @@
 ---
 layout: post
-title:  "(Draft) Technical notes - 2019"
-date:   2019-12-02 00:00:00 -0500
+title:  "(Draft) Java-Spring Technical notes - 2019"
+date:   2019-10-01 00:00:00 -0500
 categories: tech java-spring
 ---
 
 # 2019 technical notes #
 
 ## the art of scalability
-storage layer - partitions
-service layer - functional decomposition into micro-services
-replica - storage partition (leader, follower), micro-service (load balancing)
+
+- storage layer: partitions
+- service layer: functional decomposition into micro-services
+- replica: storage partition replication (leader, follower), micro-service replication (load balancing)
 
 ## four types of distributed system architecture
 

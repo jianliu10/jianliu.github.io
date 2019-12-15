@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "FX Market Data Aggregator in a FX trading system"
-date:   2016-11-5 00:00:00 -0500
+date:   2016-10-01 00:00:00 -0500
 categories: tech trading-system 
 ---
 

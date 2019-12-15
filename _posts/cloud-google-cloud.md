@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Google cloud technical notes"
-date:   2019-11-01 00:00:00 -0500
+date:   2019-05-01 00:00:00 -0500
 categories: tech cloud
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Technical notes - 2018"
+title:  "Java-Spring Technical notes - 2018"
 date:   2018-10-01 13:15:42 -0500
 categories: tech java-spring
 ---
