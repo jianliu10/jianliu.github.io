@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Java Complete Roadmap - 2018"
-date:   2018-10-03 00:00:00 -0500
+date:   2018-01-01 00:00:00 -0500
 categories: tech java-spring
 ---
 
@@ -21,26 +21,32 @@ memory visibility,
 **  garbage collection **  
 memory allocation stragety, garbase collector (G1), GC algorithms, GC parameters, garbage collectable objects
 
-**  JVM参数及调优 **  
+sequential/parallel/CMS/G1 GC
+
+** JVM参数及调优 **  
 Java对象模型
 oop, root class 'Object'
 
 **  HotSpot **  
-即时编译器、编译优化。
+JIT 即时编译器、编译优化。
 
 **  类加载机制 **  
 classLoader、类加载过程、双亲委派（破坏双亲委派）、模块化（jboss modules、osgi、jigsaw）。
 
 **  虚拟机性能监控与故障处理工具 **  
-jps, jstack, jmap、jstat, jconsole, jinfo, jhat, javap, btrace、TProfiler。
-
-
+jps, jstat, jstatd,
+jinfo, jcmd, 
+jstack, 
+jmap、jhat
+jconsole, jvisualvm, 
+btrace、TProfiler。
 
 ### Compiler and Decompiler
 
-
 javac 、javap 、jad 、CRF。
 
+javac - java compiler
+javap - java .class file disassembler (decompiler)
 
 
 ### Java Basics
@@ -111,7 +117,8 @@ protobuf；
 什么是Java消息服务、JMS消息传送模型。
 
 **  JMX**  
-单元测试
+
+** 单元测试 **
 junit、mock、mockito、内存数据库（h2）。
 
 **  正则表达式**  

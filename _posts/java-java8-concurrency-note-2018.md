@@ -19,11 +19,51 @@ How will you implement a thread pool yourself.
 Executors class is a factory class that create different types of thread pools..
 Executor interface,  ExecutorService implements Executor, A ExecutorService instance is a thread pool.
 
+C:\UserData\finra\edp\filex\filex-audit\filex-audit-de-lambda\src\main\java\org\finra\filex\audit\de\etl\S3ServerAccessLogProcessor.java
+
 	return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
 								  new LinkedBlockingQueue<Runnable>(processorBoundQueueCapacity), threadFactory,
 								  new ThreadPoolExecutor.AbortPolicy());
  
- 
+	ThreadFactory threadFactory = new ThreadFactory() {
+		private AtomicInteger threadCount = new AtomicInteger(1);
+
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread thread = new Thread(r);
+			thread.setName("s3log-reader-processor-" + threadCount.getAndIncrement());
+			thread.setDaemon(false);
+			thread.setPriority(Thread.NORM_PRIORITY);
+			return thread;
+		}
+	};
+		
+ 	public int getRemaingQueuedTaskCount() {
+		return ((ThreadPoolExecutor) this.processorExecutorService).getQueue().size();
+	}
+
+	public int getActiveThreadCount() {
+		return ((ThreadPoolExecutor) this.processorExecutorService).getActiveCount();
+	}
+	
+	public void stop() throws InterruptedException {
+		while (!processorExecutorService.isTerminated()) {
+			// immediately shutdown
+			processorExecutorService.shutdownNow();
+			processorExecutorService.awaitTermination(5, TimeUnit.SECONDS);
+		}
+	}
+
+	public void stop() throws InterruptedException {
+		// orderly shutdown
+		while (!this.writerExecutorService.isTerminated()) {
+			this.writerExecutorService.shutdown();
+			if (!this.writerExecutorService.awaitTermination(1, TimeUnit.MINUTES))
+				logger.info("Timeout in orderly stopping writing user data events to target log files. Retry ...");
+		}
+	}
+	
+	
 ## Thread 
 
 java VOLATILE variable is NOT thread safe. VOLATILE only gurantee variable read or write operation is atomic. It can be used to get/set state without increment values.
