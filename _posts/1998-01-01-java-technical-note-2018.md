@@ -17,15 +17,34 @@ builder, singleton, prototype, factory, abstract factory, adapter, wrapper, faca
   @Component, auto create beans in container based on declaration
 - DI : Dependency Injection,  
   container engine auto search for beans with specific type or name, and assign beans to variables.
-  @Autowired, @Qualifier, field injection, constructor/method parameter injection, 
+  @Autowired, @Qualifier, field injection, constructor/method parameter injection,   
   @Value - inject values from property files
 - AOP: Aspect Oriented Programming
 
 Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 
-## spring-boot ##
- (spring-boot-starter-web -> spring-mvcweb -> config filter chain -> last servlet is DispatcherServerlet -> route to a controller;   
- embedded app server, tomecat or jetty;  app server conf/server.xml defines two connectors: http connector (8080), https connector (443), different ports;  
+Spring has two types of beans:
+- configuration beans 
+- regular beans
+
+
+## spring v5 property injection
+
+see xml-json-converter project.
+
+	@EnableConfigurationProperties
+	@PropertySources = {,,}, 
+	@TestPropertySource("classpath:application-test.properties")
+
+	@Bean
+	@ConfigurationProperties(prefix = "app.aws.s3")
+	
+	@Value("")
+
+
+## spring-boot app
+
+embedded app server, tomecat or jetty;  app server conf/server.xml defines two connectors: http connector (8080), https connector (443), different ports;  
 
 > @SpringBootApplication(scanBasePackages={,,}   
 > @SpringBootApplication is a convenience annotation that adds all of the following:   
@@ -33,79 +52,68 @@ Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 > @EnableAutoConfiguration tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.  
 > @EnableWebMvc annotation is added automatically when it sees spring-webmvc jar on the classpath. This flags the app as a web app and activates key behaviors such as DispatcherServlet.  
 
-see java classes : WebMvcConfigurer, WebMvcConfigurerAdapter, WebMvcConfigurationSupport, WebMvcAutoConfiguration, WebMvcAutoConfigurationAdapter  
 
-@PropertySources = {,,}, 
+### @EnableWebSecurity
 
-Spring has two types of beans:
-- configuration beans 
-- regular beans
+when spring-boot-starter-security jar is in classpath, spring-boot app automatically adds @EnableWebSecurity.   
+@EnableWebSecurity will activate key behaviors such as building HttpSecurity instance for SpringSecurityFilterChain (a DelegatingFilterProxy)
 
+		@EnableWebSecurity
+		public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+			@Override
+			protected void configure(HttpSecurity http) throws Exception {
+				http.authorizeRequests()
+					.requestMatchers(protectedRequestsMatcher)
+					.access("hasAuthority('" + ISSO_USER.getAuthority() + "')")
+					.anyRequest().permitAll()
 
-## Spring REST-API WS server side 
-   
-### @ControllerAdvice 
+					.and()
+					.cors()
+					.and()
+					.csrf().disable()
+					.httpBasic().disable()
+					.anonymous().disable()
+					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)	
+			}
 
-#### ExceptionHandler   
-classes: ResponseEntity<Object>, ResponseEntityExceptionHandler  
-
-	@ControllerAdvice
-	public class MyResponseEntityExceptionHandler  {
-	
-		@ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
-		protected ResponseEntity<Object> handleConflict(
-		  RuntimeException ex, WebRequest request) {
-			String bodyOfResponse = "This should be application specific";
-			return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+			@Override
+			public void configure(WebSecurity web) throws Exception {
+				super.configure(web);
+				web.ignoring().antMatchers(errorPath).antMatchers("/health", "/info");
+			}	
 		}
-	} 
- 
-
- #### ResponseBodyAdvice
-@ControllerAdvice
-public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
-
-    @Override
-    public T beforeBodyWrite(T body, MethodParameter returnType, MediaType selectedContentType,
-        Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-		...
-        surrogateMapping.surrogate(fieldsWithSurrogateId, body);
-
-        return body;
-    }
- 
-
-#### RequestBodyAdvice
-@ControllerAdvice
-public class DecryptionAdvice implements RequestBodyAdvice {
-
-    @Override
-    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
-        return inputMessage;
-    }
-
-    @Override
-    public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        encryptionUtil.decryptFieldsInObject(body, CaseInsensitiveMap.forMap(inputMessage.getHeaders().toSingleValueMap()));
-        return body;
-    }
-} 
 
 
-### maps from URI to controller object and methods
+## Spring REST-API WS service side
+
+### @EnableWebMvc
+
+when spring-boot-starter-web or spring-webmvc jar is in classpath, @EnableWebMvc annotation is added automatically.  
+@EnableWebMvc flags the app as a web app and activates key behaviors such as DispatcherServlet.
+
+spring-boot-starter-web -> spring-webmvc -> config filter chain -> last servlet is DispatcherServerlet -> route to a controller;   
+
+java classes:   
+WebMvcConfigurer interface, WebMvcConfigurerAdapter abstract class, WebMvcConfigurationSupport impl class,   
+WebMvcAutoConfiguration, WebMvcAutoConfigurationAdapter  
+
+
+#### maps from URI to controller object and methods
 
 @EnableWebMvc will auto created two beans RequestMappingHandlerMapping and RequestMappingHandlerAdapter
   
-DispatcherServlet uses two beans to map URI:
+DispatcherServlet uses the two beans to map URI:
+
 -RequestMappingHandlerMapping bean maps from URI to handler object at type level   
 -RequestMappingHandlerAdapter bean maps from URI to method 
 
 
-### marshall/unmarshall data from POJO to/from http request/response body
+#### marshall/unmarshall data from POJO to/from http request/response body
 
 HttpMessageConverters is used to marshall/unmarshall data in http request/response body 
 
 #### default HttpMessageConverters
+
 @EnableWebMvc will pre-enable the following HttpMessageConverters instances by default:  
 
 		ByteArrayHttpMessageConverter – converts byte arrays
@@ -119,7 +127,7 @@ HttpMessageConverters is used to marshall/unmarshall data in http request/respon
 		AtomFeedHttpMessageConverter – converts Atom feeds (added only if Rome is present on the classpath)
 		RssChannelHttpMessageConverter – converts RSS feeds (added only if Rome is present on the classpath)
  
-### Customize HttpMessageConverters
+#### Customize HttpMessageConverters. 
 
 class based configuration sample:
 
@@ -128,7 +136,7 @@ class based configuration sample:
 		@ComponentScan({ "org.baeldung.web" })
 		public class WebConfig implements WebMvcConfigurer {
 			 @Override
-			 public void configureMessageConverters(List<HttpMessageConverter<?>converters) { 
+			 public void configureMessageConverters(List<HttpMessageConverter<?> converters) { 
 				  // MappingJackson2HttpMessageConverter - we can now set a custom ObjectMapper on this converter and have it configured as we need to.
 				  // MarshallingHttpMessageConverter – and we’re using the Spring XStream support to configure it. This allows a great deal of flexibility since we’re working with the low level APIs of the underlying marshalling framework – in this case XStream
 			}
@@ -159,7 +167,64 @@ xml based configuration sample:
 		<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller" />
 	
 	
-## Spring REST-API WS client side, using RestTemplate, or use swagger-code-gen to generate feign client.	
+#### @ControllerAdvice 
+
+- @ExceptionHandler   
+
+  classes: ResponseEntity<Object>, ResponseEntityExceptionHandler  
+
+	@ControllerAdvice
+	public class MyResponseEntityExceptionHandler  {
+	
+		@ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
+		protected ResponseEntity<Object> handleConflict(
+		  RuntimeException ex, WebRequest request) {
+			String bodyOfResponse = "This should be application specific";
+			return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+		}
+	} 
+ 
+- RequestBodyAdvice interface
+
+	@ControllerAdvice
+	public class DecryptionAdvice implements RequestBodyAdvice {
+
+		@Override
+		public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
+			return inputMessage;
+		}
+
+		@Override
+		public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+			encryptionUtil.decryptFieldsInObject(body, CaseInsensitiveMap.forMap(inputMessage.getHeaders().toSingleValueMap()));
+			return body;
+		}
+	} 
+
+- ResponseBodyAdvice interface
+ 
+	@ControllerAdvice
+	public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
+
+		@Override
+		public T beforeBodyWrite(T body, MethodParameter returnType, MediaType selectedContentType,
+			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+			...
+			surrogateMapping.surrogate(fieldsWithSurrogateId, body);
+
+			return body;
+		}
+	} 
+
+	
+## Spring REST-API WS client side  
+
+1. use swagger-code-gen maven plugin
+
+use maven plugin to generate ApiClient and api model classes from swagger2 API.   
+ApiClient use apache http client package to do remote http request/response.
+
+2.. use Spring RestTemplate, 
 
 	@Autowired RestTemplate restTemplate
 	
@@ -179,7 +244,7 @@ xml based configuration sample:
 
 working with JAXB marshalling for a class, we need to annotate the class with @XmlRootElement annotation. 	
 
-Spring application supports both JSON as well as XML. It will even support XML request with JSON response and vice versa.  
+Spring application supports both JSON as well as XML. It will even support XML request with JSON response and vice versa, using content-type and Accept http headers, using @RestMapping(consumes="", produces="")
 
 
 ## Postman tool  
@@ -209,17 +274,19 @@ Solution: use SQL parameters in sql, named parameter or positional parameter. Pr
   early fetch hit the db and populate the entity object properties. lazy fetch initially create a proxy object with only ID in it. when a entity's property is accessed, it will then hit the DB to fetch the row data and populate the entity's properties.  
 
 - get() vs load()  
-	- get(class, id) is basic programming. It always eager fetch. get() return null object, no exception. 
+	- get(class, id) is basic programming. It always eager fetch. if ID not exist in db, get() return null object, no exception. 
 	- load(class,id) is advanced programming. It always lazy fetch. If ID not exists in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
 
 - @OnetoOne, @OneToMany, @ManyToMany
  
 ## Spring @Component
+
 In Spring @Component, @Service, @Controller, and @Repository are Stereotype annotations
-@Component: generic annotation
-@Controller: url request mapping
-@Service: business logic
-@Repository: Persistence layer(Data Access Layer) 
+
+- @Component: generic annotation. It can also be used in lieu of @Configuration for creating beans w/o reference to other beans.
+- @Controller: url request mapping
+- @Service: business logic
+- @Repository: Persistence layer(Data Access Layer) 
  
 ## Spring annotations @component vs @bean difference
 
@@ -232,16 +299,16 @@ In Spring @Component, @Service, @Controller, and @Repository are Stereotype anno
 - We cannot create a bean of a third-party class using @Component where as we can create a bean of a third-party class using @Bean. 
 
  
-## why use @repository not @component ##
+## why use @repository not @component 
 
 @Repository’s job is to catch checked persistence exceptions and re-throw them as one of Spring’s unchecked DataAccessException.  
  
-PersistenceExceptionTranslationPostProcessor bean. This bean post processor adds an advisor (AOP proxy) to any bean that’s annotated with @Repository so that any checked exceptions are caught and then rethrown as one of Spring’s unchecked DataAccessException.
+PersistenceExceptionTranslationPostProcessor bean. This bean post processor adds an advisor (AOP proxy) to pointcuts(methods of the beans that’s annotated with @Repository) so that any checked exceptions are caught and then rethrown as one of Spring’s unchecked DataAccessException.
 
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
 	
-## why use @Controller not @Component ##
+## why use @Controller not @Component 
 
 We can only use @RequestMapping on @Controller annotated classes.  
 The DispatcherServlet scans the classes annotated with @Controller and detects @RequestMapping annotations within them. 
@@ -253,12 +320,14 @@ MRI sample - /orchestrator/src/main/resources/META-INF/spring/bcbs-svlm.xml
 MRI sample - /orchestrator/src/main/java/com/tdsecurities/stars/orchestrator/bcbs/TimelinessServiceActivator.java   
 	  
 Case Study: read a csv file, convert each line to a JMS XmlMessage, send them to a middleware queue 	  
-Reference Implementation Steps:	  
-1. source is inbound-channel (OS physical file) -> inbound-channel-adapter (adapt from OS file to java File object) -> input-channel(java File object) -> service activator (java.io.File) 
 
-2. service activator: read java File object -> foreach line, conver a csv line to to a java entity objects -> JAXB2 marshall each java entity obj to a xml String) ->  output-channel.send(GenericMessage<String> xmlString)
+Reference Implementation Steps:	  
+
+1. source is inbound-channel (OS physical file) -> inbound-channel-adapter (adapt from source model a OS file to java model a File object) -> input-channel(java File object) -> service activator (java.io.File) 
+
+2. service activator: read java File object -> foreach line, conver a csv line to to a java model objects -> JAXB2 marshall each java model obj to a xml String) ->  output-channel.send(GenericMessage<String> xmlString)
  
-3. output-channel (GenericMessage<String> xmlString) -> outbound-channel-adapter (adapt from GenericMessage<String> to JMS XmlMessage), using JmsTemplace, send JMS messages to middleware Queue -> Destination is outbound-channel(JMS messages in middleware Queue)  
+3. output-channel (GenericMessage<String> xmlString) -> outbound-channel-adapter (adapt from java model a GenericMessage<String> to destination model a JMS XmlMessage), using JmsTemplace, send JMS messages to middleware Queue -> Destination is outbound-channel(JMS messages in middleware Queue)  
 
 
 ## spring-batch
@@ -283,57 +352,102 @@ Both spring-AOP lib and AspectJ lib defines @Aspect/@Pointcut/@Around/@Before/@A
 
 ### Spring-AOP (default)
 
-Spring-AOP creates proxies at spring container starts up. It is Runtime weaving using proxy.
-
-Spring-AOP will build a proxy for your objects, with a JDKDynamicProxy if your bean implements an interface or via CGLIB dynamic proxy to implementation class  if your bean doesn't implement any interface.
-
 Spring-AOP is one of the essential parts of the spring framework. the spring framework is based on IoC and AOP. The AOP is one of the most important parts of the framework.
 
-@Interface, @Aspect @Component or META-INFO/aop.xml,  @Around/@Before/@After, ProceedingJointPoint.proceed(), @Pointcut("execution(public * foo..*.*(..))"), @Pointcut("@annotation(annotation class name)"), @Pointcut("within(<package> or <interface>)")
+Spring-AOP creates proxies at spring container loading time. It is Runtime weaving using proxy.
 
-<aop:aspectj-autoproxy/>: It enables @AspectJ style of aspect declaration, but AspectJ runtime is not used. It still use Spring AOP proxies because of 'aop:" namespace. 
+@enableAspectJAutoProxy on a @configuration class, OR, <aop:aspectj-autoproxy/> in xml config, it enables @AspectJ style of aspect declaration, but AspectJ runtime is not used. It still use Spring AOP proxies. 
+
+Spring-AOP will build a proxy for your objects, using a JDKDynamicProxy if your bean implements an interface, OR, using CGLIB dynamic proxy to subclass an implementation class  if your bean doesn't implement any interface.
+
+@EnableAspectJAutoProxy(proxyTargetClass = true) will force Spring container to always use CGLIB style subclass proxy.
+
+@Interface, @Aspect @Component or META-INFO/aop.xml,  @Around/@Before/@After, ProceedingJointPoint.proceed(), @Pointcut("execution(public * foo..*.*(..))"), @Pointcut("@annotation(annotation class name)"), @Pointcut("within(<package> or <interface> or <annotation class name>)")
+
+Spring Framework's support for AspectJ LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ aspects into the class files as they are being loaded into Spring context container. The focus of this section is on configuring and using LTW in the Spring application context container.
 
 
-### AspectJ - configed by @enableAspectJAOPProxy on a @configuration class.
+### AspectJ 
  
-libs: aspectj-maven-plugin, org.aspectj.aspectjweaver.jar, org.aspectj.aspectjrt.jar, org.aspectj.aspectjtools.jar
+libs: aspectj-maven-plugin, org.aspectj.aspectjtools.jar, org.aspectj.aspectjweaver.jar, org.aspectj.aspectjrt.jar, 
 
-AspectJ modifies class bytecodes at compilation time or spring container loading time. 
+AspectJ modifies class bytecodes at compilation time. Compile time weaving can offer benefits of performance (in some cases).  
 
-- Compile time weaving. It is done through AspectJ Java Tools(ajc compiler) if source available or post compilation weaving (using compiled class files). Compile time weaving can offer benefits of performance (in some cases).  
-
-- Spring Framework's support for AspectJ LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ aspects into the class files as they are being loaded into the Java virtual machine (JVM). The focus of this section is on configuring and using LTW in the Spring application context container.
+- Compile time weaving. It is done through AspectJ Tools(ajc compiler) if java source files are available
+- OR post compilation weaving (using compiled class files). 
 
 
 ### Comparison
 
-there are two major differences btwn Spring AOP and AspectJ AOP: 
+there are two major differences btwn Spring-AOP and AspectJ-AOP: 
+
 - the type of weaving. 
-  Spring approach is simpler and more manageable. But with the Spring AOP you can't use the all power of AOP because the implementation is done through proxies and not with modification of your bytecode.
+  Spring-aop approach is simpler and more manageable. But with the Spring AOP you can't use the all power of AOP because the implementation is done through proxies and not with modification of your bytecode.
   
-  Spring AOP is basically a proxy created from the container, so you can use AOP only for spring beans. AspectJ AOP can be used to any java instances (beans or not-beans)
+  Spring AOP is basically a proxy instnace created by the container, so spring-AOP can only be applied to Spring beans. AspectJ AOP can be used to any java instances (beans or not-beans)
 
 - joinpoint definition.
-  the joinpoint definition in Spring-aop is restricted to method definition. While with AspectJ you can use the aspect in both methods and fields. 
+  1. spring-AOP can only be applied to Spring beans. AspectJ AOP can be used to any java instances (beans or not-beans).  
+  2. the joinpoint definition in Spring-aop is restricted to method definition. While with AspectJ you can use the aspect in both methods and fields. 
 
 - runtime performance
   If performance under high load is important, you'll want AspectJ which is 9-35x faster than Spring AOP. whether your aspects will be mission critical.
 
  
-## Unit test 
+## Junit test frameworks
 
-### @RunWith(SpringRunner.class)  
+### junit test v5 programming model: junit-jupiter
+
+see xjc-svc module tests in xml-json-converter project.
+
+No @RunWith(), @TestSuite annotations at class level is required. Only @Test annotation at method level is required. 
+
+libs:  
+	junit-platform-lanucher-1.3.2.jar, junit-platform-engine-1.3.2.jar, 
+	junit-jupiter-api-5.3.1.jar, junit-jupiter-engine-5.3.1.jar, junit-jupiter-params-5.3.1.jar
+	mockito-core-2.23.0.jar, mockito-junit-jupiter-2.23.4.jar
+
+junit-jupiter sample classes:
+
+	import org.junit.jupiter.api.BeforeAll;
+	import org.junit.jupiter.api.Test;
+	import org.junit.jupiter.api.TestInstance;
+	import org.junit.jupiter.api.TestInstance.Lifecycle;
+
+	import static org.junit.jupiter.api.Assertions.assertEquals;
+	import static org.junit.jupiter.api.Assertions.assertNotNull;
+	import static org.junit.jupiter.api.Assertions.assertTrue;
+
+	
+### @RunWith(MockitoJUnitRunner.class)
+
+lib: mockito-core-2.23.0.jar, mockito-junit-jupiter-2.23.4.jar
+
+It will not create spring app context container. the test calss instance can not use @Autowired to inject dependency. dependency are assigned explicitly in @Before setup() method.
+
+in @Before setup() method, do NOT need to explicitly call 'MockitoAnnotations.initMocks(this)' to inject mocks/spys. mocks/spys injection is done automatically. 
+
+	import org.mockito.InjectMock;
+	import org.mockito.Mock;
+	import org.mockito.Spy;
+	import org.mockito.ArgumentCaptor;
+	import org.mockito.Captor;
+
+### @RunWith(SpringRunner.class) (old. used before junit-jupiter version) 
 
 SpringRunner.class is an alias for the SpringJUnit4ClassRunner.class. This class requires JUnit 4.12 or higher.
 
-It will create a spring app context container containing all the scanned beans. the test class is a bean in the container.   
-It can be coded in hybrid:  
-- The beans can use @Autowired to inject real(not mocked) beans in container. 
-- If we want to inject some mocked beans, we can use @InjectMocks, @Mock, @Spy 
-- need to call MockitoAnnotations.initMocks(this) explicitly to inject mocks in @Before setup() method
+libs: spring-test.jar 
 
-@Mock - create a stub (a dummy object with no state, void method body).
-@Spy - create a real object with memeber varialbes and method implementations.
+It will create a spring app context container containing all the scanned beans. the test class is a bean in the container.   
+
+It can be coded in hybrid:  
+- The test bean can use @Autowired to inject real(not mocked) beans from container. 
+- If we want to inject some mocked beans, we can use @InjectMocks, @Mock, @Spy 
+- in @Before setup() method, explicitly call MockitoAnnotations.initMocks(this) to trigger Mock/Spy instances injection 
+
+@Mock - create a stub (a dummy object with no state, void method body, return null or zero).
+@Spy - create a real object with field varialbes and method implementations, return real value.
 
 Sample:
 
@@ -348,17 +462,57 @@ Sample:
     	MockitoAnnotations.initMocks(this);  
      }  
 
-	 
-### @RunWith(MockitoJUnitRunner.class)
+### @SpringJUnitConfig (latest, used with junit-jupiter version)	 
 
-It will not create spring app context container. the test calsss can not use @Autowired. dependency are assigned explicitly in @setup method.
-do NOT need to call 'MockitoAnnotations.initMocks(this)' explicitly to injfect mocks in @Before setup() method
+see C:\UserData\finra\edp\filex\filex-api\filex-api-service\src\test\java\org\finra\filex\service\impl\TokenServiceImplTest.java
 
-     
-	 
-## spring-mvc unit test 
+the annotation creates a spring app context container. the test instance is a bean in the container.
 
-### spring-mvc test using MockMvc in spring-boot-test jar (do not need to start up web application)
+@SpringJUnitConfig is a composed annotation that combines two:     
+- @ExtendWith(SpringExtension.class) from JUnit Jupiter 
+- @ContextConfiguration from the Spring TestContext Framework.
+
+lib: spring-test.jar v5
+
+	import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+	import org.springframework.test.context.TestPropertySource;
+
+
+#### spring-boot app test
+
+spring-boot-test framework does not start up a spring-boot application.
+
+lib: spring-boot-test.jar v2
+
+	import org.springframework.boot.test.mock.mockito.MockBean;
+	import org.springframework.boot.test.mock.mockito.SpyBean;
+
+
+### spring-mvc junit test 
+
+spring-mvc test using MockMvc in spring-test jar.
+
+#### @SpringJUnitWebConfig
+
+see C:\UserData\finra\edp\filex\filex-api\filex-api-rest\src\test\java\com\example\mockito\BaseRestIT.java
+
+the annotation creates:  
+- a spring test context container. the test instance is a bean in the container.
+- a web container.
+
+@SpringJUnitWebConfig is a composed annotation that combines:  
+- @ExtendWith(SpringExtension.class) from JUnit Jupiter. 
+- @ContextConfiguration from the Spring TestContext Framework.
+- @WebAppConfiguration from the Spring TestContext Framework.
+
+lib: spring-test.jar v5
+
+	import org.springframework.test.context.ActiveProfiles;
+	import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+	import org.springframework.test.web.servlet.MockMvc;
+
+
+#### MockMvc
 
 use @AutoConfigureMockMvc:
 
@@ -391,24 +545,6 @@ test web request-response:
             .andExpect(jsonPath("$.cardholderFilterOption[0].accountCustomerId").value("1"))
 
 			
-### spring-mvc test using io.restassured lib (need to start up web application first)		  
-
-	@Test
-    public void whenAddnewBook_thenSuccess() {
-        final Book book = new Book();
-        book.setTitle("How to spring cloud");
-        book.setAuthor("Baeldung");
-        // request the protected resource
-        final Response bookResponse = RestAssured.
-            .contentType(ContentType.JSON)
-            .body(book)
-            .post(ROOT_URI + "/book-service/books");
-        final Book result = bookResponse.as(Book.class);
-        Assert.assertEquals(HttpStatus.OK.value(), bookResponse.getStatusCode());
-        Assert.assertEquals(book.getAuthor(), result.getAuthor());
-        Assert.assertEquals(book.getTitle(), result.getTitle());
-    }
-
 	
 ## database 
 
@@ -421,6 +557,7 @@ test web request-response:
 
 - external table
   An external table is a table whose data is NOT stored within the Oracle database. Data is loaded from a file via an access driver (normally ORACLE_LOADER) when the table is accessed. One can think of an external table as a view that allows running SQL queries against files on a filesystem without the need to first loaded the data into the database.
+  
 			CREATE TABLE t1 
 			( c1 NUMBER,  
 			  c2 VARCHAR2(30)
@@ -434,7 +571,9 @@ test web request-response:
 			  location ('report.csv')  
 			);
 
+
 ### index
+
 - clustered index (index organized table)
 - non-clustered index (the tree nodes store the physical locations of the actual rows in disk)  
 - b-tree index (on columns with high cardinality), used in frequent DML(upsert/delete) operations.  
@@ -442,6 +581,7 @@ test web request-response:
 
 
 ### performance tunning  
+
 execute the sql -> run "explain plan" -> analyze the dumped execution plan.
 
 Speed (hash join is faster since it access memory than b-tree index on disk:
