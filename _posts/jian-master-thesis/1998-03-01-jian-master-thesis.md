@@ -1,1 +1,1 @@
----layout: posttitle:  "aaa"date:   1995-11-27 00:00:00 -0500categories: tech-database---## Jian's Master Thesis in Zhejiang University 
+---layout: posttitle:  "Research and Implementation of DDL, DML and Schema Evolution in an OOEDBMS"date:   1998-03-01 00:00:00 -0500categories: tech-database---## Jian's Master Thesis in Zhejiang University 
