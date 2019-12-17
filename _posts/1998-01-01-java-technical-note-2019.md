@@ -40,14 +40,16 @@ It is used in distributed system, including sharding, load balancing, distribute
 consistent hash ring is used in Cassandra, Memcached and Redis.
 
 
-## Kafka
-
-
-
 ## event sourcing
-cannot use 2PC in modern distributed system. Instead, use event sourcing.
-use db Event Table as message queue, this make a local transaction across multiple tables.  use db triggers to append db Event table. 
-another process read events from the event table and publish to Topics
+
+for example, we add a record in a business table, then publish a event msg for the record to a topic. The db table write and topic msg publish need to be in a single distrubuted transaction. But we cannot use 2PC in modern distributed system. 2PC is not reliable.
+
+Instead, we still need to use local transaction. so the solution is event sourcing.
+
+event sourcing solution:
+use db Event Table as message queue, this make a local transaction across multiple tables (business table and Event table).  use db triggers to append events to db Event table.  
+another process read events from the event table and publish to Topics.
+Here the Event table is the source of events.
 
 **Use case:  **
 Order created w/ pending state, Order approved, Order cancelled, Order shipped.   
@@ -55,12 +57,16 @@ A customer can cancel a order either from a pending state, or from a approved st
 
 
 ## CQRS - Command Query Responsibility Segregation  
+
 Command - upsert, delete operations
 Query - read operations
 
+use cases:
+aws DocumentDB cluster contains a write node and a read node. upsert and delete requests are sent to the write node. the data change is replicated to the read node. Query requests are sent to the read node.
+
 ## reactive-based programming ## 
 
-stream programming. inside a process, using a blocking queue, use events. 
+stream programming. inside a process, using a array|linked blocking queue. in a distributed system, use messaging queue.
  
 reactive model, reactive architecture design, messaging queue, distributed, auto scale and deploy independently, container orchestrator kubernetes (k8s) 
  
