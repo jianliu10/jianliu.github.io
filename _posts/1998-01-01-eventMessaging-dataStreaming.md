@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "(Draft) Event Messaging and Data Streaming in distributed system"
+title:  "Event Messaging and Data Streaming in distributed system"
 date:   2019-10-02 00:00:00 -0500
-categories: tech distributed system
+categories: tech:architecture:design
 ---
 
 # Event Messaging and Data Streaming in distributed system
@@ -18,7 +18,7 @@ use case: Finra FileX project, HERD project.
 
 ## Data Streaming
 
-the message payload contain the source data.
+the message payload contains the source data.
 
 ### Solace ESB 
 

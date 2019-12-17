@@ -48,3 +48,7 @@ plugins:
 #   - vendor/ruby/
 exclude: [vendor]
 
+permalink: /:categories/:title/
+
+
+

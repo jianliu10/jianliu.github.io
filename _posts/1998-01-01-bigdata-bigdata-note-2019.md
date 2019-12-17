@@ -56,6 +56,22 @@ have to be actual table data columns.
 
 		CLUSTERED BY (employee_id) INTO 2 BUCKETS
 
+### HQL engine		
+		
+yarn jobs
+
+		
+## hadoop YARN resouece manager and node manager
+
+yarn job
+
+AM: Application Master
+
+
+
+		
+## mapreduce computing engine
+
 		
 ## Spark computing engine
 
@@ -75,6 +91,6 @@ spark-shell --jars ./mysql-connector-java-5.0.8-bin.jar
 
 Once the spark-shell has started, we can now insert data from a Spark DataFrame into our database
 
+
 ## databrick - IAAS for spark development	
 
-## streaming data processing

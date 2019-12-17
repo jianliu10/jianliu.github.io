@@ -64,9 +64,9 @@ Query - read operations
 use cases:
 aws DocumentDB cluster contains a write node and a read node. upsert and delete requests are sent to the write node. the data change is replicated to the read node. Query requests are sent to the read node.
 
-## reactive-based programming ## 
+## reactive-based programming (stream programming) 
 
-stream programming. inside a process, using a array|linked blocking queue. in a distributed system, use messaging queue.
+Inside a process, using a array|linked blocking queue. In a distributed system, use messaging queue.
  
 reactive model, reactive architecture design, messaging queue, distributed, auto scale and deploy independently, container orchestrator kubernetes (k8s) 
  
