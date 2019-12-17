@@ -2,7 +2,7 @@
 layout: post
 title:  "AWS cloud technical notes"
 date:   2019-05-02 00:00:00 -0500
-categories: tech cloud
+categories: tech-cloud
 ---
 
 # AWS cloud notes #

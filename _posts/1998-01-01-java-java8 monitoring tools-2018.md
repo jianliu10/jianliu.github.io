@@ -2,7 +2,7 @@
 layout: post
 title:  "Java 8 monitoring tools"
 date:   2018-01-02 13:15:42 -0500
-categories: tech java-spring
+categories: tech-java-spring
 ---
 
 https://programmer.help/blogs/jvm-performance-tuning-monitoring-tools-jps-jstack-jmap-jhat-jstat-hprof.html

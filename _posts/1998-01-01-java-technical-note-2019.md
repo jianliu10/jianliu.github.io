@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "(Draft) Java-Spring Technical notes - 2019"
+title:  "Java-Spring Technical notes - 2019"
 date:   2019-10-01 00:00:00 -0500
-categories: tech java-spring
+categories: tech-java-spring
 ---
 
 # 2019 technical notes #

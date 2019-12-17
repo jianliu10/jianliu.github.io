@@ -2,7 +2,7 @@
 layout: post  
 title:  "Application Security notes - 2018"  
 date:   2018-12-01 00:00:00 -0500  
-categories: tech security  
+categories: tech-security  
 ---  
   
 ## Authentication and Authorization in Micro-services architecture ##  

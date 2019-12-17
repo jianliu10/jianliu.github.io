@@ -2,7 +2,7 @@
 layout: post
 title:  "Java Complete Roadmap - 2018"
 date:   2018-01-01 00:00:00 -0500
-categories: tech java-spring
+categories: tech-java-spring
 ---
 
 ## Foundamental Chapter

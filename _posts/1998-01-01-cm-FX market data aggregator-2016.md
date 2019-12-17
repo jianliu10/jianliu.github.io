@@ -2,7 +2,7 @@
 layout: post
 title:  "FX Market Data Aggregator in a FX trading system"
 date:   2016-10-01 00:00:00 -0500
-categories: tech:architecture:design 
+categories: tech-architecture 
 ---
 
 ## Functional and non-functional requirements

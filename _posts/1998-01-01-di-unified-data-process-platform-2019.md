@@ -2,7 +2,7 @@
 layout: post
 title:  "(Draft) Unified data processing platform in enterprise big data hub"
 date:   2019-03-02 00:00:00 -0500
-categories: tech data-integration
+categories: tech-data-integration
 ---
 
 ## Abstract  
