@@ -2,7 +2,7 @@
 layout: post
 title:  "Event Messaging and Data Streaming in distributed system"
 date:   2019-10-02 00:00:00 -0500
-categories: tech-architecture
+categories: tech-architecture-design
 ---
 
 # Event Messaging and Data Streaming in distributed system
