@@ -1,0 +1,44 @@
+---
+layout: post
+title:  "Jian Bio"
+date:   1900-01-01 00:00:00 -0500
+categories: professional-career
+---
+
+# Personal Background
+----------
+Jian was admitted to Xiamen University, waived China national university admission exams due to her academic distinction in high school. She studied **Computer Science** major for four years and was graduated with a honor B.Sc. degree.
+
+Right after university, She was admitted to Zhejiang University Graduate School, studied and researched **Computer Applications** for 2.5 years and was graduated with a M.Sc. degree. She published a couple research papers in China national computer science periodicals.
+
+She has worked as senior software engineer/developer in Greater Toronto area since 1999. 
+
+She provides independent consultant service to software development.  
+
+
+
+# Professional Introduction
+----------
+
+**An experienced senior software developer with 20+ years of progressive advancement in designing and developing complex large scaled applications.**
+
+*Domain experience: 12+ years in Capital Market and Finance Risk Management, 2 years in health benefits, 2 year in Ontario government OPS, 1 years in retail.*
+ 
+- Diversified technical skills in two areas: data warehousing area and Application backend area. Ranging from: 
+	- (my primary interest) Big data, Enterprise data warehousing, batch and real-time streaming data integration
+	- (my secondary interest) Micro-Service and Web Service backend, REST API, SOAP API, real-time messaging API,  
+	- (2001-2007 in-depth) large scaled distributed computing in grid cluster, partitions and sub-partitions, multi-threading, 
+- In-depth and in-width strength is in application backend development and data integration development.
+- Hands-on pragmatic programmer. Good in OOP and Design Patterns. 
+- 9 years as software engineer in an industry renowned finance risk management software company - IBM Algorithmics 
+- 15+ years using Java and JEE. 8+ years extensive coding with Spring and Spring-boot.
+- 3 years in Python. 
+- 10+ in database development.
+- 7+ years’ in-depth development in data integration in data warehousing using ETLT design. (2010 - current).
+- 7+ years’ in-depth development in web service APIs including SOAP API/REST API/JMS API (2010 – current).
+- 6+ years’ in-depth development in high performance risk computation engine using distributed clustered, controller-workers, multi-threading architecture and design (2001-2006). 
+- 2 years government web application development using with Spring MVC, JSF, JSP, HTML, CSS (2011 - 2013)
+- 6 months hand-on development experience in Micro-services RESP API backend.
+- Strong analytical and problem solving skills. 
+- Initiative, Quality Conscious; Responsible and accountable; Results oriented; 
+
