@@ -1,1 +1,0 @@
----layout: posttitle:  "Research and Implementation of DDL, DML and Schema Evolution in an OOEDBMS"date:   1998-03-01 00:00:00 -0500categories: professional-career---## Jian's Master Thesis in Zhejiang University 
