@@ -1,4 +1,4 @@
----layout: posttitle:  "Research and Imp of the Data Definition Data Manipulation and Schema Evolution in an OOEDBMS"date:   1998-03-01 00:00:00 -0500categories: professional-career---## Jian's Master Thesis in Zhejiang University (浙 江 大 学 硕 士 学 位 论 文)
+---layout: posttitle:  "Research and Implementation of DDL, DML and Schema Evolution in an OOEDBMS"date:   1998-03-01 00:00:00 -0500categories: professional-career---## Jian's Master Thesis in Zhejiang University (浙 江 大 学 硕 士 学 位 论 文)
 
 
 ### Research and Implementation of the Data Definition, Data Manipulation and Schema Evolution in an OOEDBMS
