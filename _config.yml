@@ -22,6 +22,16 @@ url: "http://jianhub.com" # the base hostname & protocol for your site, e.g. htt
 twitter_username: 
 github_username: 
 
+footer-links:
+  email: tutor.jianliu10@gmail.com 
+  facebook:
+  github: 
+  linkedin:  ca.linkedin.com/in/janeliuangle
+  twitter: 
+  youtube: 
+
+
+  
 # Build settings
 markdown: kramdown
 theme: minima
@@ -46,7 +56,8 @@ plugins:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
-exclude: [vendor]
+exclude: 
+  - vendor
 
 permalink: /:categories/:title/
 
