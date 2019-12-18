@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Java 8 monitoring tools"
+title:  "JVM monitoring tools - jdk builtin commands and graphical interfaces"
 date:   2018-01-02 13:15:42 -0500
 categories: tech-java-spring
 ---
@@ -143,7 +143,7 @@ jmap is used to view heap memory usage, usually combined with jhat.
    
 ## -agentlib:hprof (JVM heap/cpu profiling agent)
 
-see "jvm performance tunning" blog
+see my "jvm performance tunning" blog
 
 HPROF is actually a JVM native agent library (JNI) which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. 
 
