@@ -21,15 +21,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://jianhub.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
 github_username: 
-
-footer-links:
-  email: tutor.jianliu10@gmail.com 
-  facebook:
-  github: 
-  linkedin:  ca.linkedin.com/in/janeliuangle
-  twitter: 
-  youtube: 
-
+linkedin:  ca.linkedin.com/in/janeliuangle
 
   
 # Build settings
