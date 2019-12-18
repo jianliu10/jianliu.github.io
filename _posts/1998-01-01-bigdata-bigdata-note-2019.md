@@ -2,7 +2,7 @@
 layout: post
 title:  "(Draft) Bigdata technical notes - 2019"
 date:   2019-12-15 00:00:00 -0500
-categories: tech-bigdata
+categories: tech-data-integration
 ---
 
 # 2019 bigdata technical notes #

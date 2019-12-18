@@ -12,31 +12,76 @@ https://programmer.help/blogs/jvm-performance-tuning-monitoring-tools-jps-jstack
 Heap memory = younger generation + older generation + permanent generation  
 Younger generation = Eden area + two Survivor areas (From area, To area)  
 
+**SITE** (a unique stack trace of a fixed depth)
+
 ## stack
  
 
-## monitoring tools
+## monitoring tools introduction
 
-jps finds running Java processes by scanning through /tmp/hsperfdata_<username> directory. Each HotSpot-based Java process creates a file in this directory with the name equal to the process ID.
+### jdk built-in command line tools
+
+jps/jstat/jstatd tools find running Java processes by scanning through /tmp/hsperfdata_<userid> directory or or C:\Users\userid\AppData\Local\Temp\hsperfdata_<userid> directory. Each HotSpot-based Java process creates a file in this directory with the name equal to the process ID.
+
+jps/jstat/jstatd tools look for data under the system default tmp dir, not the one set by -Djava.io.tmpdir=<..>
 
 The file /tmp/hsperfdata_<username>/<pid> contains various counters exported by the JVM. These counters can be read by an external process. This is exactly how jstat works. 
 
 So, jstat can always read counters of a local Java process, but in order to be able to monitor a remote machine, jstatd needs to be running.
 
-jmap, jstack and jinfo use Dynamic Attach mechanism. These utilities connect to the target JVM via UNIX-domain socket and send the corresponding command to the JVM. The command is executed by the remote JVM itself.
+jinfo/jstack/jmap tools use Dynamic Attach mechanism. These utilities connect to the target JVM via UNIX-domain socket and send the corresponding command to the JVM. The command is executed by the remote JVM itself.
+
+jhat - to analyze binary format of heap dump files.
+
+-agentlib:hprof, -agentlib:jdwp
+
+**-Joption**    
+Pass option to the java launcher called by jdk buildin monitoring tools. For example, -J-Xms48m sets the startup memory to 48 megabytes. It is a common convention for -J to pass options to the underlying VM executing applications written in Java.
+ 
+JVM TI: Java Virtual Machine Tool Interface
+ 
+### jdk built-in visual tools
+
+jconsole (old), jvisualvm (new)
 
  
 ## bin/jps(JVM Process Status)
 
-jps is mainly used to list all JVM processes running in a host. The output info include main class, jvm params, application params.  
+If jps is run without specifying a hostid, it will look for instrumented JVMs on the local host. If started with a hostid, it will look for JVMs on the indicated host, using the specified protocol and port. A jstatd process is assumed to be running on the target host.
+
+jps only returns the processes run by the current session user.
+
 jps [options] [hostid]  
 
-## bin/jstat, bin/jstatd (JVM Statistical Monitoring Tool)
+output format:  
+	lvmid [ [ classname | JARfilename | "Unknown"] [ arg* ] [ jvmarg* ] ]
+
+This example assumes that the jstatd server, with an internal RMI registry bound to port 2002 (default port is 1099), is running on the remote host. 
+
+	jps -l remote.domain:2002
+	3002 /opt/jdk1.7.0/demo/jfc/Java2D/Java2Demo.JAR
+	3102 sun.tools.jstatd.jstatd -p 2002
+
+	su <userid>; jps
+	
+## bin/jstatd	
+
+start up a jstatd daemon server for remote monitoring by jps or jstat tools. jstatd server register itself in a remote RMI registry. jstatd server is used by jps tool and jstat tool.
+
+## bin/jstat (JVM Statistics Monitoring Tool)
 
 	jstat [ generalOption | outputOptions vmid [interval[s|ms] [count]] ]
 	
 	// the following output is GC information, sampling time interval is 250ms, sampling number is 4:
 	jstat -gc 21711 250 4
+
+example: Monitor instrumentation for a remote JVM
+
+This example attaches to lvmid 40496 on the system named remote.domain using the -gcutil option, with samples taken every second indefinitely.
+
+jstat -gcutil 40496@remote.domain 1000
+
+The lvmid is combined with the name of the remote host to construct a vmid of 40496@remote.domain. This vmid results in the use of the rmi protocol to communicate to the default jstatd server on the remote host. The jstatd server is located using the rmiregistry on remote.domain that is bound to the default rmiregistry port (port 1099).
 
 
 ## bin/jinfo (before java 8), bin/jcmd (after java 8)
@@ -96,22 +141,13 @@ jmap is used to view heap memory usage, usually combined with jhat.
    // enter the host address in the browser: 9998 to see
    
    
-## hprof(Heap/CPU Profiling Tool)
+## -agentlib:hprof (JVM heap/cpu profiling agent)
 
-	java -agentlib:hprof[=options] ToBeProfiledClass		// run time JVM params
-	java -Xrunprof[:options] ToBeProfiledClass				// run time JVM params
-	javac -J-agentlib:hprof[=options] ToBeProfiledClass		// compile time javac params. Its implementation uses bytecode injection technology
-	
-	// CPU Usage Sampling Profiling(cpu=samples). The generated profile file name is java.hprof.txt, in the current directory. 
-	java -agentlib:hprof=cpu=samples,interval=20,depth=3 Hello
-	// CPU Usage Times Profiling(cpu=times) can obtain finer-grained CPU consumption information than CPU Usage Sampling Profile
-	javac -J-agentlib:hprof=cpu=times Hello.java
-	// Heap Allocation Profiling(heap=sites)
-	javac -J-agentlib:hprof=heap=sites Hello.java
-	// Heap Dump(heap=dump) can generate more detailed Heap Dump information than the previous Haip Allocation Profiling
-	javac -J-agentlib:hprof=heap=dump Hello.java
-	
-Although adding - Xrunprof:heap=sites parameter to JVM startup parameter can generate CPU/Heap Profile file, it has a great impact on JVM performance and is not recommended for online server environment.	
+see "jvm performance tunning" blog
+
+HPROF is actually a JVM native agent library (JNI) which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. 
+
+The data generated can be in textual or binary format, and can be used to track down and isolate **performance problems involving memory usage and inefficient code**. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
 	
 ## bin/jconsole 
 
@@ -136,4 +172,15 @@ most of the previously standalone tools JConsole, jstat, jinfo, jstack, and jmap
 
 Java VisualVM can be used by Java application developers to troubleshoot applications and to monitor and improve the applications' performance. Java VisualVM can allow developers to generate and analyse heap dumps, track down memory leaks, browse the platform's MBeans and perform operations on those MBeans, perform and monitor garbage collection, and perform lightweight memory and CPU profiling.
 
-		
+## -agentlib:jdwp (jvm remote debugging agent)
+
+JDWP is a debugging protocol. -agentlib:jdwp=<sub-options> Loads the JPDA reference implementation (a JVM native agent library JNI) of JDWP protocol. This library resides in the target VM and uses JVM TI and JNI to interact with it. It uses a transport and the JDWP protocol to communicate with a separate debugger application.
+
+Add the following to JVM params when start up a remote java process:
+
+	-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:1044		
+	
+- transport=dt_socket : means the way used to connect to JVM (socket is a good choice)
+- address=*:1044 : TCP/IP port exposed, to connect from the debugger. listening on all network interfaces.
+- suspend=y : if 'y', tell the JVM to wait execution until a debugger is attached; otherwise (if 'n'), starts execution right away.	
+
