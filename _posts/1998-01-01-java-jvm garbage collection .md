@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "JVM garbage collection "
+title:  "JVM garbage collection"
 date:   2018-01-02 13:15:42 -0500
 categories: tech-java-spring
 ---

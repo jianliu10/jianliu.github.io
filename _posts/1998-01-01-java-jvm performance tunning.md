@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "JVM garbage collection "
+title:  "JVM performance tunning"
 date:   2018-01-02 13:15:42 -0500
 categories: tech-java-spring
 ---
@@ -17,13 +17,15 @@ Younger generation = Eden area + two Survivor areas (From area, To area)
 
 https://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html
 
-HPROF agent can be used to generate a wide variety of CPU and HEAP profiles. make sure you have a large enough sampling to know that your profile data makes sense.
+HPROF can be used to track down and isolate **performance problems involving memory usage and inefficient code**
 
 ### introduction
 
+HPROF agent can be used to generate a wide variety of CPU and HEAP profiles. make sure you have a large enough sampling to know that your profile data makes sense.
+
 HPROF is actually a JVM native agent library (JNI) which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. 
 
-The data generated can be in textual or binary format, and can be used to track down and isolate **performance problems involving memory usage and inefficient code**. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
+The data generated can be in textual or binary format. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
 
 	java -agentlib:hprof[=options] ToBeProfiledClass		// run time JVM params
 	java -Xrunprof[:options] ToBeProfiledClass				// run time JVM params, deprecated. use java - agentlib:hprof instead.
