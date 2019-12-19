@@ -61,8 +61,9 @@ If more than 98% of the total time is spent in CMS garbage collection and less t
 	java -XX:+UseG1GC -jar Application.java
 	
 G1 (Garbage First) Garbage Collector is designed for applications running on:
-	- multi-processor machines 
-	- large heap size
+
+- multi-processor machines 
+- large heap size
 
 G1 collector will replace the CMS collector since it's more performance efficient. applications still respond while performing garbage collection but reponse slower on average, but respond faster than using CMS gc.
 
@@ -111,6 +112,6 @@ if the CPU time (3.4 sec) is considerably higher than the real time passed (3.42
 
 ### Tools to Analyze GC Logs
 
-using**http://gceasy.io/**- a universal online Garbage collection analysis tool.   
+using **http://gceasy.io/**, which is a universal online Garbage collection analysis tool.   
 It's a free tool that analyzes the Garbage collection logs and provides telemetrics, potential Garbage Collection problems, and Memory problems, and it provides solutions to these problems, as well.
 
