@@ -52,7 +52,7 @@ defaults:
     values:
       layout: "post"
 
-kramdown:
-  input: GFM
-  syntax_highlighter: rouge
-  math_engine: mathjax
+#kramdown:
+#  input: GFM
+#  syntax_highlighter: rouge
+#  math_engine: mathjax
