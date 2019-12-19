@@ -24,10 +24,10 @@ C:\UserData\finra\edp\filex\filex-audit\filex-audit-de-lambda\src\main\java\org\
 	return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
 								  new LinkedBlockingQueue<Runnable>(processorBoundQueueCapacity), threadFactory,
 								  new ThreadPoolExecutor.AbortPolicy());
- 
+												
 	ThreadFactory threadFactory = new ThreadFactory() {
 		private AtomicInteger threadCount = new AtomicInteger(1);
-
+		
 		@Override
 		public Thread newThread(Runnable r) {
 			Thread thread = new Thread(r);
@@ -37,11 +37,11 @@ C:\UserData\finra\edp\filex\filex-audit\filex-audit-de-lambda\src\main\java\org\
 			return thread;
 		}
 	};
-		
+	
  	public int getRemaingQueuedTaskCount() {
 		return ((ThreadPoolExecutor) this.processorExecutorService).getQueue().size();
 	}
-
+	
 	public int getActiveThreadCount() {
 		return ((ThreadPoolExecutor) this.processorExecutorService).getActiveCount();
 	}
@@ -53,7 +53,7 @@ C:\UserData\finra\edp\filex\filex-audit\filex-audit-de-lambda\src\main\java\org\
 			processorExecutorService.awaitTermination(5, TimeUnit.SECONDS);
 		}
 	}
-
+	
 	public void stop() throws InterruptedException {
 		// orderly shutdown
 		while (!this.writerExecutorService.isTerminated()) {
