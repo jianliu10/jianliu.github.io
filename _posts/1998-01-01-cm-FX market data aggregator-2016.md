@@ -174,7 +174,14 @@ The following architecture diagram is for the simplified version of design when 
  
 ## Technology Stack
 
-![technology-stack](/images/FXMarketDataAggregatorDesign/technology-stack.gif)
+- JDK 7 or 8 
+- Spring
+- Spring-boot
+- Spring-integration
+- JMS
+- ESB server, Solace or MQ
+- Database MS SQL Server or Oracle
+- Websocket
 
 ## Enhancement
 To enhance the speed of transferring real-time FX market data quotes to the clients, a solution is to replace messaging Queue/Topics design with Multicast socket design.
