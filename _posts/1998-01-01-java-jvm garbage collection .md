@@ -43,7 +43,7 @@ The Serial GC is the garbage collector of choice for most applications that do n
 It's the default GC of the JVM and sometimes called Throughput Collectors. this uses multiple gc threads for managing heap space.   
 it also freezes other application threads while performing GC.		
 
-### CMS Garbage Collector
+### CMS gc
 
 	java -XX:+UseParNewGC -jar Application.java
 
@@ -56,7 +56,7 @@ note here is that since this GC is concurrent, an invocation of explicit garbage
 If more than 98% of the total time is spent in CMS garbage collection and less than 2% of the heap is recovered, then an OutOfMemoryError is thrown by the CMS collector.
 
 	
-## G1 Garbage Collector
+### G1 gc
 
 	java -XX:+UseG1GC -jar Application.java
 	
@@ -71,7 +71,9 @@ Unlike other collectors, G1 collector partitions the heap into a set of equal-si
 
 After the mark phase is completed, G1 knows which regions are mostly empty. It collects in these areas first, which usually yields a significant amount of free space (i.e. phase 2 known as Sweeping). It is why this method of garbage collection is called Garbage-First.
 	
-## -XX:+UseStringDeduplication in java v8
+### deduplication of strings
+	
+	-XX:+UseStringDeduplication
 
 Java 8u20 has introduced one more JVM parameter for reducing the unnecessary use of memory by creating too many instances of same String. This optimizes the heap memory by removing duplicate String values to a global single char[] array.
 
