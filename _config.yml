@@ -3,7 +3,7 @@ title: Jian Liu's Blog
 url: "http://jianhub.com"    # the protocol and hostname of your site, eg. `http://laobubu.github.io`
 baseurl: "" # the prefix of your site uri, eg. `"/jekyll-theme-EasyBook"` or empty string `""`
 description: >
-  Original articles. Copyrights are reserved.
+  Jian Liu's original articles. 
 
 # Your information
 email: tutor.jianliu10@gmail.com 
@@ -31,6 +31,7 @@ header:
     Donate: #https://laobubu.net/donate.html
 
 permalink: /:categories/:title
+
 plugins:
  - jekyll-paginate
  - jekyll-gist
