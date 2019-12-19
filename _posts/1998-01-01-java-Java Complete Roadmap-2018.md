@@ -9,31 +9,37 @@ categories: tech-java-spring
 
 ### JVM
 
-**JVM memory structure**
+####JVM memory structure
 
 heap, stack, direct memory, difference of heap and stack
 堆、栈、方法区、直接内存、堆和栈区别。
 
-**Java memory model**
+####Java memory model
+
 memory visibility, 
 内存可见性、重排序、顺序一致性、volatile、锁、final。
 
-**garbage collection**
+####garbage collection
+
 memory allocation stragety, garbase collector (G1), GC algorithms, GC parameters, garbage collectable objects
 
 sequential/parallel/CMS/G1 GC
 
-**JVM参数及调优**
+####JVM参数及调优
+
 Java对象模型
 oop, root class 'Object'
 
-**HotSpot**
+####HotSpot
+
 JIT 即时编译器、编译优化。
 
-**类加载机制**
+####类加载机制
+
 classLoader、类加载过程、双亲委派（破坏双亲委派）、模块化（jboss modules、osgi、jigsaw）。
 
-**虚拟机性能监控与故障处理工具**
+####虚拟机性能监控与故障处理工具
+
 jps, jstat, jstatd,
 jinfo, jcmd, 
 jstack, 
@@ -52,13 +58,14 @@ javap - java .class file disassembler (decompiler)
 ### Java Basics
 
 
-**阅读源代码**
+####阅读源代码
 
 String、Integer、Long、Enum、BigDecimal、ThreadLocal、ClassLoader & URLClassLoader、ArrayList & LinkedList、 HashMap & LinkedHashMap & TreeMap & CouncurrentHashMap、HashSet & LinkedHashSet & TreeSet。
 
-**Java中各种变量类型**
+####Java中各种变量类型
 
-**熟悉Java String的使用，熟悉String的各种函数**
+####熟悉Java String的使用，熟悉String的各种函数
+
 JDK 6和JDK 7中substring的原理及区别；
 
 replaceFirst、replaceAll、replace区别；
@@ -69,13 +76,16 @@ String.valueOf和Integer.toString的区别；
 
 字符串的不可变性。
 
-**自动拆装箱**
+####自动拆装箱
+
 Integer的缓存机制。
 
-**熟悉Java中各种关键字**
+####熟悉Java中各种关键字
+
 transient、instanceof、volatile、synchronized、final、static、const 原理及用法。
 
-**集合类**
+####集合类
+
 常用集合类的使用；
 
 ArrayList和LinkedList和Vector的区别 ；
@@ -90,16 +100,17 @@ apache集合处理工具类的使用；
 
 不同版本的JDK中HashMap的实现的区别以及原因。
 
-**枚举**
+####枚举
+
 枚举的用法、枚举与单例、Enum类。
 
-**Java IO&Java NIO，并学会使用**
+####Java IO&Java NIO，并学会使用
 bio、nio和aio的区别、三种IO的用法与原理、netty。
 
-**Java反射与javassist**
+####Java反射与javassist
 反射与工厂模式、 java.lang.reflect.*。
 
-**Java序列化**
+####Java序列化
 什么是序列化与反序列化、为什么序列化；
 
 序列化底层原理；
@@ -110,72 +121,68 @@ protobuf；
 
 为什么说序列化并不安全。
 
-**注解**
+####注解
 元注解、自定义注解、Java中常用注解使用、注解与反射的结合。
 
-**JMS**
+####JMS
 什么是Java消息服务、JMS消息传送模型。
 
-**JMX**
+####JMX
 
-**单元测试**
+####单元测试
 junit、mock、mockito、内存数据库（h2）。
 
-**正则表达式**
+####正则表达式
 java.lang.util.regex.*。
 
-**常用的Java工具库**
+####常用的Java工具库
 commons.lang, commons.*... guava-libraries netty。
 
-**什么是API&SPI**
+####什么是API&SPI
 异常
 异常类型、正确处理异常、自定义异常。
 
-**时间处理**
+####时间处理
 时区、时令、Java中时间API。
 
-**编码方式**
+####编码方式
 解决乱码问题、常用编码方式。
 
-**语法糖**
+####语法糖
 Java中语法糖原理、解语法糖。
 
 
 
 ### Java Concurrent Programming
 
-**什么是线程，与进程的区别**
+####什么是线程，与进程的区别
 
-**阅读源代码，并学会使用**
+####阅读源代码，并学会使用
 Thread、Runnable、Callable、ReentrantLock、ReentrantReadWriteLock、Atomic*、Semaphore、CountDownLatch、、ConcurrentHashMap、ConcurrentSkipListMap, Executors, ExecutorService.
 
-**线程池**
+####线程池
 自己设计线程池、submit() 和 execute()。
 
-**线程安全**
+####线程安全
 死锁、死锁如何排查、Java线程调度、线程安全和内存模型的关系。
 
-*  锁 *    
-CAS、乐观锁与悲观锁、数据库相关锁机制、分布式锁、偏向锁、轻量级锁、重量级锁、monitor、锁优化、锁消除、锁粗化、自旋锁、可重入锁、阻塞锁、死锁。
-
-*  死锁*
-  
-*  volatile*  
-happens-before、编译器指令重排和CPU指令重。
-
-*  synchronized*  
-synchronized是如何实现的？  
-synchronized和lock之间关系；  
-不使用synchronized如何实现一个线程安全的单例。  
-*  sleep 和 wait*  
-*  wait 和 notify*  
-*  notify 和 notifyAll*  
-*  ThreadLocal*  
-*  写一个死锁的程序*  
-*  写代码来解决生产者消费者问题*  
-
-*守护线程*  
-守护线程和非守护线程的区别以及用法。
+- 锁  
+  CAS、乐观锁与悲观锁、数据库相关锁机制、分布式锁、偏向锁、轻量级锁、重量级锁、monitor、锁优化、锁消除、锁粗化、自旋锁、可重入锁、阻塞锁、死锁。
+- 死锁
+- volatile
+- happens-before、编译器指令重排和CPU指令重。
+- synchronized*  
+  synchronized是如何实现的？  
+  synchronized和lock之间关系；  
+  不使用synchronized如何实现一个线程安全的单例。  
+  sleep 和 wait*  
+  wait 和 notify*  
+  notify 和 notifyAll*  
+  ThreadLocal*  
+  写一个死锁的程序*  
+  写代码来解决生产者消费者问题*  
+- 守护线程
+  守护线程和非守护线程的区别以及用法。
 
 
 ## Advanced Chapter
@@ -198,67 +205,67 @@ CPU缓存，L1，L2，L3和伪共享
 ### Design Patterns
 
 
-**Design Patterns**  
+####Design Patterns####  
 Singleton, Factory, Adapter, Wrapper, Chain of Responsibility, Builder, Visitor, ...
 
-**实现AOP**
+####实现AOP
 
-**实现IOC**
+####实现IOC
 
-**不用synchronized和lock，实现线程安全的单例模式**
+####不用synchronized和lock，实现线程安全的单例模式
 
-**nio和reactor设计模式**
+####nio和reactor设计模式
 
 
 ### Network Programming
 
-**tcp、udp、http、https等常用协议**
+####tcp、udp、http、https等常用协议
 三次握手与四次关闭、流量控制和拥塞控制、OSI七层模型、tcp粘包与拆包
 
-**http/1.0 http/1.1 http/2之前的区别**
+####http/1.0 http/1.1 http/2之前的区别
 
-**Java RMI，Socket，HttpClient**
-**cookie 与 session**
+####Java RMI，Socket，HttpClient
+####cookie 与 session
 cookie被禁用，如何实现session
 
-**用Java写一个简单的静态文件的HTTP服务器**
+####用Java写一个简单的静态文件的HTTP服务器
 实现客户端缓存功能，支持返回304 实现可并发下载一个文件 使用线程池处理客户端请求 使用nio处理客户端请求 支持简单的rewrite规则 上述功能在实现的时候需要满足“开闭原则”。
 
-**了解nginx和apache服务器的特性并搭建一个对应的服务器**
+####了解nginx和apache服务器的特性并搭建一个对应的服务器
 
-**用Java实现FTP、SMTP协议**
+####用Java实现FTP、SMTP协议
 
-**进程间通讯的方式**
+####进程间通讯的方式
 
-**什么是CDN？如果实现？**
+####什么是CDN？如果实现？
 
-**什么是DNS？**
+####什么是DNS？
 
-**反向代理**
+####反向代理
 
 
 ### Commonly Used Frameworks
 
-**Servlet线程安全问题**
+####Servlet线程安全问题
 
-**Servlet中的filter和listener**
+####Servlet中的filter和listener
 
-**Hibernate的缓存机制**
+####Hibernate的缓存机制
 
-**Hiberate的懒加载**
+####Hiberate的懒加载
 
-**Spring Bean的初始化**
+####Spring Bean的初始化
 
-**Spring的AOP原理**
+####Spring的AOP原理
 
-**自己实现Spring的IOC**
+####自己实现Spring的IOC
 
-**Spring MVC**
+####Spring MVC
 
-**Spring Boot2.0**
+####Spring Boot2.0
 Spring Boot的starter原理，自己实现一个starter
 
-**Spring Security**
+####Spring Security
 
 
 ### Application Servers
@@ -280,19 +287,19 @@ maven & gradle
 
 ### New Technologies
 
-**Java 8**
+####Java 8
 lambda表达式、Stream API、
 
-**Java 9**
+####Java 9
 Jigsaw、Jshell、Reactive Streams
 
-**Java 10**
+####Java 10
 局部变量类型推断、G1的并行Full GC、ThreadLocal握手机制
 
-**Spring 5**
+####Spring 5
 响应式编程
 
-**Spring Boot 2.0**
+####Spring Boot 2.0
 
 
 ### Performance Optimization
@@ -302,19 +309,19 @@ Jigsaw、Jshell、Reactive Streams
 
 ### Troubleshooting
 
-**dump获取**
+####dump获取
 线程Dump、内存Dump、gc情况
 
-**dump分析**
+####dump分析
 分析死锁、分析内存泄露
 
-**自己编写各种outofmemory，stackoverflow程序**
+####自己编写各种outofmemory，stackoverflow程序
 HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool OutOfMemory、DirectMemory OutOfMemory、Stack OutOfMemory Stack OverFlow
 
-**常见问题解决思路**
+####常见问题解决思路
 内存溢出、线程死锁、类加载冲突
 
-**使用工具尝试解决以下问题，并写下总结**
+####使用工具尝试解决以下问题，并写下总结
 当一个Java程序响应很慢时如何查找问题、
 
 当一个Java程序频繁FullGC时如何解决问题、
@@ -331,114 +338,114 @@ HeapOutOfMemory、 Young OutOfMemory、MethodArea OutOfMemory、ConstantPool Out
 
 ### Foundamental Compilation
 
-**编译与反编译**
+####编译与反编译
 
-**Java代码的编译与反编译**
+####Java代码的编译与反编译
 
-**Java的反编译工具**
+####Java的反编译工具
 
-**词法分析，语法分析（LL算法，递归下降算法，LR算法），语义分析，运行时环境，中间代码，代码生成，代码优化**
+####词法分析，语法分析（LL算法，递归下降算法，LR算法），语义分析，运行时环境，中间代码，代码生成，代码优化
 
 
 ### OS
 
-**Linux的常用命令**
+####Linux的常用命令
 
-**进程同步**
+####进程同步
 
-**缓冲区溢出**
+####缓冲区溢出
 
-**分段和分页**
+####分段和分页
 
-**虚拟内存与主存**
+####虚拟内存与主存
 
 
 ### Database
 
-**MySql 执行引擎**
+####MySql 执行引擎
 
-**MySQL 执行计划**
+####MySQL 执行计划
 如何查看执行计划，如何根据执行计划进行SQL优化
 
-**SQL优化**
+####SQL优化
 
-**事务**
+####事务
 事务的隔离级别、事务能不能实现锁的功能
 
-**数据库锁**
+####数据库锁
 行锁、表锁、使用数据库锁实现乐观锁、
 
-**数据库主备搭建**
+####数据库主备搭建
 
-**binlog**
+####binlog
 
-**内存数据库**
+####内存数据库
 redis、memcached  
 h2, hsql, derby
 
-**常用的nosql数据库**
+####常用的nosql数据库
 
 
-**分布式锁**
+####分布式锁
 
-**性能调优**
+####性能调优
 
 
 ### Data Structure and Algorithm
 
-**简单的数据结构**
+####简单的数据结构
 栈、队列、链表、数组、哈希表、
 
-**树**
+####树
 二叉树、字典树、平衡树、排序树、B树、B+树、R树、多路树、红黑树
 
-**排序算法**
+####排序算法
 各种排序算法和时间复杂度 深度优先和广度优先搜索 全排列、贪心算法、KMP算法、hash算法、海量数据处理
 
 
 
 ### BigData
 
-**Zookeeper**
+####Zookeeper
 基本概念、常见用法
 
-**Solr，Lucene，ElasticSearch**
+####Solr，Lucene，ElasticSearch
 在linux上部署solr，solrcloud，，新增、删除、查询索引
 
-**Storm，流式计算，了解Spark，S4**
+####Storm，流式计算，了解Spark，S4
 在linux上部署storm，用zookeeper做协调，运行storm hello world，local和remote模式运行调试storm topology。
 
-**Hadoop，离线计算**
+####Hadoop，离线计算
 HDFS、MapReduce
 
-**分布式日志收集flume，kafka，logstash**
+####分布式日志收集flume，kafka，logstash
 
-**数据挖掘，mahout**
+####数据挖掘，mahout
 
 
 ### Network Security
 
-**什么是XSS**
+####什么是XSS
 XSS的防御
 
-**什么是CSRF**
+####什么是CSRF
 
-**什么是注入攻击**
+####什么是注入攻击
 SQL注入、XML注入、CRLF注入
 
-**什么是文件上传漏洞**
+####什么是文件上传漏洞
 
-**加密与解密**
+####加密与解密
 MD5，SHA1、DES、AES、RSA、DSA
 
-**什么是DOS攻击和DDOS攻击**
+####什么是DOS攻击和DDOS攻击
 memcached为什么可以导致DDos攻击、什么是反射型DDoS
 
-**SSL、TLS，HTTPS**
+####SSL、TLS，HTTPS
 
-**如何通过Hash碰撞进行DOS攻击**
+####如何通过Hash碰撞进行DOS攻击
 
-**用openssl签一个证书部署到apache或nginx**
+####用openssl签一个证书部署到apache或nginx
 
 
 
@@ -448,19 +455,19 @@ memcached为什么可以导致DDos攻击、什么是反射型DDoS
 
 数据一致性、服务治理、服务降级
 
-**分布式事务**
+####分布式事务
 2PC、3PC、CAP、BASE、 可靠消息最终一致性、最大努力通知、TCC
 
-**Zookeeper**
+####Zookeeper
 config management, state menagement, service registy, repository and discovery.
 
-**分布式数据库**
+####分布式数据库
 怎样打造一个分布式数据库、什么时候需要分布式数据库、mycat、otter、HBase
 
-**分布式文件系统**
+####分布式文件系统
 mfs、fastdfs
 
-**分布式缓存**
+####分布式缓存
 缓存一致性、缓存命中率、缓存冗余
 
 
@@ -491,17 +498,17 @@ ActiveMQ, RabbitMQ, Kafka, Solace, MQ
 ### Monitor and Metrics
 
 
-**监控什么**
+####监控什么
 
 CPU、内存、磁盘I/O、网络I/O等
 
-**监控手段**
+####监控手段
 进程监控、语义监控、机器资源监控、数据波动
 
-**监控数据采集**
+####监控数据采集
 日志、埋点
 
-**Dapper**
+####Dapper
 
 
 ### Load Balance
