@@ -17,7 +17,7 @@ Younger generation = Eden area + two Survivor areas (From area, To area)
 
 https://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html
 
-HPROF can be used to track down and isolate**performance problems involving memory usage and inefficient code**
+HPROF can be used to track down and isolate **performance problems involving memory usage and inefficient code**
 
 ### introduction
 
@@ -27,13 +27,14 @@ HPROF is actually a JVM native agent library (JNI) which is dynamically loaded t
 
 The data generated can be in textual or binary format. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
 
+hprof usage: 
+	
+	java -agentlib:hprof=[help]|[<option>=<value>, ...]
 	java -agentlib:hprof[=options] ToBeProfiledClass		// run time JVM params
 	java -Xrunprof[:options] ToBeProfiledClass				// run time JVM params, deprecated. use java - agentlib:hprof instead.
 	javac -J-agentlib:hprof[=options] ToBeProfiledClass		// compile time javac params. Its implementation uses bytecode injection technology
 	
-
-hprof usage: java -agentlib:hprof=[help]|[<option>=<value>, ...]
-
+	
 	Option Name and Value  Description                    Default
 	---------------------  -----------                    -------
 	heap=dump|sites|all    heap profiling                 all
@@ -52,7 +53,7 @@ hprof usage: java -agentlib:hprof=[help]|[<option>=<value>, ...]
 	// Heap Dump(heap=dump) can generate more detailed Heap Dump information than the previous Haip Allocation Profiling
 	java -agentlib:hprof=heap=dump Hello.java
 	
-By default, heap profiling information (sites and dump) is written out to**java.hprof.txt**(ascii).  
+By default, heap profiling information (sites and dump) is written out to **java.hprof.txt** (ascii).  
 Normally the default (force=y) will clobber any existing information in the output file, so if you have multiple VMs running with HPROF enabled, you should use force=n, which will append additional characters to the output filename as needed.
 	
 Although adding "--agentlib:hprof=heap=site" parameter to JVM startup parameter can generate CPU/Heap Profile file, it has a great impact on JVM performance and is not recommended for online server environment.	
@@ -74,7 +75,7 @@ This option can impact the application performance due to the data gathering (st
 
 ### Heap Dump (heap=dump)
 
-A complete dump of the current**live objects**in the heap can be obtained with:
+A complete dump of the current **live objects** in the heap can be obtained with:
 	java -agentlib:hprof=heap=dump Hello.class
 	
 This is a very large output file, but can be viewed and searched in any editor. But a better way to look at this kind of detail is with HAT. All the information of the above heap=sites option is included, plus the specific details on every object allocated and the references to all objects.
@@ -83,7 +84,7 @@ This option causes the greatest amount of memory to be used because it stores de
 
 ### CPU Usage Sampling Profiles (cpu=samples)
 
-The HPROF agent periodically samples the stack of all running threads to record**the most frequently active stack traces**. The count field above indicates how many times a**particular stack trace**was found to be active (not how many times a method was called). These stack traces correspond to the**CPU usage hot spots**in the application. 
+The HPROF agent periodically samples the stack of all running threads to record **the most frequently active stack traces**. The count field above indicates how many times a **particular stack trace** was found to be active (not how many times a method was called). These stack traces correspond to the **CPU usage hot spots** in the application. 
 
 cpu=samples option does not require BCI or modifications of the classes loaded. Of all hprof options, cpu=samples option causes the least disturbance of the application being profiled.
 
@@ -110,7 +111,7 @@ HAT (Heap Analysis Tool) is a browser based tool that uses the HPROF binary form
 
 HPROF is a dynamically-linked native library that uses JVM TI and writes out profiling information either to a file descriptor or to a socket in ascii or binary format. This information can be further processed by a profiler front-end tool or dumped to a file. 
 
-It generates this information through calls to JVM TI, event callbacks from JVM TI, and through Byte Code Insertion (BCI) on all class file images loaded into the VM. JVM TI has an event called**JVMTI_EVENT_CLASS_FILE_LOAD_HOOK**which gives HPROF access to the class file image and an opportunity to modify that class file image before the VM actually loads it. In the case of HPROF the BCI operations only instrument and don't change the behavior of the bytecodes. Use of JVM TI was pretty critical here for HPROF to do BCI because we needed to do BCI on ALL the classes, including early classes like java.lang.Object. Of course, the instrumentation code needs to be made inoperable until the VM has reached a stage where this inserted code can be executed, normally the event JVMTI_EVENT_VM_INIT.
+It generates this information through calls to JVM TI, event callbacks from JVM TI, and through Byte Code Insertion (BCI) on all class file images loaded into the VM. JVM TI has an event called **JVMTI_EVENT_CLASS_FILE_LOAD_HOOK** which gives HPROF access to the class file image and an opportunity to modify that class file image before the VM actually loads it. In the case of HPROF the BCI operations only instrument and don't change the behavior of the bytecodes. Use of JVM TI was pretty critical here for HPROF to do BCI because we needed to do BCI on ALL the classes, including early classes like java.lang.Object. Of course, the instrumentation code needs to be made inoperable until the VM has reached a stage where this inserted code can be executed, normally the event JVMTI_EVENT_VM_INIT.
 
 The amount of BCI that HPROF does depends on the options supplied, cpu=times triggers insertions into all method entries and exits, and the heap options trigger BCI on the <init> method of java.lang.object and any 'newarray' opcodes seen in any method. 
 
