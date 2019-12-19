@@ -167,15 +167,16 @@ xml based configuration sample:
 		<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller" />
 	
 	
-#### @ControllerAdvice 
+#### ControllerAdvice component class
 
-- @ExceptionHandler   
+@ControllerAdvice annotation
+classes: ResponseEntity<Object>, ResponseEntityExceptionHandler  
 
-  classes: ResponseEntity<Object>, ResponseEntityExceptionHandler  
-
+- @ExceptionHandler annotation  
+	
 	@ControllerAdvice
 	public class MyResponseEntityExceptionHandler  {
-	
+
 		@ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
 		protected ResponseEntity<Object> handleConflict(
 		  RuntimeException ex, WebRequest request) {
@@ -185,7 +186,7 @@ xml based configuration sample:
 	} 
  
 - RequestBodyAdvice interface
-
+	
 	@ControllerAdvice
 	public class DecryptionAdvice implements RequestBodyAdvice {
 
@@ -202,7 +203,7 @@ xml based configuration sample:
 	} 
 
 - ResponseBodyAdvice interface
- 
+	
 	@ControllerAdvice
 	public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
 
