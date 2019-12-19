@@ -621,14 +621,14 @@ Oracle 12c was released in 2014, C stands for cloud.
 - designed for the cloud. It provides Oracle database cloud service, 
 - It provides pluggable databases to support rapid provisioning and portability. It allows running multiple databases on the same hardware while maintaining the security and isolation among the databases.
 - there is multitenant architecture. It enables an Oracle database to function as a multitenant container database (CDB)
-- ** Has in-memory capabilities that provide real-time analytics, **
+-**Has in-memory capabilities that provide real-time analytics**
 - added JSON data type support, 
 - Comparatively higher performance in I/O throughput and response time.
 
 
 ### Oracle exadata?
 
-The Oracle Exadata is engineered to deliver **dramatically better performance**, cost effectiveness, and high availability for Oracle databases. 
+The Oracle Exadata is engineered to deliver**dramatically better performance**, cost effectiveness, and high availability for Oracle databases. 
 
 Oracle exadata is
 - cloud-based architecture, running on private cloud or public cloud.

@@ -12,7 +12,7 @@ https://programmer.help/blogs/jvm-performance-tuning-monitoring-tools-jps-jstack
 Heap memory = younger generation + older generation + permanent generation  
 Younger generation = Eden area + two Survivor areas (From area, To area)  
 
-**SITE** (a unique stack trace of a fixed depth)
+**SITE**(a unique stack trace of a fixed depth)
 
 ## stack
  
@@ -35,7 +35,7 @@ jhat - to analyze binary format of heap dump files.
 
 -agentlib:hprof, -agentlib:jdwp
 
-**-Joption**    
+**-Joption**   
 Pass option to the java launcher called by jdk buildin monitoring tools. For example, -J-Xms48m sets the startup memory to 48 megabytes. It is a common convention for -J to pass options to the underlying VM executing applications written in Java.
  
 JVM TI: Java Virtual Machine Tool Interface
@@ -99,7 +99,7 @@ The release of JDK 8 introduced Java Mission Control, Java Flight Recorder, and 
 jstack is mainly used to view thread stack information in a Java process.  
 
 	jstack [option] pid  
-	- l long listings, which prints out additional lock information, and **jstack-l pid** can be used to observe lock holdings when deadlocks occur.
+	- l long listings, which prints out additional lock information, and**jstack-l pid**can be used to observe lock holdings when deadlocks occur.
    
 example:
 
@@ -147,7 +147,7 @@ see my "jvm performance tunning" blog
 
 HPROF is actually a JVM native agent library (JNI) which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. 
 
-The data generated can be in textual or binary format, and can be used to track down and isolate **performance problems involving memory usage and inefficient code**. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
+The data generated can be in textual or binary format, and can be used to track down and isolate**performance problems involving memory usage and inefficient code**. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
 	
 ## bin/jconsole 
 

@@ -111,6 +111,6 @@ if the CPU time (3.4 sec) is considerably higher than the real time passed (3.42
 
 ### Tools to Analyze GC Logs
 
-using **http://gceasy.io/** - a universal online Garbage collection analysis tool.   
+using**http://gceasy.io/**- a universal online Garbage collection analysis tool.   
 It's a free tool that analyzes the Garbage collection logs and provides telemetrics, potential Garbage Collection problems, and Memory problems, and it provides solutions to these problems, as well.
 
