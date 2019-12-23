@@ -629,7 +629,7 @@ Oracle 12c was released in 2014, C stands for cloud.
 
 ### Oracle exadata?
 
-The Oracle Exadata is engineered to deliver**dramatically better performance**, cost effectiveness, and high availability for Oracle databases. 
+The Oracle Exadata is engineered to deliver **dramatically better performance**, cost effectiveness, and high availability for Oracle databases. 
 
 Oracle exadata is
 - cloud-based architecture, running on private cloud or public cloud.
