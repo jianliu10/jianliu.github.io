@@ -10,3 +10,4 @@ images_1/
 jekyll-now-master/
 jekyll-theme-EasyBook-gh-pages/
 .my.md
+*.private.md
