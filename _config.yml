@@ -14,7 +14,7 @@ profile: Solution Architect, Senior Software Developer
 #github_username:  github_username
 profile_links:
   Email: "mailto:tutor.jianliu10@gmail.com "
-  GitHub: "https://github.com/jianliu10"
+  # GitHub: "https://github.com/jianliu10"
   # You can add more profile links above, or edit _includes/sidebar.html 
 
 # Comment Service (Disqus or 多说)
