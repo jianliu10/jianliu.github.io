@@ -7,9 +7,6 @@ categories: tech-data-integration
 
 # 2019 bigdata technical notes #
 
-## Hadoop HDFS
-
-
 ## HIVE data warehouse
 
 ### partitions 
@@ -75,13 +72,15 @@ AM: Application Master
 		
 ## Spark computing engine
 
-### csv / json data sources
+### data sources
+
+#### csv / json data sources
 
 you can read CSV / JSON files in single-line or multi-line mode. In single-line mode, a file can be split into many parts and read in parallel.
 
 If a JSON object occupies multiple lines, you must enable multi-line mode for Spark to load the file. Files will be loaded as a whole entity and cannot be split.
 
-### database data source
+#### database data source
 
 https://docs.databricks.com/spark/latest/data-sources/index.html
 https://docs.databricks.com/spark/latest/data-sources/sql-databases.html
@@ -91,6 +90,11 @@ spark-shell --jars ./mysql-connector-java-5.0.8-bin.jar
 
 Once the spark-shell has started, we can now insert data from a Spark DataFrame into our database
 
+#### parquet data source
 
-## databrick - IAAS for spark development	
+## Databrick - IAAS for spark development	
+
+
+## hadoop HDFS
+
 
