@@ -17,7 +17,7 @@ Younger generation = Eden area + two Survivor areas (From area, To area)
 ## stack
  
 
-## monitoring tools introduction
+## introduction
 
 ### jdk built-in command line tools
 
