@@ -38,7 +38,7 @@ C:\UserData\finra\edp\filex\filex-audit\filex-audit-de-lambda\src\main\java\org\
 		}
 	};
 	
- 	public int getRemaingQueuedTaskCount() {
+	public int getRemaingQueuedTaskCount() {
 		return ((ThreadPoolExecutor) this.processorExecutorService).getQueue().size();
 	}
 	
@@ -272,6 +272,7 @@ You can pass your own Executor argument to the runAsync() or supplyAsync() metho
 ### Combining multiple CompletableFutures together  
 
 sample 1 - CompletableFuture.allOf():
+	
 	List<String> webPageLinks = Arrays.asList(...)	// A list of 100 web page links
 	// Download contents of all the web pages asynchronously
 	List<CompletableFuture<String>> pageContentFutures = webPageLinks.stream()
@@ -299,7 +300,7 @@ sample 1 - CompletableFuture.allOf():
 
 	
 sample 2 - CompletableFuture.anyOf():
-
+	
 	CompletableFuture<String> future1, future2, future3
 	
 	CompletableFuture<Object> anyOfFuture = CompletableFuture.anyOf(future1, future2, future3);
@@ -309,6 +310,7 @@ sample 2 - CompletableFuture.anyOf():
 ### CompletableFuture Exception Handling  
 
 - Handle exceptions using exceptionally() callback
+	
 	CompletableFuture<String> maturityFuture = CompletableFuture.supplyAsync(() -> {
 	}).exceptionally(ex -> {
 		System.out.println("Oops! We have an exception - " + ex.getMessage());
@@ -316,6 +318,7 @@ sample 2 - CompletableFuture.anyOf():
 	});
 
 -  Handle exceptions using the generic handle() method
+	
 	CompletableFuture<String> maturityFuture = CompletableFuture.supplyAsync(() -> {
 	}).handle((res, ex) -> {
 		if(ex != null) {
@@ -324,5 +327,6 @@ sample 2 - CompletableFuture.anyOf():
 		}
 		return res;
 	});  
-
+	
+	
 	

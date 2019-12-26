@@ -10,7 +10,7 @@ categories: tech-java-spring
 ## the art of scalability
 
 - storage layer: partitions
-- service layer: functional decomposition into micro-services
+- computing/service layer: functional decomposition into micro-services, controller-worker computing cluster.
 - replica: storage partition replication (leader, follower), micro-service replication (load balancing)
 
 ## four types of distributed system architecture

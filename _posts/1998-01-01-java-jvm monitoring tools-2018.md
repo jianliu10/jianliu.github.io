@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "JVM monitoring tools - jdk builtin commands and graphical interfaces"
+title:  "JVM monitoring tools - jdk built-in commands and graphical interfaces"
 date:   2018-01-02 13:15:42 -0500
 categories: tech-java-spring
 ---
