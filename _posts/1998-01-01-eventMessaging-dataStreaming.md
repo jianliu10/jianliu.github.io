@@ -20,12 +20,12 @@ use case: Finra FileX project, HERD project.
 
 the message payload contains the source data.
 
-#### Solace ESB 
+### Solace ESB 
 
 use case: TD stars Midas project
 
-#### Kafka 
+### Kafka 
 
-#### AWS Kienes
+### AWS Kienes
 
 use case: Finra logs delivery stream to DynamoDB no-sql database for Splunk system.
