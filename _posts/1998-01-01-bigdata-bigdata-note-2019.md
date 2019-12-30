@@ -59,9 +59,11 @@ have to be actual table data columns.
 
 		CLUSTERED BY (employee_id) INTO 2 BUCKETS
 
-### HQL engine		
+### HQL 		
 		
-yarn jobs
+simple query is run directly on HS2 server node. 
+
+complex query is run as a yarn job using mapreduce or spark computing engine on a cluster of nodes.
 
 		
 ## hadoop YARN resouece manager and node manager
