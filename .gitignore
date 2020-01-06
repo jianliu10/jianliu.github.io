@@ -11,3 +11,7 @@ jekyll-now-master/
 jekyll-theme-EasyBook-gh-pages/
 .my.md
 *.private.md
+_posts/cources/
+_posts/health/2019-12-26-health-depression.md
+_posts/teach/2019-12-28-financeRiskManagementApp.md
+_posts/teach/2019-12-29-tools.md
