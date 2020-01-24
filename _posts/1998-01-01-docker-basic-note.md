@@ -23,7 +23,7 @@ existing and well-established cloud registries like Docker Hub, Quay, Google Con
 ### Docker Repository
 Docker Repository is a collection of Docker images with the same name and different tags.
 
-repositoryName format: <namespace, usually userName>/<imageName>:Tag   
+repositoryName format: <namespace, usually userName>/&lt;imageName>:Tag   
 If Tag is not specified, Docker will apply the :latest tag to it.
 
 	docker login	// login to dockerhub.com
