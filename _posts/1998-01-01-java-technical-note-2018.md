@@ -14,7 +14,7 @@ builder, singleton, prototype, factory, abstract factory, adapter, wrapper, faca
 
 ## Spring framework two essential features:
 - IOC : Inversion of Control,  
-  @Component, auto create beans in container based on declaration
+  @Component, auto create beans in a container, based on declaration (xml based declaration or java class based declaration)
 - DI : Dependency Injection,  
   container engine auto search for beans with specific type or name, and assign beans to variables.
   @Autowired, @Qualifier, field injection, constructor/method parameter injection,   
@@ -48,14 +48,13 @@ embedded app server, tomecat or jetty;  app server conf/server.xml defines two c
 
 > @SpringBootApplication(scanBasePackages={,,}   
 > @SpringBootApplication is a convenience annotation that adds all of the following:   
-> @Configuration, @EnableAutoConfiguration, @ComponentScan, @EnableWebMvc,   
+> @Configuration, @EnableAutoConfiguration, @ComponentScan   
 > @EnableAutoConfiguration tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.  
-> @EnableWebMvc annotation is added automatically when it sees spring-webmvc jar on the classpath. This flags the app as a web app and activates key behaviors such as DispatcherServlet.  
 
 
 ### @EnableWebSecurity
 
-when spring-boot-starter-security jar is in classpath, spring-boot app automatically adds @EnableWebSecurity.   
+when spring-boot-starter-security jar or spring-security jar is in classpath, spring-boot app automatically adds @EnableWebSecurity annotation.   
 @EnableWebSecurity will activate key behaviors such as building HttpSecurity instance for SpringSecurityFilterChain (a DelegatingFilterProxy)
 
 		@EnableWebSecurity
@@ -88,7 +87,7 @@ when spring-boot-starter-security jar is in classpath, spring-boot app automatic
 
 ### @EnableWebMvc
 
-when spring-boot-starter-web or spring-webmvc jar is in classpath, @EnableWebMvc annotation is added automatically.  
+when spring-boot-starter-web jar or spring-webmvc jar is in classpath, spring-boot automatically adds @EnableWebMvc annotation.    
 @EnableWebMvc flags the app as a web app and activates key behaviors such as DispatcherServlet.
 
 spring-boot-starter-web -> spring-webmvc -> config filter chain -> last servlet is DispatcherServerlet -> route to a controller;   

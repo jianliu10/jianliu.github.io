@@ -10,8 +10,33 @@ categories: tech-java-spring
 Heap memory = younger generation + older generation + permanent generation  
 Younger generation = Eden area + two Survivor areas (From area, To area) 
 
-- scavenge GC (on Young generation only)
-- Full GC 
+- scavenge GC, minor GC (on Young generation only)
+- Full GC, major GC (on old generation) 
+
+## what objects are GC collectable
+
+### using reference count
+
+pros: simple  
+cons: can not resolve objects cyclic reference
+
+### using GC roots reachability 
+
+what objects are GC roots?
+
+- System Class. 被 Bootstrap ClassLoader 加载的类（rt.jar）
+- JNI Local. Native 代码中的局部变量
+- JNI Global. Native 代码中的全局变量（Global variable）
+- Thread Block. 从当前活动的线程块引用的对象。
+- Thread. 开始，但没有停止的线程。
+- Busy Monitor. 调用了 wait(), notify()方法的对象，或者 synchronize 的锁对象
+- Java Local. 局部变量. 例如，方法入参或方法中创建的本地变量仍然在线程的栈中
+- Native Stack
+- Finalizable. 在 finalizer queue 中的等待被 finalize 的对象
+- Unfinalized. 一个拥有 finalize 方法的对象，但是还没有被 finalized 并且不在 finalizer queue 中
+- Unreachable. 从任何其他根中都无法访问的对象，但是 MAT 将其标记为根，以保留不包含在分析中的对象。
+- Java Stack Frame
+
 
 ## GC implementation types
 
