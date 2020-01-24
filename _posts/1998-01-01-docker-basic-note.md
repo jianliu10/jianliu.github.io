@@ -10,11 +10,14 @@ https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
 ## Docker index vs docker Registry vs docker Repository
 
 ### docker index  
+
 https://index.docker.io, https://hub.docker.com/, http://dockerhub.com  
-login account.
+login account: see dev-accounts.md
 
 ### Docker Registry
+
 Docker Registry (Docker Trusted Registry – DTR) is an enterprise-grade storage solution for Docker images. 
+
 existing and well-established cloud registries like Docker Hub, Quay, Google Container Registry, Amazon Elastic Container Registry.
 
 ### Docker Repository
@@ -49,7 +52,7 @@ Steps:
 - run "Docker for Windows Installer.exe" with administrator. select Linux container type during installation.
 - start up docker VM with administrator, verify or change settings. 
 		first time start up docker VM, it will auto create a MobyLinuxVM VM instance using hyper-V driver based on docker VM settings.
-		docker vm user account: jianliu10 / D??Wrk(dou)1??9@
+		docker vm user account: see dev-accounts.md
 - start up Hyper-V manager, verify settings.
 - restart PC. It will add path C:\Program Files\Docker\Docker\resources\bin
 
