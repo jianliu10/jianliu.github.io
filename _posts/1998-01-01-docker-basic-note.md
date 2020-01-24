@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Docker technical notes - basic"
+date:   2020-01-24 00:00:00 -0500
+categories: tech-docker-container
+---
+
 https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
 
 ## Docker index vs docker Registry vs docker Repository
