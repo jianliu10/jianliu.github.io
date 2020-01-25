@@ -5,7 +5,11 @@ date:   2020-01-24 00:00:00 -0500
 categories: tech-docker-container
 ---
 
+## Resources
+
 https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
+
+book C:\UserResource\C_docker\books\'Docker技术入门与实战（第3版）.杨保华(详细书签).pdf' 
 
 ## Docker index vs docker Registry vs docker Repository
 
@@ -33,30 +37,26 @@ If Tag is not specified, Docker will apply the :latest tag to it.
 
 docker registry is similar to git, having remote registry & local registry .
 
-	
-## install docker on windows MobylinuxVM
-Steps:
-- set Intel Virtualization Tech enabled in BIOS 
-		To access your BIOS on a Windows 10 PC, you must follow these steps.
-		Navigate to settings. ...
-		Select Update & security.
-		Select Recovery from the left menu.
-		Click Restart Now under Advanced startup. ...
-		Click Troubleshoot.
-		Click Advanced options.
-		Select UEFI Firmware Settings.
-		Click Restart.
-		when pc restarts, it will enter BIOS set up -> security -> Intel Virtualization Tech, both enabled.
-- Windows settings -> turn on/off windows features -> virtual machine managers: Hyper-V manager app ON
-- go to https://cloud.docker.com/, download "Docker for Windows Installer.exe", 
-- run "Docker for Windows Installer.exe" with administrator. select Linux container type during installation.
-- start up docker VM with administrator, verify or change settings. 
-		first time start up docker VM, it will auto create a MobyLinuxVM VM instance using hyper-V driver based on docker VM settings.
-		docker vm user account: see dev-accounts.md
-- start up Hyper-V manager, verify settings.
-- restart PC. It will add path C:\Program Files\Docker\Docker\resources\bin
+## docker engine  
+docker engine is a group of static libs
 
-### config and start docker daemon
+## docker daemon   
+
+docker daemon is a Linux or WIN process, which runs from installed docker libs.  
+The docker daemon always runs as the root user.
+The docker daemon binds to a Unix socket instead of a TCP port. By default that Unix socket is owned by the user root and other users can only access it using sudo. 	
+
+check whether a docker daemon is running:   
+
+	docker version  
+	docker info
+
+
+## install docker on windows MobylinuxVM  
+
+steps:
+
+### config docker daemon
 
 docker-for-desktop Factory setting: docker-for-desktop use dockerNAT network. the windows host IP is 10.0.72.1, the MobylinuxVM IP is 10.0.72.2
 
@@ -65,14 +65,21 @@ To share the drive C:/, allow connections between the Windows host machine and t
 .
 config Norton firewall: click Norton -> settings -> firewall -> networking -> devices -> config -> add, add a device with "Docker, 10.0.72.2, FullTrust".
 
-click cube whale icon to start up docker daemon. It will also start up MobylinuxVM to run on.
+right click the cute whale icon -> 
+docker -> settings -> Network -> default Internal Virtual Switch : 10.0.75.0, this is the docker default network interface. 
+
+### start/stop docker daemon on Wdindows Linux VM 
+
+click cube whale icon to start/restart up docker daemon. It will also start up MobylinuxVM to run on if it is not started.
 right click docker icon -> settings -> configs, share C: drive, do NOT use kubernetes included in docker-for-desktop.
 restart docker
 
-docker client (CLI commands) connect to docker daemon with TCP socket. docker client sends request to docker daemon, and receives response.
+WIN: MobyLinuxVM. it is managed by Hyper-V manager  
+Hyper-V VM harddrive (it’s typically in C:\Users\Public\Documents\Hyper-V\Virtual hard disks)  
 
 
 ## install docker on Ubuntu of Windows 
+
 using Get Docker Script to perform the installation. This script is meant for quick & easy install	
 
 	sudo apt-get install -y  linux-image-extra-virtual
@@ -81,107 +88,111 @@ using Get Docker Script to perform the installation. This script is meant for qu
 Problem:  
 not able to start up docker deamon after installation. error "Your kernel does not support cgroup memory limit". give up using docker on Ubuntu on windows. 
   
-## docker engine - docker engine is a group of static libs
-  
-Extend Docker engine libs with plugins
-
-Install the vieux/sshfs plugin:
+Extend Docker engine libs with plugins.  
+E.g. Install the vieux/sshfs plugin:
 	docker plugin install --grant-all-permissions vieux/sshfs
 
-  
-## docker daemon   
 
-### Linux
-The docker daemon always runs as the root user.
-The docker daemon binds to a Unix socket instead of a TCP port. By default that Unix socket is owned by the user root and other users can only access it using sudo. 	
+### start/stop docker daemon on direct Linux machine
 
-###
-docker daemon is a Linux or WIN process, which runs from installed docker libs.
-check whether a docker daemon is running: 
-	docker version
-	docker info
+start on Linux: 
 
-### start/stop docker daemon   
-start on Linux : 
 	dockerd 	//	to start up a docker daemon, ctrl-c to stop docker daemon.
 	OR systemctl start|stop|restart docker
 	OR sudo service docker start|stop|restart
 	
-start on Windows: 
-click the cute whale icon to start a docker daemon. Docker Menu on the right side of the Windows Taskbar -> restart.
-docker -> settings -> Network -> default Internal Virtual Switch : 10.0.75.0, this is the docker default network interface. 
+### Docker daemon configs location
 
-
-### Docker daemon configs location:
-Linux: /etc/docker/daemon.json
+Linux: /etc/docker/daemon.json  
 Win: C:\ProgramData\docker\config\daemon.json, C:\Users\janef\AppData\Roaming\Docker\last-start-linux-daemon.json 
 
-### Docker Daemon Listen Socket:
-Docker listens on a socket by default: /var/run/docker.sock. but it can be overriden by addiing config in daemon.json "hosts: tcp://localhost:<port>"
+### Docker Daemon Listen Socket
+
+Docker daemon listens on a socket by default: /var/run/docker.sock. but it can be overriden by addiing config in daemon.json "hosts: tcp://localhost:<port>"
+
 Default: if there is no "hosts: ..." config in daemon.json, docker daemon default listens to /var/run/docker.sock.
-Connfigurable: daemon.json config file:
-use "hosts: tcp://0.0.0.0:2375" to config Docker Daemon listens on port 2375 on all network interfaces , 
-Use "hosts: tcp://10.0.75.1:2375" to config Docker Daemon to listen to a particular network interface.
-It is conventional to use port 2375 for un-encrypted, and port 2376 for encrypted communication with the daemon.
+
+Connfigurable: daemon.json config file:  
+use "hosts: tcp://0.0.0.0:2375" to config Docker Daemon listens on port 2375 on all network interfaces ,   
+Use "hosts: tcp://10.0.75.1:2375" to config Docker Daemon to listen to a particular network interface.  
+
+It is conventional to use port 2375 for un-encrypted, and port 2376 for encrypted communication with the daemon.  
+
 connect to docker daemon at locations: /var/run/docker.sock or tcp://10.0.75.1:2375
 
-### Docker Daemon log location:
-Linux: /var/log/messages
-Win: C:\Users\janef\AppData\Local\Docker 
+### Docker Daemon log location  
 
-### Docker Daemon data location:
-Linix: /var/lib/docker
-Win: C:\ProgramData\docker
+Linux: /var/log/messages  
+Win: C:\Users\janef\AppData\Local\Docker   
 
-### environment variables
+### Docker Daemon data location
+
+Linix: /var/lib/docker  
+Win: C:\ProgramData\docker  
+
+### environment variables  
+
 export DOCKER_TLS_VERIFY="1"
 export DOCKER_HOST="tcp://10.0.75.1:2375"
 export DOCKER_CERT_PATH="C:\Users\janef\.minikube\certs"
 
 
-## docker daemon running on Linux VM 
-When a docker daemon is started on Windows, it will start up MobyLinuxVM VM if it is not started. 
-WIN: MobyLinuxVM. it is managed by Hyper-V manager
-Hyper-V VM harddrive (it’s typically in C:\Users\Public\Documents\Hyper-V\Virtual hard disks)
+## docker CLI command "docker"
 
-## docker log
-@Each Docker daemon has a default logging driver, which each container uses unless you configure it to use a different logging driver.
-log driver: json-file (default), gelf, awslogs, gcplogs, splunk
-docker logs <container>
-docker service logs <container>
-docker log files: C:\Users\jaal\AppData\Local\Docker  
+"docker" CLI command connects to docker daemon with TCP socket. docker client sends request to docker daemon, and receives response.
 
-### Configure the default logging driver by passing the --log-driver option to the Docker daemon. Each log file contains information about only one container..
-dockerd --log-driver=<logDriver>
-# To set the logging driver for a specific container:
-docker run --log-driver=<logDriver> 
+## docker log  
+
+Each Docker daemon has a default logging driver, which each container uses unless you configure it to use a different logging driver.  
+
+log driver: json-file (default), gelf, awslogs, gcplogs, splunk  
+
+Configure the default logging driver by passing the --log-driver option to the Docker daemon. Each log file contains information about only one container.
+
+	dockerd --log-driver=<logDriver>
+
+To set the logging driver for a specific container:
+
+	docker run --log-driver=<logDriver> 
+
+	docker logs <container>
+	docker service logs <container>
+	docker log files: C:\Users\jaal\AppData\Local\Docker  
 
 
 ## login to a local Docker container - "docker exec"
-# run a command inside a running docker container. -i interactrive, -t pseudo terminal tty for stdin/stdout/stderr pipes 
-# SSH into a Container
-docker exec -it cibcapi_myaccounts_1 /bin/sh  // start a shell in container. 
-exit or Ctrl-D to exit SH shell
+
+run a command inside a running docker container. -i interactrive, -t pseudo terminal tty for stdin/stdout/stderr pipes 
+
+SSH into a Container:
+
+	docker exec -it cibcapi_myaccounts_1 /bin/sh  // start a shell in container. 
+	exit or Ctrl-D to exit SH shell
 
 Generically, use "docker exec -it <container id or name> <command> <args>" to execute whatever command you specify in the container.
-docker exec -it cardinal-db <cmd> <args>  // run "cmd args" in container
-docker exec -it cardinal-db ls -l  	// run in SH shell, suitable for interactive commands
-docker exec -it cardinal-db /bin/bash -c "ls -l"    // use 'exec' to run it. recommend for all non-interactive commands
 
+	docker exec -it cardinal-db <cmd> <args>  // run "cmd args" in container
+	docker exec -it cardinal-db ls -l  	// run in SH shell, suitable for interactive commands
+	docker exec -it cardinal-db /bin/bash -c "ls -l"    // use 'exec' to run it. recommend for all non-interactive commands
+
+	
 ## login to a remote docker container - "ssh"  
+
 see book C:\UserResource\C_docker\books\'Docker技术入门与实战（第3版）.杨保华(详细书签).pdf' chapter 10
 
-in remote container, install 'apt-get openssh-server' package, then start up SSH daemon service listening on port 22
-in remote container, import local host userA's public key (in /home/userA/.ssh/id_rsa.pub) into remote host /home/userB/.ssh/authorized_keys
-in remote contianer, map a remote host port123 to container port 22
-in local host, run 
-	ssh <userB>@<remote host ip address> -p <remote host port123>	// it will ask for 'userB' password. 
-	// this will login to the remote docker container as userB
+1. in remote container, install 'apt-get openssh-server' package, then start up SSH daemon service listening on port 22.  
+2. in remote container, import local host userA's public key (in /home/userA/.ssh/id_rsa.pub) into remote host /home/userB/.ssh/authorized_keys.  
+3. in remote contianer, map a remote host port123 to container port 22.  
+
+in local host, run this command. it will ask for 'userB' password. this will login to the remote docker container as userB
+ 
+	ssh \<userB>@\<remote host ip address> -p \<remote host port123>	
 
 ssh default login user is 'root' if not specified. 
 
 	
 ## docker network
+
 https://docs.docker.com/network/host/
 
 docker network driver types: none/bridge/overlay/remote  
