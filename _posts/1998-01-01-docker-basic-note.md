@@ -195,7 +195,7 @@ ssh default login user is 'root' if not specified.
 
 https://docs.docker.com/network/host/
 
-docker network driver types: none/bridge/overlay/remote  
+ docker network driver types: none/bridge/overlay/remote  
 - none - no network
 - bridge - default dirver type. is used to create a network inside a node.
 - overlay - is used to create a network across multiple nodes inside a cluster.
