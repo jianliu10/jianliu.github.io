@@ -9,15 +9,16 @@ categories: tech-docker-container
 
 The tool creates and manages a stack of docker services.
 
-use 'docker-compose' command to starts|stop service. it can also be used to build images. It needs a compose yaml file, by default is docker-compose.yml file
+use 'docker-compose' command to starts / stop service. it can also be used to build images. It needs a compose yaml file, by default is docker-compose.yml file
 
 sample files:
+
 	C:\UserData\capco\cardinal-model\docker-compose.yml
 	C:\UserData\capco\cardinal-infinispan\app.yml
 	C:\UserData\cibc-api\reference-rest-api\compose\docker-compose-oracle.yml
 	C:\UserData\cibc-api\reference-rest-api\compose\docker-compose-cibcapi.yml
 
-- build or rebuild image for a service
+### build or rebuild image for a service
 
 	docker-compose build <service-name> 	
 	
@@ -26,23 +27,29 @@ sample files:
 		  context: .
 		  dockerfile: cardinal-db-bootstrap-docker/Dockerfile
 
-- create and/or start a service and its containers from a docker-compose yaml file. --no-start : do not start containers.
+### create and/or start a service and its containers from a docker-compose yaml file. 
+
+--no-start : do not start containers.
 	
 	docker-compose [-f <docker-compose yaml file>] up [--no-start] -p \<project|app name> [\<service-name>]
 
-- stop a service. remove its containers, volumes and networks, but not images. 		
-  By default, anonymous volumes attached to containers will not be removed. You can override this with `-v`
+### stop a service. 
+
+remove its containers, volumes and networks, but not images. 		
+By default, anonymous volumes attached to containers will not be removed. You can override this with `-v`
   
 	docker-compose [-f <docker-compose yaml file>] down -v -p \<project|app name> [\<service-name>]	
 	
-- start, restart or stop an existing service and its containers
+### start, restart or stop an existing service and its containers
 
 	docker-compose start|restart|stop \<service-name>  
 	docker-compose rm \<service-name>  // remove stopped service and its containers
 	
   **Removing the service does not remove any volumes created by the service. Volume removal is a separate step.**
 
-- use "docker-compose run" or "docker run" to run a one-off command on a container. the command line options will override 		docker-compose yaml service config.
+### use "docker-compose run" or "docker run" to run a one-off command on a container. 
+
+the command line options will override 		docker-compose yaml service config.
 
 	docker-compose [-f <docker-compose yaml file>] run [options] \<service-name> [COMMAND] [ARGS...]
 	e.g. 

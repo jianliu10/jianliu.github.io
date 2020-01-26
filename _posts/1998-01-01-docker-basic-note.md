@@ -408,13 +408,14 @@ steps:
 	docker top \<container name or id>
 
 
-== errors and fixes
-ERROR: Windows named pipe error: The system cannot find the file specified. (code: 2)
-fix: docker vm is not started. start a docker vm on windows.
+## errors and fixes
 
-ERROR: standard_init_linux.go:178: exec user process caused "no such file or directory"
-fix: $userhome/.gitconfig git global config file, set : core.autocrlf = input
-check all those *.sh scripts added to docker image are ending with LF, not CRLF
+- ERROR: Windows named pipe error: The system cannot find the file specified. (code: 2)
+  fix: docker vm is not started. start a docker vm on windows.
+
+- ERROR: standard_init_linux.go:178: exec user process caused "no such file or directory"
+  fix: $userhome/.gitconfig git global config file, set : core.autocrlf = input
+  check all those *.sh scripts added to docker image are ending with LF, not CRLF
 
 
 

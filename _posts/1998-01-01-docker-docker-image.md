@@ -10,7 +10,7 @@ categories: tech-docker-container
 https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
 
    
-# 存出、载入、上传 image 
+## 存出、载入、上传 image 
 
 如果要导出image (镜像)到本地文件，可以使用docker save命令    
 	docker save -o nginx.tar nginx:latest
@@ -23,12 +23,14 @@ https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
 	docker push NAME[:TAG] | [REGISTRY_HOST[:REGISTRY_PORT]/]NAME[:TAG]
 
 
+##  创建镜像
 
-#  创建镜像：创建镜像的方法主要有三种:基于已有镜像的容器创建、基于本地模板导入、基于Dockerfile创建（后续详解）。
+创建镜像的方法主要有三种:基于已有镜像的容器创建、基于本地模板导入、基于Dockerfile创建（后续详解）。
+
 
 ## 基于已有镜像的容器创建
 
-该方法主要是使用docker commit命令。命令格式为docker   commit[OPTIONS]CONTAINER[REPOSITORY[:TAG]]，主要选项包括:
+该方法主要是使用docker commit命令。命令格式为docker commit[OPTIONS]CONTAINER[REPOSITORY[:TAG]]，主要选项包括:
 
        ·-a，--author="":作者信息;
 
