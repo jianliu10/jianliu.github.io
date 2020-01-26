@@ -1,19 +1,21 @@
 ---
 layout: post
-title:  "Docker technical notes - dockerfile"
+title:  "Docker technical notes - Dockerfile"
 date:   2020-01-24 00:00:00 -0500
 categories: tech-docker-container
 ---
 
+# docker tool
+
 https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
 
    
-# 存出、载入、上传镜像
+# 存出、载入、上传 image 
 
-如果要导出镜像到本地文件，可以使用docker save命令    
-	docker save -o nginx.tar nginx : latest
+如果要导出image (镜像)到本地文件，可以使用docker save命令    
+	docker save -o nginx.tar nginx:latest
 
-可以使用docker load将导出的tar文件再导入到本地镜像库     
+可以使用docker load将导出的tar文件再导入到local registry     
 	docker load < nginx.tar 
 	docker load --input nginx.tar
 
@@ -285,8 +287,3 @@ HEALTHCHECK NONE:禁止基础镜像中的健康检查。
 提高生成􏰀度:  如合理使用缓存，减少内容目录下的文件，或使 用.dockerignore文件指定等;
 调整合理的指令顺序:  在开启缓存的情况下，内容不变的指令尽量放在 前面，这样可以尽量复用;
 减少外部源的干扰:  如果确实要从外部引入数据，需要指定持久的地 址，并带有版本信息，让他人可以重复而不出错。
---------------------- 
-作者：He110_Wr0ld 
-来源：CSDN 
-原文：https://blog.csdn.net/DreamSeeker_1314/article/details/84403166 
-版权声明：本文为博主原创文章，转载请附上博文链接！

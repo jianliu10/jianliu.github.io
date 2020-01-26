@@ -195,7 +195,7 @@ ssh default login user is 'root' if not specified.
 
 https://docs.docker.com/network/host/
 
- docker network driver types: none/bridge/overlay/remote  
+docker network driver types: none/bridge/overlay/remote.  
 - none - no network
 - bridge - default dirver type. is used to create a network inside a node.
 - overlay - is used to create a network across multiple nodes inside a cluster.
@@ -204,113 +204,147 @@ https://docs.docker.com/network/host/
 there is a default already created network in a docker installation, network name "bridge" with driver type "bridge"
 
 	docker create network [--driver bridge] <networkName>	// the default driver type is bridge
-	docker connect <networkName> <containerName> 
-	docker disconnect <networkName> <containerName> 
+	docker network connect <networkName> <containerName> 
+	docker network disconnect <networkName> <containerName> 
 	docker network ls
 	docker network inspect <networkName>
-	docker network prune
-	docker network rm <networkName>
+	docker network prune		// cleanup network
+	docker network rm <networkName>		// remove network
 
 A container can join multiple networks. "docker run" can only accept one network in --network option. use "docker network connect" to join a container into another network. 
-	docker run -d -it --network <networkName> --name <containerName> <imageName:tag> <a dummy shell command like 'ls> 
-	docker network connect|disconnect <networkName> <containerName> 
+
+	docker run -d -it --network \<networkName> --name \<containerName> <imageName:tag>  
+	docker network connect|disconnect \<networkName> \<containerName> 
 
 docker exec -it <container name> /bin/sh
 
 From inside the container, you can connect to the Internet like google.com, 
-or other containers in the same network using their container name or subnet ip address.
+or other containers in the same network using their container name or subnet ip address.  
 you can NOT ping other containers in a different network.
-	e.g. ping google.com -c 2  // -c limit to 2 ping attemps
-	e.g.  ping -c 2 cibcapi_accounts-service_1 
+e.g.
 
-Containers on the default bridge network can only access each other by IP addresses
-	e.g. ping -c 2 172.18.0.1 
+	ping google.com -c 2  // -c limit to 2 ping attemps
+	ping -c 2 cibcapi_accounts-service_1 
 
-clean up networks which aren’t used by any containers
+Containers on the default bridge network can only access each other by IP addresses. 
+e.g.
+
+	ping -c 2 172.18.0.1 
+
+clean up networks which aren’t used by any containers:
+
 	docker network prune
  
 
-== docker volume. 
-# Volumes are never removed automatically, because to do so could destroy data.
-Named volumes have a specific source form outside the container, for example awesome:/bar.
-Anonymous volumes have no specific source so when the container is deleted, instruct the Docker Engine daemon to remove them.
+## docker volume
 
-types: bind mount (mounted to machine filesyste, used in dev), volume (mounted to docker vm storage, use in prd), tmpfs (mounted in machine memory)
-driver: local, NFS, cloud object storage system
+**Volumes are never removed automatically, because to do so could destroy data.**
 
-#docker vm folder starting with double forward slashes. e.g. //var/lib/docker.sock
-docker create volume <volume name>	// create a volume in docker vm disk
-docker volume ls
-docker volume inspect <volume name>
-docker volume rm <volume name>   
-#remove all volumes not used by at least one container:
-docker volume prune
+Named volumes have a specific source form outside the container, for example awesome:/bar.  
+Anonymous volumes have no specific source so when the container is deleted, instruct the Docker daemon to remove them.
 
-== docker build image
-# build a image from a Dockerfile. the built image is stored in local docker repository managed by docker engine.
-# The build is run by the Docker daemon, not by the CLI. The first thing a build process does is send the entire context (recursively) to the daemon. 
-# Traditionally, the Dockerfile is called Dockerfile and located in the root of the context. You use the -f flag with docker build to point to a Dockerfile anywhere in your file system
-docker build -t <repositoryName:tag> [-f /a/b/<Dockerfile>] <a build context path, which tells Docker where to look for any files that need to be added to the image>
+types:  
+- volume (mounted to docker vm storage, or cloud object storage system, use in prd), 
+- bind mount (mounted to local / NFS filesystem , used in dev), 
+- tmpfs (mounted to physical machine memory)
+
+driver:  
+- local, 
+- NFS, 
+- cloud object storage system (AWS S3, GC Storage)
+
+docker vm folder starting with double forward slashes. e.g. //var/lib/docker.sock
+
+	docker create volume <volume name>	// create a volume in docker vm disk
+	docker volume ls
+	docker volume inspect <volume name>
+	docker volume rm <volume name>   
+	docker volume prune		// remove all volumes not used by at least one container:
+
+	
+## docker image  
+
+build a image from a Dockerfile. the built image is stored in local docker registry managed by docker daemon.  
+The build is run by the Docker daemon, not by the CLI command 'docker'. The first thing a build process does is send the entire context (recursively) to docker daemon.   
+Traditionally, the Dockerfile is called Dockerfile and located in the root of the context. You use the -f option with docker build to point to a Dockerfile anywhere in your file system. \<build context path> argument tells CLI docker where to look for any files that need to be added to the image 
+
+	docker build -t \<imageName:tag> [-f /a/b/<Dockerfile>] \<build context path>
+	
+
+storeage driver: aufx, overlay2.  
+https://docs.docker.com/storage/storagedriver/overlayfs-driver/#image-and-container-layers-on-disk
+
+docker image commands:
+
+	// save docker image:
+	docker save -o <image archive file> IMAGE [IMAGE...]
+	// upload docker image to Docker Hub or a private registry
+	docker push IMAGE
+	docker image ls -a
+	docker rmi <image name or id>
+	// Create a new image in local registry from a container’s changes
+	docker commit
+	// '-a': remove all images which are not used by existing containers
+	docker image prune [-a]	
+	// To examine the layers on the filesystem, list the contents of 
+	ls -l /var/lib/docker/<storage-driver>/layers/
 
 
+## docker container 
 
-== docker image
-# https://docs.docker.com/storage/storagedriver/overlayfs-driver/#image-and-container-layers-on-disk
-# storeage driver: aufx, overlay2.  
-# save docker image:
-docker save -o <image archive file> IMAGE [IMAGE...]
-# upload docker image to Docker Hub or a private registry
-docker push IMAGE
-docker image ls -a
-docker rmi <image name or id>
-# To examine the layers on the filesystem, list the contents of 
-ls -l /var/lib/docker/<storage-driver>/layers/
-# Create a new image from a container’s changes
-docker commit
-# '-a': remove all images which are not used by existing containers
-docker image prune [-a]	
+CLI "docker run". create and start a container,  and run a one-off command on a container.  
+
+	docker run --rm -dit [--restart unless-stopped] --network <networkName> --name <containerName> <imageName:tag> <command> <args>
+	// not working e.g.: docker run -v "C:/UserApps/sam-app/hello_world":/var/task lambci/lambda:python3.7 sh echo "hello"
+
+"docker run" options:
+
+	-rm	//When you stop a container, it is not automatically removed unless you started it with the --rm flag.  
+	-dit: d - run in background, i - interactive, t - tty   
+	--restart unless-stopped : Restart the container unless it is explicitly stopped or Docker itself is stopped or restarted.
+	
+docker container commands:
+
+	docker ps // list all running containers
+	docker ps -a  // list all live (started or stopped) containers, same as management command 'docker container ls -a'
+	docker start <container-name or id>
+	docker stop <container-name or id>
+	docker rm <container-name or id>	// remove stopped container
+	docker logs -f <container-name or id>	//Fetch the logs of a container. -f Follow log output
+	docker inspect <containerName>		// Return low-level information on Docker objects
+	docker ps -s 	// To view the approximate file size of running containers. -s Display total file sizes
+	docker container prune		// remove all stopped containers
+	docker stats <container name or id>		// view resource usage statistics of a container
+	docker top <container name or id>		// view all running processes inside a container
+
+	
+## clean up docker vm host
+
+	docker system prune
+	docker system prune --volume 		// you must specify the --volumes flag to prune dangling docker vm storage volumes.
+	
+The command will remove:
+
+- all stopped containers
+- all networks not used by at least one container
+- all dangling images
+- all build cache
 
 
-== docker container
-# create and start a container,  and run a one-off command on a container
-# When you stop a container, it is not automatically removed unless you started it with the --rm flag
-# -dit: d - run in background, i - interactive, t - tty
-# --restart unless-stopped : Restart the container unless it is explicitly stopped or Docker itself is stopped or restarted.
-docker run --rm -dit [--restart unless-stopped] --network <networkName> --name <containerName> <repositoryName:tag> <command> <args>
--- not working: docker run -v "C:/UserApps/sam-app/hello_world":/var/task lambci/lambda:python3.7 sh echo "hello"
+## docker service
 
-docker ps // list all started containers
-docker ps -a  // list all started and stopped containers
-# same as 'docker container ls -a'
-docker start <container-name or id>
-docker stop <container-name or id>
-docker rm <container-name or id>	// remove stopped container
-docker logs -f <container-name or id>
-docker inspect <containerName>
-# To view the approximate size of a running container:
-docker ps -s 
-#remove all stopped containers
-docker container prune
+use 'docker service' management command to start/stop/remove a service and its containers
 
-== clean up docker host
-# This will remove:
-        - all stopped containers
-        - all networks not used by at least one container
-        - all dangling images
-        - all build cache
-docker system prune
-#  you must specify the --volumes flag for docker system prune to prune volumes.
-docker system prune --volume
+	docker service create -d --replicas=4 --name <serviceName> --mount source=myvol2,target=/app <image:tag>
+	docker service stop <serviceName>
+	docker service rm <serviceName>
 
-== docker service
-==== use 'docker' command to start/stop/remove a service and its containers
-docker service create -d --replicas=4 --name <serviceName> --mount source=myvol2,target=/app <image:tag>
-docker service stop <serviceName>
-docker service rm <serviceName>
-# Removing the service does not remove any volumes created by the service. Volume removal is a separate step.
+Removing the service does not remove any volumes created by the service. Volume removal is a separate step.
   
 
-## PORTAINER - dockerUI, manages docker containers on local host or docker swam:
+## dockerUI PORTAINER  
+
+PORTAINER web UI manages docker containers on a docker vm host or a docker swam:
 
 find out Docker VM IP: run 'ipconfig'
 
@@ -322,14 +356,19 @@ Ethernet adapter vEthernet (DockerNAT):
    Default Gateway . . . . . . . . . :
    
 steps:
---1. run "docker volume create portainer_data"  // if using "docker run -v portainer_data:/data ..."
-1. docker setting -> Shared Drive, select "C:"
-   create folder C:\\ProgramData\\Portainer // if using "docker run -v C:\\ProgramData\\Portainer:/data ..."
+
+1. create a volume in vm host storage or a folder in local host storage.  
+
+	run "docker volume create portainer_data"  // if using "docker run -v portainer_data:/data ..."  
+	OR
+	docker setting -> Shared Drive, select "C:"
+	create folder C:\\ProgramData\\Portainer // if using "docker run -v C:\\ProgramData\\Portainer:/data ..."
    
-2. Open the Docker Menu on the right side of the Windows Taskbar and go to Settings (3rd. Option).
-	On the Tab general, activate the option Expose daemon on tcp://localhost:2375 without TLS (last Option). 
+3. Open the Docker Menu on the right side of the Windows Taskbar and go to Settings (3rd. Option).
+	On the Tab general, activate the option "Expose daemon on tcp://localhost:2375 without TLS" (last Option). 
 	
-3. open a PowerShell with administrator rights and type the following:
+4. open a PowerShell with administrator rights and type the following:
+	
 	netsh interface portproxy add v4tov4 listenaddress=10.0.75.1 listenport=2375 connectaddress=127.0.0.1 connectport=2375
 	netsh advfirewall firewall add rule name="docker management" dir=in action=allow protocol=TCP localport=2375	
 	
@@ -344,28 +383,38 @@ steps:
 	# if do not set firewall rule for TCP 2375 port, portainer container can not connect to Docker Daemon (connecting timeout)
 	
 4. start the Portainer container using an user-mode PowerShell
+
 	docker run -d -p 9000:9000 -v C:\\ProgramData\\Portainer:/data --name portainer portainer/portainer:1.18.1 -H tcp://10.0.75.1:2375
-		Note: 1. where "portainer/portainer" is the repository name.
-			  2. connect to Docker Deamon at tcp://10.0.75.1:2375. This is portainer specific parameter
-			  3. portainer container HTTP port: 9000. -p <vm host port>:<container port>. 
-			     docker also automatically creates a portproxy from <vm host ip>:port to <localhost ip>:port
+	Note: 
+		1. where "portainer/portainer" is the repository name.
+		2. connect to Docker Deamon at tcp://10.0.75.1:2375. This is portainer specific parameter
+		3. portainer container HTTP port: 9000. -p <vm host port>:<container port>. 
+				 docker also automatically creates a portproxy from <vm host ip>:port to <localhost ip>:port
+
 	docker ps -a
-    docker logs -f <a randomly generated container name>
-	if portainer container is not started, run "docker start <portainer container id>"
+    docker logs -f <container name or id>
+	docker start <portainer container id>	// if portainer container is not started
+
 5. http://localhost:9000 -> admin account: admin / admin123 -> 
-	5.1 endpoints -> add endpoint -> create "A docker daemon" endpoint, url "10.0.75.1:2375" to connect to Docker Daemon.
+	1. endpoints -> add endpoint -> create "A docker daemon" endpoint, url "10.0.75.1:2375" to connect to Docker Daemon.
 
 	
-== container runtime metrics
-# CPU, MEM, Network IP metrics for containers.
-docker stats [container ...]
+## container runtime metrics
+
+**CPU, MEM, Net/IO, Block/IO, PIDs metrics for containers**
+
+	docker ps 
+	docker stats \<container name or id>
+	docker top \<container name or id>
 
 
 == errors and fixes
 ERROR: Windows named pipe error: The system cannot find the file specified. (code: 2)
-fix: docker machine is not started. start a docker machine on windows.
+fix: docker vm is not started. start a docker vm on windows.
 
 ERROR: standard_init_linux.go:178: exec user process caused "no such file or directory"
 fix: $userhome/.gitconfig git global config file, set : core.autocrlf = input
 check all those *.sh scripts added to docker image are ending with LF, not CRLF
+
+
 
