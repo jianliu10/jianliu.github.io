@@ -52,7 +52,9 @@ embedded app server, tomecat or jetty;  app server conf/server.xml defines two c
 > @EnableAutoConfiguration tells Spring Boot to start adding beans based on classpath settings, other beans, and various property settings.  
 
 
-### @EnableWebSecurity
+## spring-security
+
+@EnableWebSecurity
 
 when spring-boot-starter-security jar or spring-security jar is in classpath, spring-boot app automatically adds @EnableWebSecurity annotation.   
 @EnableWebSecurity will activate key behaviors such as building HttpSecurity instance for SpringSecurityFilterChain (a DelegatingFilterProxy)
@@ -97,34 +99,34 @@ WebMvcConfigurer interface, WebMvcConfigurerAdapter abstract class, WebMvcConfig
 WebMvcAutoConfiguration, WebMvcAutoConfigurationAdapter  
 
 
-#### maps from URI to controller object and methods
+### maps from URI to controllers and methods
 
 @EnableWebMvc will auto created two beans RequestMappingHandlerMapping and RequestMappingHandlerAdapter
   
 DispatcherServlet uses the two beans to map URI:
 
 -RequestMappingHandlerMapping bean maps from URI to handler object at type level   
--RequestMappingHandlerAdapter bean maps from URI to method 
+-RequestMappingHandlerAdapter bean maps from URI to handler method 
 
 
-#### marshall/unmarshall data from POJO to/from http request/response body
+### HttpMessageConverters
 
-HttpMessageConverters is used to marshall/unmarshall data in http request/response body 
+HttpMessageConverters marshall/unmarshall data from POJO to/from http request/response body
 
-#### default HttpMessageConverters
+#### default HttpMessageConverters. 
 
 @EnableWebMvc will pre-enable the following HttpMessageConverters instances by default:  
 
-		ByteArrayHttpMessageConverter – converts byte arrays
-		StringHttpMessageConverter – converts Strings
-		ResourceHttpMessageConverter – converts org.springframework.core.io.Resource for any type of octet stream
-		SourceHttpMessageConverter – converts javax.xml.transform.Source
-		FormHttpMessageConverter – converts form data to/from a MultiValueMap<String, String>.
-		Jaxb2RootElementHttpMessageConverter – converts Java objects to/from XML (added only if JAXB2 is present on the classpath)
-		MappingJackson2HttpMessageConverter – converts JSON (added only if Jackson 2 is present on the classpath)
-		MappingJacksonHttpMessageConverter – converts JSON (added only if Jackson is present on the classpath)
-		AtomFeedHttpMessageConverter – converts Atom feeds (added only if Rome is present on the classpath)
-		RssChannelHttpMessageConverter – converts RSS feeds (added only if Rome is present on the classpath)
+	ByteArrayHttpMessageConverter – converts java byte arrays to/from octet-stream
+	StringHttpMessageConverter – converts Java Strings to/from text/plain
+	ResourceHttpMessageConverter – converts org.springframework.core.io.Resource to/from octet-stream
+	SourceHttpMessageConverter – converts javax.xml.transform.Source
+	FormHttpMessageConverter – converts MultiValueMap<String, Collection> to/from form data
+	Jaxb2RootElementHttpMessageConverter – converts Java objects to/from XML (added only if JAXB2 is present on the classpath)
+	MappingJackson2HttpMessageConverter – converts Java objects to/from JSON (added only if Jackson2 is present on the classpath)
+	MappingJacksonHttpMessageConverter – converts Java objects to/from JSON (added only if Jackson is present on the classpath)
+	AtomFeedHttpMessageConverter – converts Java objects to/from Atom feeds (added only if Rome is present on the classpath)
+	RssChannelHttpMessageConverter – converts Java objects to/from RSS feeds (added only if Rome is present on the classpath)
  
 #### Customize HttpMessageConverters. 
 
@@ -166,12 +168,13 @@ xml based configuration sample:
 		<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller" />
 	
 	
-#### ControllerAdvice component class
+### ControllerAdvice component class
 
 @ControllerAdvice annotation
+
 classes: ResponseEntity<Object>, ResponseEntityExceptionHandler  
 
-- @ExceptionHandler annotation  
+1. @ExceptionHandler annotation  
 	
 	@ControllerAdvice
 	public class MyResponseEntityExceptionHandler  {
@@ -184,7 +187,7 @@ classes: ResponseEntity<Object>, ResponseEntityExceptionHandler
 		}
 	} 
  
-- RequestBodyAdvice interface
+2. RequestBodyAdvice interface
 	
 	@ControllerAdvice
 	public class DecryptionAdvice implements RequestBodyAdvice {
@@ -201,7 +204,7 @@ classes: ResponseEntity<Object>, ResponseEntityExceptionHandler
 		}
 	} 
 
-- ResponseBodyAdvice interface
+3. ResponseBodyAdvice interface
 	
 	@ControllerAdvice
 	public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
@@ -224,7 +227,7 @@ classes: ResponseEntity<Object>, ResponseEntityExceptionHandler
 use maven plugin to generate ApiClient and api model classes from swagger2 API.   
 ApiClient use apache http client package to do remote http request/response.
 
-2.. use Spring RestTemplate, 
+2. use Spring RestTemplate, 
 
 	@Autowired RestTemplate restTemplate
 	
