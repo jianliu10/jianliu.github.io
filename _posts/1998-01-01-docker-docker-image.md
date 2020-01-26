@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Docker technical notes - Dockerfile"
+title:  "Docker technical notes - docker images"
 date:   2020-01-24 00:00:00 -0500
 categories: tech-docker-container
 ---
