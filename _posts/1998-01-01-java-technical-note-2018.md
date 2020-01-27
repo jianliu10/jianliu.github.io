@@ -12,13 +12,16 @@ categories: tech-java-spring
 builder, singleton, prototype, factory, abstract factory, adapter, wrapper, facade, proxy, chain of responsibility, , iterator, mediator, observer, visitor, strategy, memento, template
  
 
-## Spring framework two essential features:
+## Spring framework two essential features
+
 - IOC : Inversion of Control,  
-  @Component, auto create beans in a container, based on declaration (xml based declaration or java class based declaration)
+  @Component, Spring auto creates beans in a container by using declarations. xml based declaration,  java class based declaration
+  
 - DI : Dependency Injection,  
   container engine auto search for beans with specific type or name, and assign beans to variables.
   @Autowired, @Qualifier, field injection, constructor/method parameter injection,   
   @Value - inject values from property files
+  
 - AOP: Aspect Oriented Programming
 
 Spring bean scopes: singleton, prototype, request, session, spring-batch's step
@@ -265,23 +268,6 @@ SQL injection occurs when building a sql string by concateing parameter values.
 Solution: use SQL parameters in sql, named parameter or positional parameter. PreparedStatement and setXXXParameter().  
 
 
-## hibernate ## 
-
-- level 1 cache  
-  a entity cache at session level. level 1 cache is enabled by hibernate by default.  
-
-- level 2 cache  
-  a entity cache at session factory level (shared by all sessions, application level cache). level 2 cache is not enabled by hibernate by default, need to be enabled.  
-
-- early fetch, lazy fetch  
-  early fetch hit the db and populate the entity object properties. lazy fetch initially create a proxy object with only ID in it. when a entity's property is accessed, it will then hit the DB to fetch the row data and populate the entity's properties.  
-
-- get() vs load()  
-	- get(class, id) is basic programming. It always eager fetch. if ID not exist in db, get() return null object, no exception. 
-	- load(class,id) is advanced programming. It always lazy fetch. If ID not exists in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
-
-- @OnetoOne, @OneToMany, @ManyToMany
- 
 ## Spring @Component
 
 In Spring @Component, @Service, @Controller, and @Repository are Stereotype annotations
@@ -301,20 +287,217 @@ In Spring @Component, @Service, @Controller, and @Repository are Stereotype anno
 
 - We cannot create a bean of a third-party class using @Component where as we can create a bean of a third-party class using @Bean. 
 
+
+## @Controller
+
+**why use @Controller not @Component?** We can only use @RequestMapping on @Controller annotated classes.    
+
+spring-webmvc scans the classes annotated with @Controller and create RequestMappingHandlerMapping for the controllers.   
+spring-webmvc scans @RequestMapping annotations within the controller classes, and create RequestMappingHandlerAdapter for the methods.   
+  
  
+## persistence entity model classes
+
+@OnetoOne, @OneToMany, @ManyToMany  
+
+		import javax.persistence.Column;
+		import javax.persistence.EntityListeners;
+		import javax.persistence.GeneratedValue;
+		import javax.persistence.GenerationType;
+		import javax.persistence.Id;
+		import javax.persistence.MappedSuperclass;
+		import javax.persistence.Temporal;
+		import javax.persistence.TemporalType;
+		import javax.persistence.Version;
+		import javax.persistence.JoinColumn;
+		import javax.persistence.OneToOne;
+		import javax.persistence.Table;
+
+
+		import org.springframework.data.annotation.CreatedBy;
+		import org.springframework.data.annotation.CreatedDate;
+		import org.springframework.data.annotation.LastModifiedBy;
+		import org.springframework.data.annotation.LastModifiedDate;
+		import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+		/**
+		 * A base entity class that provides auditing properties.
+		 */
+		@MappedSuperclass
+		@EntityListeners(AuditingEntityListener.class)
+		public abstract class BaseEntity<U> {
+
+			@Id
+			@Column(name = "id", nullable = false)
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Long id;
+
+			@CreatedBy
+			@Column(name = "crtd_by")
+			private U createdBy;
+
+			@CreatedDate
+			@Temporal(TemporalType.TIMESTAMP)
+			@Column(name = "crtd_date")
+			private Date createdDate;
+
+			@LastModifiedBy
+			@Column(name = "last_mdfd_by")
+			private U lastModifiedBy;
+
+			@LastModifiedDate
+			@Temporal(TemporalType.TIMESTAMP)
+			@Column(name = "last_mdfd_date")
+			private Date lastModifiedDate;
+
+			@Version
+			@Column(name = "vrsn")
+			private Integer version;
+		}
+
+		
+		@Entity
+		@Table(name = "aplcn")
+		public class ApplicationEntity extends BaseEntity<String> {
+
+			@Basic
+			@Column(name = "code", nullable = false, updatable = false, length = 255)
+			@NotNull @NotEmpty
+			private String code;
+
+			@Basic
+			@Column(name = "name", nullable = false, length = 30)
+			@NotNull @NotEmpty
+			private String name;
+
+			@ManyToOne(fetch = FetchType.LAZY)
+			@JoinColumn(name = "dept_id")
+			private DepartmentEntity department;
+
+			@OneToMany(fetch = FetchType.LAZY, mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)
+			private Collection<ApplicationSpaceEntity> directories = new ArrayList<>();
+		}	
+	
+	
+		@Entity
+		@Table(name = "aplcn_space")
+		public class ApplicationSpaceEntity extends BaseEntity<String> {
+		
+			@ManyToOne
+			@JoinColumn(name = "aplcn_id", referencedColumnName = "id")
+			private ApplicationEntity application;
+			
+			@OneToOne(fetch = FetchType.LAZY, mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
+			private MetadataEntity metadata;
+		}
+	
+ 
+		@Entity
+		@Table(name = "aplcn_space_mtdt")
+		public class MetadataEntity extends BaseEntity<String> {
+
+			@OneToOne(fetch = FetchType.LAZY)
+			@JoinColumn(name = "aplcn_space_id", referencedColumnName = "id", nullable = false)
+			private ApplicationSpaceEntity space;
+		}
+
+	
 ## why use @repository not @component 
 
-@Repository’s job is to catch checked persistence exceptions and re-throw them as one of Spring’s unchecked DataAccessException.  
- 
-PersistenceExceptionTranslationPostProcessor bean. This bean post processor adds an advisor (AOP proxy) to pointcuts(methods of the beans that’s annotated with @Repository) so that any checked exceptions are caught and then rethrown as one of Spring’s unchecked DataAccessException.
+- @EnableJpaRepositories(basePackages="...")  
+  with @EnableJpaRepositories, Spring-data automatically creates repository implementation classes for each of the scanned Repository interfaces. 
 
+	@Configuration
+	@EnableTransactionManagement
+	@EnableJpaAuditing
+	@EnableJpaRepositories(
+			basePackages = "org.finra.filex.dal.newdal"
+	)
+	public class DaoConfig {
+
+		@Primary
+		@Bean(name = "dataSource")
+		@ConfigurationProperties(prefix = "spring.datasource.hikari")
+		public DataSource dataSource() {
+			return DataSourceBuilder.create().type(HikariDataSource.class).build();
+		}
+
+		@Primary
+		@Bean(name = "entityManagerFactory")
+		public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, @Qualifier("dataSource") DataSource dataSource, JpaProperties jpaProperties) {
+			LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+			factoryBean.setDataSource(dataSource);
+			factoryBean.setPackagesToScan("org.finra.filex.model.newjpa");
+			factoryBean.setPersistenceUnitName("dao");
+
+			HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+			adapter.setDatabasePlatform(jpaProperties.getDatabasePlatform());
+			adapter.setGenerateDdl(jpaProperties.isGenerateDdl());
+			adapter.setShowSql(jpaProperties.isShowSql());
+			factoryBean.setJpaVendorAdapter(adapter);
+
+			factoryBean.setJpaPropertyMap(jpaProperties.getProperties());
+			Map<String, Object> hibernateProperties = jpaProperties.getHibernateProperties(new HibernateSettings());
+			factoryBean.setJpaPropertyMap(hibernateProperties);
+			return factoryBean;
+		}
+
+		@Primary
+		@Bean(name = "transactionManager")
+		public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
+			JpaTransactionManager manager = new JpaTransactionManager(entityManagerFactory);
+			return manager;
+		}
+	}	
+
+	public interface ApplicationRepository extends JpaRepository<ApplicationEntity, Long>   
+	public interface JpaRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T>
+	public interface PagingAndSortingRepository<T, ID> extends CrudRepository<T, ID>  
+	public interface CrudRepository<T, ID> extends Repository<T, ID>
+	
+- one EntityManagerFactory bean for one persistence unit
+  One persistence unit includes: data source, entity model classes, JPA properties settings, JPA implementation properties settings.
+	
+- @Repository AOP proxy   
+  AOP proxy addes a AfterThrowing advice (PersistenceExceptionTranslationPostProcessor bean) to pointcuts(repository bean methods ). The aspect catches checked persistence exceptions and re-throw them as one of Spring’s unchecked DataAccessException.  
+ 
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
 	
-## why use @Controller not @Component 
+## hibernate - JPA implementation provider
 
-We can only use @RequestMapping on @Controller annotated classes.  
-The DispatcherServlet scans the classes annotated with @Controller and detects @RequestMapping annotations within them. 
+- level 1 cache  
+  a entity cache at session level. level 1 cache is enabled by hibernate by default.  
+
+- level 2 cache  
+  a entity cache at session factory level (shared by all sessions, application level cache). level 2 cache is not enabled by hibernate by default, need to be enabled.  
+
+- early fetch, lazy fetch  
+  early fetch hit the db and populate the entity object properties. lazy fetch initially create a proxy object with only ID in it. when a entity's property is accessed, it will then hit the DB to fetch the row data and populate the entity's properties.  
+
+- get() vs load()  
+	- get(class, id) is basic programming. It always eager fetch. if ID not exist in db, get() return null object, no exception. 
+	- load(class,id) is advanced programming. It always lazy fetch. If ID not exists in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
+
+
+## spring-data for JPA
+
+	public interface ApplicationRepository extends JpaRepository<ApplicationEntity, Long> {
+		Optional<ApplicationEntity> findByCodeIgnoreCase(String code);
+		Collection<ApplicationEntity> findAllByDepartment_code(String code);
+		Optional<ApplicationEntity> findByDepartment_codeIgnoreCaseAndCodeIgnoreCase(String deptCode, String code);
+		Optional<ApplicationEntity> findByDirectories_trackings_TrackingId(String trackingId);
+	}
+
+	
+## spring-data for mongodb
+
+ 
+	
+## spring-batch
+
+Case Study: read from database (sql or stored procedure), write to a csv file.  
+MRI sample - /business-process-jobs/src/main/resources/com/tdsecurities/stars/bpe/file-extract
   
   
 ## spring-integration 
@@ -332,30 +515,27 @@ Reference Implementation Steps:
  
 3. output-channel (GenericMessage<String> xmlString) -> outbound-channel-adapter (adapt from java model a GenericMessage<String> to destination model a JMS XmlMessage), using JmsTemplace, send JMS messages to middleware Queue -> Destination is outbound-channel(JMS messages in middleware Queue)  
 
-
-## spring-batch
-
-Case Study: read from database (sql or stored procedure), write to a csv file.  
-MRI sample - /business-process-jobs/src/main/resources/com/tdsecurities/stars/bpe/file-extract
+## JMS
 
 
 ## AOP  
 
 AOP is a way for adding behavior to existing code without modifying that code. annotation driven, non-invasiveness.    
 
-AOP solves cross-cutting concern
-an aspect = pointcuts + advisors, 
+AOP solves cross-cutting concern.
+
+a aspect = pointcuts + advisors, 
 
 Two types of AOP programming:
 - Spring-AOP 
 - AspectJ AOP
 
-Both spring-AOP lib and AspectJ lib defines @Aspect/@Pointcut/@Around/@Before/@After/@AfterReturnning/@AfterThrowing annotations.  
+Both spring-AOP lib and AspectJ lib defines: @Aspect, @Pointcut, @Around, @Before, @After, @AfterReturnning, @AfterThrowing annotations.  
 
 
 ### Spring-AOP (default)
 
-Spring-AOP is one of the essential parts of the spring framework. the spring framework is based on IoC and AOP. The AOP is one of the most important parts of the framework.
+Spring-AOP is one of the essential parts of the spring framework. the spring framework is based on IoC, DI and AOP. The AOP is one of the most important parts of the framework.
 
 Spring-AOP creates proxies at spring container loading time. It is Runtime weaving using proxy.
 
@@ -365,9 +545,14 @@ Spring-AOP will build a proxy for your objects, using a JDKDynamicProxy if your 
 
 @EnableAspectJAutoProxy(proxyTargetClass = true) will force Spring container to always use CGLIB style subclass proxy.
 
-@Interface, @Aspect @Component or META-INFO/aop.xml,  @Around/@Before/@After, ProceedingJointPoint.proceed(), @Pointcut("execution(public * foo..*.*(..))"), @Pointcut("@annotation(annotation class name)"), @Pointcut("within(<package> or <interface> or <annotation class name>)")
+@Interface, @Aspect @Component or META-INFO/aop.xml,   
+@Around/@Before/@After,  
+ProceedingJointPoint.proceed(),  
+@Pointcut("execution(public * foo..*.*(..))"), 
+@Pointcut("@annotation(\<annotation class name>)"),  
+@Pointcut("within(\<package> or \<interface> or \<annotation class name>)")
 
-Spring Framework's support for AspectJ LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ aspects into the class files as they are being loaded into Spring context container. The focus of this section is on configuring and using LTW in the Spring application context container.
+Spring Framework's support for LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ style aspects into the class files as they are being loaded into Spring context container. The focus of this section is on configuring and using LTW in the Spring application context container.
 
 
 ### AspectJ 
@@ -384,12 +569,12 @@ AspectJ modifies class bytecodes at compilation time. Compile time weaving can o
 
 there are two major differences btwn Spring-AOP and AspectJ-AOP: 
 
-- the type of weaving. 
+- the type of weaving     
   Spring-aop approach is simpler and more manageable. But with the Spring AOP you can't use the all power of AOP because the implementation is done through proxies and not with modification of your bytecode.
   
   Spring AOP is basically a proxy instnace created by the container, so spring-AOP can only be applied to Spring beans. AspectJ AOP can be used to any java instances (beans or not-beans)
 
-- joinpoint definition.
+- joinpoint definition  
   1. spring-AOP can only be applied to Spring beans. AspectJ AOP can be used to any java instances (beans or not-beans).  
   2. the joinpoint definition in Spring-aop is restricted to method definition. While with AspectJ you can use the aspect in both methods and fields. 
 
@@ -553,12 +738,14 @@ test web request-response:
 
 ### tables
 
-- heap organized table (heap table), This is a standard Oracle table; 
+- heap organized table (heap table)  
+  This is a standard Oracle table; 
   A heap-organized table is a table with rows stored in no particular order. the term "heap" is used to differentiate it from an index-organized table or external table. If a row is moved within a heap-organized table, the row's ROWID will also change.  
   
-- index organized table (clustered index), the cluster key is the primary key, actual rows are stored in tree nodes.   
+- clustered index organized table    
+  A clustered key is the primary key, actual rows are stored in tree nodes.   
 
-- external table
+- external table  
   An external table is a table whose data is NOT stored within the Oracle database. Data is loaded from a file via an access driver (normally ORACLE_LOADER) when the table is accessed. One can think of an external table as a view that allows running SQL queries against files on a filesystem without the need to first loaded the data into the database.
   
 			CREATE TABLE t1 
@@ -587,53 +774,59 @@ test web request-response:
 
 execute the sql -> run "explain plan" -> analyze the dumped execution plan.
 
-Speed (hash join is faster since it access memory than b-tree index on disk:
+Speed (hash join is faster since it access memory, while b-tree index join access disk)
 	HASH JOIN > SORT-MERGE join > NESTED LOOPS join with b-tree index on second table. 
+	
 memory consumption in temp tablespece (hash join use more memory):
 	HASH JOIN == SORT-MERGE join > NESTED LOOPS join with b-tree index on second table. 
 
 analyze execute time, cost-based optimization (always in Oracle)
 
 
-### Oracle HASH Joins
+### Oracle HASH Joins, SORT-MERGE joins
 
 HASH joins are the usual choice of the Oracle optimizer when the memory is set up to accommodate them. In a HASH join, Oracle accesses one table (usually the smaller of the joined results) and builds a hash table on the join key in memory. It then scans the other table in the join (usually the larger one) and probes the hash table for matches to it. Oracle uses a HASH join efficiently only if the parameter PGA_AGGREGATE_TARGET is set to a large enough value. If MEMORY_TARGET is used, the PGA_AGGREGATE_TARGET is included in the MEMORY_TARGET, but you may still want to set a minimum.
 
-If you set the SGA_TARGET, you must set the PGA_AGGREGATE_TARGET as the SGA_TARGET does not include the PGA (unless you use MEMORY_TARGET as just described). The HASH join is similar to a NESTED LOOPS join in the sense that there is a nested loop that occurs—Oracle first builds a hash table to facilitate the operation and then loops through the hash table. When using an ORDERED hint, the first table in the FROM clause is the table used to build the hash table.
+If you set the SGA_TARGET, you must set the PGA_AGGREGATE_TARGET as the SGA_TARGET does not include the PGA (unless you use MEMORY_TARGET as just described). The HASH join is similar to a NESTED LOOPS join in the sense that there is a nested loop that occurs. Oracle first builds a hash table to facilitate the operation and then loops through the hash table. When using an ORDERED hint, the first table in the FROM clause is the table used to build the hash table.
 
 HASH joins can be effective when the lack of a useful index renders NESTED LOOPS joins inefficient. The HASH join might be faster than a SORT-MERGE join, in this case, because only one row source needs to be sorted, and it could possibly be faster than a NESTED LOOPS join because probing a hash table in memory can be faster than traversing a b-tree index.
 
-As with SORT-MERGE joins and CLUSTER joins, HASH joins work only on equijoins. As with SORT-MERGE joins, HASH joins use memory resources and can drive up I/O in the temporary tablespace if the sort memory is not sufficient (which can cause this join method to be extremely slow).
+As with SORT-MERGE joins and CLUSTER joins, HASH joins work only on equal joins. As with SORT-MERGE joins, HASH joins use memory resources and can drive up I/O in the temporary tablespace if the sort memory is not sufficient (which can cause this join method to be extremely slow).
 
 Finally, HASH joins are available only when cost-based optimization is used (which should be 100 percent of the time for your application running on Oracle 11g).
 
-Table 1 illustrates the method of executing the query shown in the listing that follows when a HASH join is used.
+Table 1 illustrates the method of executing the query shown in the listing that follows when a HASH join is used. Normally hash table is created on smaller table 'dept'. but here /*+ ordered */ hint instructs Oracle to create a hash table on first table 'emp'.
 
 	select /*+ ordered */ ename, dept.deptno
 	from emp, dept
 	where emp.deptno = dept.deptno
 
+### NESTED LOOPS joins
+
+optimization: create index on joined columns. the second table are a smaller table with high cardinality on joined column.
+
+
 ## Oracle
 
 ### Oracle 11G vs 12C
 
-Oracle 11g was released in 2008. G stands for grid. 
-- No cloud service, It Has no pluggable databases, there is no multitenant architecture, No in-memory capabilities, Has no JSON type support, Comparatively lower performance in I/O throughput and response time.
+- Oracle 11g was released in 2008. G stands for grid.  
+	- 11g has no cloud service, It Has no pluggable databases, there is no multitenant architecture, No in-memory capabilities, Has no JSON type support, Comparatively lower performance in I/O throughput and response time.
 
-Oracle 12c was released in 2014, C stands for cloud.    
-- designed for the cloud. It provides Oracle database cloud service, 
-- It provides pluggable databases to support rapid provisioning and portability. It allows running multiple databases on the same hardware while maintaining the security and isolation among the databases.
-- there is multitenant architecture. It enables an Oracle database to function as a multitenant container database (CDB)
-- **Has in-memory capabilities that provide real-time analytics**
-- added JSON data type support, 
-- Comparatively higher performance in I/O throughput and response time.
+- Oracle 12c was released in 2014, C stands for cloud.    
+	- 12c is designed for the cloud. It uses container tech. It provides Oracle database service on cloud. 
+	- It provides pluggable databases to support rapid provisioning and portability. It allows running multiple databases on the same hardware while maintaining the security and isolation among the databases.
+	- there is multitenant architecture. It enables an Oracle database to function as a multitenant container database (CDB)
+	- **Has in-memory capabilities that provide real-time analytics**
+	- added JSON data type support, 
+	- Comparatively higher performance in I/O throughput and response time.
 
 
-### Oracle exadata?
+### Oracle exadata
 
 The Oracle Exadata is engineered to deliver **dramatically better performance**, cost effectiveness, and high availability for Oracle databases. 
 
-Oracle exadata is
+Oracle exadata is  
 - cloud-based architecture, running on private cloud or public cloud.
 - scale-out high performance database servers
 - scale-out storage servers with state-of-art PCI flash
@@ -654,40 +847,43 @@ Exadata can be purchased and deployed
 
 ### dimension types & dimension table types
 
-Types of Dimensions :
-- Conformed Dimension - separate dimension tables. creating consistency. The same dim table can be referenced by the multiple fact tables.
-- Degenerated Dimension – the dimension attributes are stored as part of the fact table and not in a separate dimension table. Usually used when a dimension has only one attribute.
-- Junk Dimension – A junk dimension is a single dimensional table with a combination of different and unrelated attributes. This is to avoid having a large number of foreign keys in the fact table. 
-- Role play dimension – It is a dimension table that has multiple valid relationships with a fact table. For example, a fact table may include foreign keys for both ship date and delivery date. But the same dimension attributes apply to each foreign key so the same dimension tables can be joined to the foreign keys.
+- Types of Dimensions :
+	- Conformed Dimension - separate dimension tables. creating consistency. The same dim table can be referenced by the multiple fact tables.
+	- Degenerated Dimension – the dimension attributes are stored as part of the fact table and not in a separate dimension table. Usually used when a dimension has only one attribute.
+	- Junk Dimension – A junk dimension is a single dimensional table with a combination of different and unrelated attributes. This is to avoid having a large number of foreign keys in the fact table. 
+	- Role play dimension – It is a dimension table that has multiple valid relationships with a fact table. For example, a fact table may include foreign keys for both ship date and delivery date. But the same dimension attributes apply to each foreign key so the same dimension tables can be joined to the foreign keys.
 
-* Slowly Changing Dimensions table types:
-- Type 1  is to over write the old value. (no history, overwrite the row) 
-- Type 2 is to add a new row. (keep history. Add columns "active_flag, effective_start_date, effective_end_date", multiple rows) 
-- Type 3 is to create a new column. (new value, old value in one rows)
+- Slowly Changing Dimensions table types:
+	- Type 1  is to over write the old value. (no history, overwrite the row) 
+	- Type 2 is to add a new row. (keep history. Add columns "active_flag, effective_start_date, effective_end_date", multiple rows) 
+	- Type 3 is to create a new column. (new value, old value in one rows)
 
 
-### fact types & fact tabel types
+### fact attribute types & fact table types
 
-Types of Fact attributes:
-- Additive: Additive fact attributes can be summed up through ALL of the dimensions in the fact table.
-- Semi-Additive: Semi-additive facts attributes can be summed up for some of the dimensions in the fact table, but not the others.
-- Non-Additive: Non-additive facts attributes cannot be summed up for any of the dimensions present in the fact table.
+- Types of Fact attributes:  
+	- Additive: Additive fact attributes can be summed up through ALL of the dimensions in the fact table.
+	- Semi-Additive: Semi-additive facts attributes can be summed up for some of the dimensions in the fact table, but not the others.
+	- Non-Additive: Non-additive facts attributes cannot be summed up for any of the dimensions present in the fact table.
 
-Types of Fact Tables:
-- Cumulative: This type of fact table describes what has happened over a period of time. For example, this fact table may describe the total sales by product by store by day. The facts for this type of fact tables are mostly additive facts. The first example presented here is a cumulative fact table.
-- Snapshot: This type of fact table describes the state of things in a particular instance of time, and usually includes more semi-additive and non-additive facts. The second example presented here is a snapshot fact table.
+- Types of Fact Tables:  
+	- Cumulative: This type of fact table describes what has happened over a period of time. For example, this fact table may describe the total sales by product by store by day. The facts for this type of fact tables are mostly additive facts. The first example presented here is a cumulative fact table.
+	- Snapshot: This type of fact table describes the state of things in a particular instance of time, and usually includes more semi-additive and non-additive facts. The second example presented here is a snapshot fact table.
 
 
 ## microservice, design patterns, RESTful API design  
 
 ### data join
 
-Use two types of designs to handle data join in microservice architecture:  
-- use public REST API to read data from other service, join data from other service and data from this servcie in the application,   
-- use data event to publish data changes from the data's master service to other services. save the data in the other service local db. then join in the service's local database,  
+Use two types of designs to handle data join in microservice architecture:   
+ 
+- join data at service application. use REST API to get data from other service, join data in the application.
+
+- join data at service local database. use data events to publish data changes from the data's master service to a topic. Other services subscribes to the topic and save the data events in the service local db. then join data at the service's local database,  
 
 
 ### distributed transactions design
+
 Always avoid distributed transactions. Instread, always use local transaction.
 
  
