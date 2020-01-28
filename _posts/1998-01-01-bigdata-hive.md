@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "(Draft) Big data technical notes - 2019"
+title:  "(Draft) Big data technical note - Hive & HDFS"
 date:   2019-12-15 00:00:00 -0500
-categories: tech-data-integration
+categories: tech-big-data
 ---
 
 # 2019 big data technical notes 
