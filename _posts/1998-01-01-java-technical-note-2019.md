@@ -7,6 +7,23 @@ categories: tech-java-spring
 
 # 2019 technical notes #
 
+## 2020 IT job market trend
+
+Enterprise Java applications:
+- Kafka (streaming data app, streaming data pipeline, streaming data store)
+- Spring Core, Spring Boot, Spring MVC, Spring Integration and Spring Security
+- Database development and tools with SQL, O/RM, Flyway, OLTP Database Tuning, etc.
+- UNIX (Linux) environment and scripting (bash, shell and python)
+- implementing integration solutions with RESTful Web Services
+- AWS development using EC2, EB, IAM, S3, SDK, CLI, Code Deploy, Code Commit, Lambda/Step Functions, Cloudfront, Cloudwatch, etc.
+- testing automation using Selenium, Cucumber, and Junit is preferred
+- NoSQL Database experience
+- Spring Batch experience
+
+big data applications:
+- Spark
+
+
 ## the art of scalability
 
 - computing/service layer: functional decomposition into micro-services, controller-worker computing cluster.
@@ -17,8 +34,8 @@ categories: tech-java-spring
 
 - modern three tiered architecture (SPA, api-gateway, micro-services)
 - sharding (Storage - data storage physical nodes, partitions, replica, key range/list based partitioning, columnar partitioning)
-- lambda architecture (Computation - small annonymous function that is short-lived run. used in analytics computation. )
-- event messaging  (Messaging - Kafka)
+- lambda serverless architecture (Computation - small annonymous function that is short-lived run. )
+- reactive programming  (event messaging, data streaming)
 
 
 ## mode based hashing vs consistent hashing  
@@ -67,12 +84,6 @@ Query - read operations
 use cases:  
 aws DocumentDB cluster contains a write node and a read node. upsert and delete requests are sent to the write node. the data change is replicated to the read node. Query requests are sent to the read node.
 
-## reactive-based programming (stream programming) 
-
-Inside a process, using a array / linked blocking queue. In a distributed system, use messaging queue.
- 
-reactive model, reactive architecture design, messaging queue, distributed, auto scale and deploy independently, container orchestrator kubernetes (k8s) 
- 
 ## Testing
 - unit test is less relevant in distributed system
 - Integration test is important in distributed system
@@ -80,4 +91,7 @@ reactive model, reactive architecture design, messaging queue, distributed, auto
 - debugging - log tracing with request ID throughout the plumbs.
 - performance debug - load testing - send test requests in production peak load traffic
 - failure/negative testing before release
+
+
+
  
