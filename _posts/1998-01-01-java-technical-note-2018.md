@@ -15,14 +15,16 @@ builder, singleton, prototype, factory, abstract factory, adapter, wrapper, faca
 ## Spring framework two essential features
 
 - IOC : Inversion of Control,  
-  @Component, Spring auto creates beans in a container by using declarations. xml based declaration,  java class based declaration
-  
+  Spring automatically creates beans in a container by using declarations. There is no need to write code to explicitly create objects.  
+    xml based declaration,  java class based declaration
+    
 - DI : Dependency Injection,  
-  container engine auto search for beans with specific type or name, and assign beans to variables.
-  @Autowired, @Qualifier, field injection, constructor/method parameter injection,   
+  Spring automatically searches for beans with specific type or name, and assign beans to variables (fields, properties). There is no need to write code to explicitly assigned value to variables.  
+    @Autowired, @Qualifier - field injection, constructor/method parameter injection,   
   @Value - inject values from property files
   
 - AOP: Aspect Oriented Programming
+  @EnableAspectJAutoProxy - use ApectJ style AOP description like @Apect, @Pointcut, @Advise, @Around, @Before, @After, @AfterThrowing, @AfterReturning etc. while runtime still using Spring's proxy based AOP.
 
 Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 
@@ -621,7 +623,8 @@ in @Before setup() method, do NOT need to explicitly call 'MockitoAnnotations.in
 	import org.mockito.ArgumentCaptor;
 	import org.mockito.Captor;
 
-### @RunWith(SpringRunner.class) (old. used before junit-jupiter version) 
+	
+### junit test with a Spring application context container - @RunWith(SpringRunner.class) 
 
 SpringRunner.class is an alias for the SpringJUnit4ClassRunner.class. This class requires JUnit 4.12 or higher.
 
@@ -650,15 +653,16 @@ Sample:
     	MockitoAnnotations.initMocks(this);  
      }  
 
-### @SpringJUnitConfig (latest, used with junit-jupiter version)	 
+#### internal @SpringJUnitConfig 
+
+It is a internal annotation. usually do not used by developer. use @SpringBootTest instead.  
+It does NOT create a spring app context container. It is used together with RunWith(SpringRunner.class)
 
 see C:\UserData\finra\edp\filex\filex-api\filex-api-service\src\test\java\org\finra\filex\service\impl\TokenServiceImplTest.java
 
-the annotation creates a spring app context container. the test instance is a bean in the container.
-
 @SpringJUnitConfig is a composed annotation that combines two:     
-- @ExtendWith(SpringExtension.class) from JUnit Jupiter 
-- @ContextConfiguration from the Spring TestContext Framework.
+- @ExtendWith(SpringExtension.class) from spring-test. Spring's implemtation of junit jupiter's callback interfaces.
+- @ContextConfiguration from the Spring TestContext Framework. It specifies the context configuration locations.
 
 lib: spring-test.jar v5
 
@@ -666,9 +670,14 @@ lib: spring-test.jar v5
 	import org.springframework.test.context.TestPropertySource;
 
 
-#### spring-boot app test
+#### @SpringBootTest
 
-spring-boot-test framework does not start up a spring-boot application.
+It does not start up a spring-boot application. It is used together with RunWith(SpringRunner.class)
+
+It specifies: 
+- context configuration locations; used to create a applicaton context container.
+- (optional) web Environment. used to create a web context container. It is only required when there is a REST web tier to test.
+- @ExtendWith(SpringExtension.class)  
 
 lib: spring-boot-test.jar v2
 
@@ -680,7 +689,10 @@ lib: spring-boot-test.jar v2
 
 spring-mvc test using MockMvc in spring-test jar.
 
-#### @SpringJUnitWebConfig
+#### internal @SpringJUnitWebConfig 
+
+It is a internal annotation. usually do not used by developer. use @SpringBootTest with WebEnvironment instead.  
+It does NOT create a spring app context container. It is used together with RunWith(SpringRunner.class)
 
 see C:\UserData\finra\edp\filex\filex-api\filex-api-rest\src\test\java\com\example\mockito\BaseRestIT.java
 
@@ -689,7 +701,7 @@ the annotation creates:
 - a web container.
 
 @SpringJUnitWebConfig is a composed annotation that combines:  
-- @ExtendWith(SpringExtension.class) from JUnit Jupiter. 
+- @ExtendWith(SpringExtension.class) from spring-test
 - @ContextConfiguration from the Spring TestContext Framework.
 - @WebAppConfiguration from the Spring TestContext Framework.
 
@@ -700,9 +712,15 @@ lib: spring-test.jar v5
 	import org.springframework.test.web.servlet.MockMvc;
 
 
-#### MockMvc
+#### MockMvc in org.springframework.test.web.servlet.MockMvc
 
-use @AutoConfigureMockMvc:
+MockMvc is used together with @SpringBootTest((.. WebEnvironment.MOCK). 
+
+There are two ways of coding:
+
+- use @AutoConfigureMockMvc
+  
+@AutoConfigureMockMvc creates and injects web tier beans into a application context container.
 
     @RunWith(SpringRunner.class)  
 	@SpringBootTest(classes={MyApplication.class}, webEnvironment=WebEnvironment.MOCK )  
@@ -712,7 +730,7 @@ use @AutoConfigureMockMvc:
     @Autowired    
     private MockMvc mockMvc;  
     
-or use manual setup:  
+- use manual setup:  
 
     org.springframework.test.web.servlet.MockMvc mockMvc =   					
 		org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(accountsController)  
@@ -732,7 +750,6 @@ test web request-response:
 			.andExpect(jsonPath("$.cardholderFilterOption[1]").exists())
             .andExpect(jsonPath("$.cardholderFilterOption[0].accountCustomerId").value("1"))
 
-			
 	
 ## database 
 

@@ -13,6 +13,15 @@ Younger generation = Eden area + two Survivor areas (From area, To area)
 - scavenge GC, minor GC (on Young generation only)
 - Full GC, major GC (on old generation) 
 
+Example - LinkedIn's tuning looks like this:
+
+	-Xmx6g -Xms6g -XX:MetaspaceSize=96m -XX:+UseG1GC
+	-XX:MaxGCPauseMillis=20 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=16M
+	-XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80
+
+where Metaspace is Perm space.
+The tuning looks fairly aggressive, but all of the brokers in that cluster have a 90% GC pause time of about 21ms, and they're doing less than 1 young GC per second.
+
 ## what objects are GC collectable
 
 ### using reference count

@@ -331,7 +331,7 @@ The command will remove:
 - all build cache
 
 
-## docker service
+## docker service in Swarm mode (not Kurb mode)
 
 use 'docker service' management command to start/stop/remove a service and its containers
 
@@ -407,7 +407,64 @@ steps:
 	docker stats \<container name or id>
 	docker top \<container name or id>
 
+## docker logging
 
+https://success.docker.com/article/logging-best-practices
+
+docker log-dirver valid values: 
+- localized log management: 
+	- none (No logs are available for the container and docker logs does not return any output.)
+	- local (Logs are stored in a custom format designed for minimal overhead)
+	- json-file(default) (Logs are stored in json format)
+	- journald 
+- centralized log management: syslog/ gelf / fluentd / splunk / awslog / gcplogs 
+
+When using Docker Community Engine, the docker logs command is only available on the following log drivers:
+- local  
+- json-file (Logs are stored in json format)
+- journald
+
+To configure the Docker daemon to default to a specific logging driver, set the value of log-driver to the name of the logging driver in the daemon.json file, which is located in /etc/docker/ on Linux hosts or C:\ProgramData\docker\config\ on Windows server hosts. 
+
+If you do not specify a logging driver, the default is json-file. Thus, the default output for commands such as docker inspect <CONTAINER> is JSON.
+
+The following example explicitly sets the default logging driver to syslog:
+
+	{
+	  "log-driver": "syslog"
+	}
+
+If the logging driver has configurable options, you can set them in the daemon.json file as a JSON object with the key log-opts. The following example sets two configurable options on the json-file logging driver:
+
+	{
+	  "log-driver": "json-file",
+	  "log-opts": {
+		"max-size": "10m",
+		"max-file": "3",
+		"labels": "production_status",
+		"env": "os,customer"
+	  }
+	}
+
+When you start a container, you can configure it to use a different logging driver than the Docker daemon’s default, using the --log-driver flag. If the logging driver has configurable options, you can set them using one or more instances of the --log-opt <NAME>=<VALUE> flag
+
+### Collecting Logs
+
+There's a few different ways to perform cluster-level logging with Docker Enterprise:  
+- At the node level using a logging driver
+- Using a logging agent deployed either as a global service with Swarm or as a DaemonSet with Kubernetes
+- Have applications themselves send logs to your logging infrastructure
+
+in localized log management, STDOUT / STDERR logs from a container are sent to docker daemon. docker daemon writes them to disk files. "docker logs" read logs from disk files.
+
+in centralized log management, STDOUT / STDERR logs from a container are sent to a central log service. 
+
+Most of the major logging utilities in the logging ecosystem have developed Docker logging or provided proper documentation to integrate with Docker. some organizations may choose to send all logs to a single logging infrastructure and then provide the right level of access to the functional teams.
+	
+The official nginx image creates a symbolic link from /var/log/nginx/access.log to /dev/stdout, and creates another symbolic link from /var/log/nginx/error.log to /dev/stderr, overwriting the log files and causing logs to be sent to the relevant special device instead. See the Dockerfile.
+
+The official httpd driver changes the httpd application’s configuration to write its normal output directly to /proc/self/fd/1 (which is STDOUT) and its errors to /proc/self/fd/2 (which is STDERR). See the Dockerfile.
+	
 ## errors and fixes
 
 - ERROR: Windows named pipe error: The system cannot find the file specified. (code: 2)
