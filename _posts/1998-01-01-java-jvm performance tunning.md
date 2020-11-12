@@ -50,7 +50,7 @@ hprof usage:
 	java -agentlib:hprof=cpu=times Hello.java
 	// Heap Allocation Profiling(heap=sites)
 	java -agentlib:hprof=heap=sites Hello.java
-	// Heap Dump(heap=dump) can generate more detailed Heap Dump information than the previous Haip Allocation Profiling
+	// Heap Dump(heap=dump) can generate more detailed Heap Dump information than the previous Heap Allocation Profiling
 	java -agentlib:hprof=heap=dump Hello.java
 	
 By default, heap profiling information (sites and dump) is written out to **java.hprof.txt** (ascii).  

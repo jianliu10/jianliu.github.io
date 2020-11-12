@@ -127,10 +127,10 @@ jmap is used to view heap memory usage, usually combined with jhat.
 	// view the process heap memory usage, including the GC algorithm used, heap configuration parameters and heap memory usage in each generation	
 	jmap -heap pid    
 	
-	// view the number and size statistics histogram of objects in heap memory. If you bring live, only live objects are counted, 
+	// view the number and size statistics histogram of objects in heap memory. If you bring live, only live objects are counted,   
    jmap -histo:live 21711 | more
    
-   // dump the process memory usage into the file with jmap, and then use jhat analysis to see. 
+   // dump the process memory usage into the file with jmap, and then use jhat analysis to see.   
    jmap -dump:format=b,file=dumpFileName pid
    jmap -dump:format=b,file=/tmp/dump.dat 21711  
    
