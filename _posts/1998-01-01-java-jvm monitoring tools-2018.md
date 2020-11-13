@@ -45,6 +45,10 @@ JVM TI: Java Virtual Machine Tool Interface
 jconsole (old), jvisualvm (new)
 
  
+## bin/jstatd	
+
+start up a jstatd daemon server for remote monitoring by jps or jstat tools. jstatd server register itself in a remote RMI registry. jstatd server is used by jps tool and jstat tool.
+
 ## bin/jps(JVM Process Status)
 
 If jps is run without specifying a hostid, it will look for instrumented JVMs on the local host. If started with a hostid, it will look for JVMs on the indicated host, using the specified protocol and port. A jstatd process is assumed to be running on the target host.
@@ -64,10 +68,6 @@ This example assumes that the jstatd server, with an internal RMI registry bound
 
 	su <userid>; jps
 	
-## bin/jstatd	
-
-start up a jstatd daemon server for remote monitoring by jps or jstat tools. jstatd server register itself in a remote RMI registry. jstatd server is used by jps tool and jstat tool.
-
 ## bin/jstat (JVM Statistics Monitoring Tool)
 
 	jstat [ generalOption | outputOptions vmid [interval[s|ms] [count]] ]
