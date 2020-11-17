@@ -4,6 +4,9 @@ _site
 vendor/bundle/gems/ffi-1.9.25/ext/ffi_c/libffi-x86_64-linux-gnu/include/ffitarget.h
 _posts/A_todo/
 _posts/private/
+_posts/career
+_posts/teach
+_posts/tech
 _posts/short-story/
 
 images_1/
@@ -11,7 +14,7 @@ jekyll-now-master/
 jekyll-theme-EasyBook-gh-pages/
 .my.md
 *.private.md
-_posts/cources/
 _posts/health/2019-12-26-health-depression.md
-_posts/teach/2019-12-28-financeRiskManagementApp.md
-_posts/teach/2019-12-29-tools.md
+_posts/investment/the-highest-yielding-stocks-on-the-tsx-plus-risk-data.xlsx
+_posts/investment/~*.xlsx
+_posts/home/

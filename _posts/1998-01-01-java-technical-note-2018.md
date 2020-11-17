@@ -16,15 +16,17 @@ builder, singleton, prototype, factory, abstract factory, adapter, wrapper, faca
 
 - IOC : Inversion of Control,  
   Spring automatically creates beans in a container by using declarations. There is no need to write code to explicitly create objects.  
-    xml based declaration,  java class based declaration
+    xml based declaration,  class based declaration
     
 - DI : Dependency Injection,  
-  Spring automatically searches for beans with specific type or name, and assign beans to variables (fields, properties). There is no need to write code to explicitly assigned value to variables.  
-    @Autowired, @Qualifier - field injection, constructor/method parameter injection,   
-  @Value - inject values from property files
+  Given annonation declarations like @Autowired, @Qualifier, @Value, Spring automatically searches for beans with specific type or name, and assign beans to variables like class fields, method params. There is no need to write code to explicitly assigned value to variables.  
+  @Autowired, @Qualifier - inject beans to class fields, constructor/method parameters.   
+  @Value - inject configuration values from property files
+  @EnableConfigurationProperties, @ConfigurationProperties(prefix="..."), inject configuration properties from property files
   
 - AOP: Aspect Oriented Programming
-  @EnableAspectJAutoProxy - use ApectJ style AOP description like @Apect, @Pointcut, @Advise, @Around, @Before, @After, @AfterThrowing, @AfterReturning etc. while runtime still using Spring's proxy based AOP.
+  @EnableAspectJAutoProxy - use ApectJ style AOP declarations like @Apect, @Pointcut, @Advise, @Around, @Before, @After, @AfterThrowing, @AfterReturning etc. while runtime still using Spring's proxy based AOP. 
+  need to include spring-aspectj.jar when using @EnableAspectJAutoProxy, which handles components marked with AspectJ's @Aspect annotation
 
 Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 
@@ -33,9 +35,9 @@ Spring has two types of beans:
 - regular beans
 
 
-## spring v5 property injection
+## spring-5 configuration injection
 
-see xml-json-converter project.
+see DECAF xml-json-converter project.
 
 	@EnableConfigurationProperties
 	@PropertySources = {,,}, 
@@ -49,7 +51,7 @@ see xml-json-converter project.
 
 ## spring-boot app
 
-embedded app server, tomecat or jetty;  app server conf/server.xml defines two connectors: http connector (8080), https connector (443), different ports;  
+embedded app server, tomcat or jetty;  app server conf/server.xml defines two connectors: http connector (8080), https connector (443), different ports;  
 
 > @SpringBootApplication(scanBasePackages={,,}   
 > @SpringBootApplication is a convenience annotation that adds all of the following:   
@@ -181,48 +183,48 @@ classes: ResponseEntity<Object>, ResponseEntityExceptionHandler
 
 1. @ExceptionHandler annotation  
 	
-	@ControllerAdvice
-	public class MyResponseEntityExceptionHandler  {
-
-		@ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
-		protected ResponseEntity<Object> handleConflict(
-		  RuntimeException ex, WebRequest request) {
-			String bodyOfResponse = "This should be application specific";
-			return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
-		}
-	} 
+		@ControllerAdvice  
+		public class MyResponseEntityExceptionHandler  {
+		
+			@ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
+			protected ResponseEntity<Object> handleConflict(
+			  RuntimeException ex, WebRequest request) {
+				String bodyOfResponse = "This should be application specific";
+				return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.CONFLICT, request);
+			}
+		} 
  
 2. RequestBodyAdvice interface
 	
-	@ControllerAdvice
-	public class DecryptionAdvice implements RequestBodyAdvice {
+		@ControllerAdvice
+		public class DecryptionAdvice implements RequestBodyAdvice {
 
-		@Override
-		public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
-			return inputMessage;
-		}
+			@Override
+			public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
+				return inputMessage;
+			}
 
-		@Override
-		public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-			encryptionUtil.decryptFieldsInObject(body, CaseInsensitiveMap.forMap(inputMessage.getHeaders().toSingleValueMap()));
-			return body;
-		}
-	} 
+			@Override
+			public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+				encryptionUtil.decryptFieldsInObject(body, CaseInsensitiveMap.forMap(inputMessage.getHeaders().toSingleValueMap()));
+				return body;
+			}
+		} 
 
 3. ResponseBodyAdvice interface
 	
-	@ControllerAdvice
-	public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
+		@ControllerAdvice
+		public class SurrogateAdvice<T> implements ResponseBodyAdvice<T> {
 
-		@Override
-		public T beforeBodyWrite(T body, MethodParameter returnType, MediaType selectedContentType,
-			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-			...
-			surrogateMapping.surrogate(fieldsWithSurrogateId, body);
+			@Override
+			public T beforeBodyWrite(T body, MethodParameter returnType, MediaType selectedContentType,
+				Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+				...
+				surrogateMapping.surrogate(fieldsWithSurrogateId, body);
 
-			return body;
-		}
-	} 
+				return body;
+			}
+		} 
 
 	
 ## Spring REST-API WS client side  
@@ -234,21 +236,21 @@ ApiClient use apache http client package to do remote http request/response.
 
 2. use Spring RestTemplate, 
 
-	@Autowired RestTemplate restTemplate
-	
-	msgConverters.add(new StringHttpMessageConverter())
-	restTemplate.setMessageConverters(msgConverters);
-	
-	String auth = username + ":" + password;
-	byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-	String authHeader = "Basic " + new String(encodedAuth);
-	HttpHeaders requestHeaders = new HttpHeaders();
-	requestHeaders.set("Authorization", authHeader);
-	requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-	requestHeaders.set("Accept", MediaType.TEXT_PLAIN_VALUE);
+		@Autowired RestTemplate restTemplate
+		
+		msgConverters.add(new StringHttpMessageConverter())
+		restTemplate.setMessageConverters(msgConverters);
+		
+		String auth = username + ":" + password;
+		byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+		String authHeader = "Basic " + new String(encodedAuth);
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.set("Authorization", authHeader);
+		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		requestHeaders.set("Accept", MediaType.TEXT_PLAIN_VALUE);
 
-	HttpEntity<List<? extends PublishData>> requestEntity =	new HttpEntity<List<? extends PublishData>>(publishDatas, headers);
-	ResponseEntity<String> response = restTemplate.exchange(restResourceUrl, HttpMethod.POST, requestEntity, String.class);
+		HttpEntity<List<? extends PublishData>> requestEntity =	new HttpEntity<List<? extends PublishData>>(publishDatas, headers);
+		ResponseEntity<String> response = restTemplate.exchange(restResourceUrl, HttpMethod.POST, requestEntity, String.class);
 
 working with JAXB marshalling for a class, we need to annotate the class with @XmlRootElement annotation. 	
 
@@ -259,15 +261,15 @@ Spring application supports both JSON as well as XML. It will even support XML r
 Content-Type header is “application/xml” or “application/json”    
 Accept header as “application/xml”  or “application/json”  
 
-import or export test case collection to a json file.
-
-command line to run postman test case collection: newman run <path to postman-collection.json>  
+steps
+1. import or export test case collection to a json file.
+2. command line to run postman test case collection: "newman run &lt;path to postman-collection.json&gt;"  
 
     	 
 ## SQL injection ##
 
 SQL injection occurs when building a sql string by concateing parameter values.   
-Solution: use SQL parameters in sql, named parameter or positional parameter. PreparedStatement and setXXXParameter().  
+Solution: use parameterized SQL statment, either named parameter or positional parameter. PreparedStatement and setXXXParameter().  
 
 
 ## Spring @Component
@@ -409,58 +411,52 @@ spring-webmvc scans @RequestMapping annotations within the controller classes, a
 - @EnableJpaRepositories(basePackages="...")  
   with @EnableJpaRepositories, Spring-data automatically creates repository implementation classes for each of the scanned Repository interfaces. 
 
-	@Configuration
-	@EnableTransactionManagement
-	@EnableJpaAuditing
-	@EnableJpaRepositories(
-			basePackages = "org.finra.filex.dal.newdal"
-	)
-	public class DaoConfig {
+		@Configuration
+		@EnableTransactionManagement
+		@EnableJpaAuditing
+		@EnableJpaRepositories(basePackages = "org.finra.filex.dal.newdal")
+		public class DaoConfig {
 
-		@Primary
-		@Bean(name = "dataSource")
-		@ConfigurationProperties(prefix = "spring.datasource.hikari")
-		public DataSource dataSource() {
-			return DataSourceBuilder.create().type(HikariDataSource.class).build();
-		}
+			@Primary
+			@Bean(name = "dataSource")
+			@ConfigurationProperties(prefix = "spring.datasource.hikari")
+			public DataSource dataSource() {
+				return DataSourceBuilder.create().type(HikariDataSource.class).build();
+			}
 
-		@Primary
-		@Bean(name = "entityManagerFactory")
-		public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, @Qualifier("dataSource") DataSource dataSource, JpaProperties jpaProperties) {
-			LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-			factoryBean.setDataSource(dataSource);
-			factoryBean.setPackagesToScan("org.finra.filex.model.newjpa");
-			factoryBean.setPersistenceUnitName("dao");
+			@Primary
+			@Bean(name = "entityManagerFactory")
+			public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, @Qualifier("dataSource") DataSource dataSource, JpaProperties jpaProperties) {
+				LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+				factoryBean.setDataSource(dataSource);
+				factoryBean.setPackagesToScan("org.finra.filex.model.newjpa");
+				factoryBean.setPersistenceUnitName("dao");
 
-			HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-			adapter.setDatabasePlatform(jpaProperties.getDatabasePlatform());
-			adapter.setGenerateDdl(jpaProperties.isGenerateDdl());
-			adapter.setShowSql(jpaProperties.isShowSql());
-			factoryBean.setJpaVendorAdapter(adapter);
+				HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+				adapter.setDatabasePlatform(jpaProperties.getDatabasePlatform());
+				adapter.setGenerateDdl(jpaProperties.isGenerateDdl());
+				adapter.setShowSql(jpaProperties.isShowSql());
+				factoryBean.setJpaVendorAdapter(adapter);
 
-			factoryBean.setJpaPropertyMap(jpaProperties.getProperties());
-			Map<String, Object> hibernateProperties = jpaProperties.getHibernateProperties(new HibernateSettings());
-			factoryBean.setJpaPropertyMap(hibernateProperties);
-			return factoryBean;
-		}
+				factoryBean.setJpaPropertyMap(jpaProperties.getProperties());
+				Map<String, Object> hibernateProperties = jpaProperties.getHibernateProperties(new HibernateSettings());
+				factoryBean.setJpaPropertyMap(hibernateProperties);
+				return factoryBean;
+			}
 
-		@Primary
-		@Bean(name = "transactionManager")
-		public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
-			JpaTransactionManager manager = new JpaTransactionManager(entityManagerFactory);
-			return manager;
-		}
-	}	
+			@Primary
+			@Bean(name = "transactionManager")
+			public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory") EntityManagerFactory entityManagerFactory) {
+				JpaTransactionManager manager = new JpaTransactionManager(entityManagerFactory);
+				return manager;
+			}
+		}	
 
-	public interface ApplicationRepository extends JpaRepository<ApplicationEntity, Long>   
-	public interface JpaRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T>
-	public interface PagingAndSortingRepository<T, ID> extends CrudRepository<T, ID>  
-	public interface CrudRepository<T, ID> extends Repository<T, ID>
 	
 - one EntityManagerFactory bean for one persistence unit
-  One persistence unit includes: data source, entity model classes, JPA properties settings, JPA implementation properties settings.
+  One persistence unit includes: data source, entity model classes, JPA properties, JPA vendor properties.
 	
-- @Repository AOP proxy   
+- @Repository not only create a singleton bean, but create a Aspect   
   AOP proxy addes a AfterThrowing advice (PersistenceExceptionTranslationPostProcessor bean) to pointcuts(repository bean methods ). The aspect catches checked persistence exceptions and re-throw them as one of Spring’s unchecked DataAccessException.  
  
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
@@ -478,31 +474,60 @@ spring-webmvc scans @RequestMapping annotations within the controller classes, a
   early fetch hit the db and populate the entity object properties. lazy fetch initially create a proxy object with only ID in it. when a entity's property is accessed, it will then hit the DB to fetch the row data and populate the entity's properties.  
 
 - get() vs load()  
-	- get(class, id) is basic programming. It always eager fetch. if ID not exist in db, get() return null object, no exception. 
-	- load(class,id) is advanced programming. It always lazy fetch. If ID not exists in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
+	- get(class, id) is basic programming, eager and lenient. It always eager fetch. if ID is not found in db, get() return null object, no exception. 
+	- load(class,id) is advanced programming, lazy and strict. It always lazy fetch. If ID is not found in DB,  load() returns ObjectNotExistException when it really hits the DB to read.  
 
 
 ## spring-data for JPA
 
-	public interface ApplicationRepository extends JpaRepository<ApplicationEntity, Long> {
-		Optional<ApplicationEntity> findByCodeIgnoreCase(String code);
-		Collection<ApplicationEntity> findAllByDepartment_code(String code);
-		Optional<ApplicationEntity> findByDepartment_codeIgnoreCaseAndCodeIgnoreCase(String deptCode, String code);
-		Optional<ApplicationEntity> findByDirectories_trackings_TrackingId(String trackingId);
-	}
+		public interface ApplicationRepository extends JpaRepository<ApplicationEntity, Long>   
+		public interface JpaRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T>
+		public interface PagingAndSortingRepository<T, ID> extends CrudRepository<T, ID>  
+		public interface CrudRepository<T, ID> extends Repository<T, ID>
+
+		public interface ApplicationRepository extends JpaRepository<ApplicationEntity, Long> {
+			Optional<ApplicationEntity> findByCodeIgnoreCase(String appCode);
+			Collection<ApplicationEntity> findAllByDepartment_code(String deptCode);
+			Optional<ApplicationEntity> findByDepartment_codeIgnoreCaseAndCodeIgnoreCase(String deptCode, String appCode);
+			Optional<ApplicationEntity> findByDirectories_trackings_TrackingId(String trackingId);
+		}
 
 	
 ## spring-data for mongodb
 
- 
-	
+		@Configuration
+		@EnableMongoRepositories(basePackages = "intact.clf.dc.dal")
+		//@EnableTransactionManagement
+		@EnableMongoAuditing
+		public class DaoConfig { }
+		
+		@Document(collection="DomPolicyCollection")
+		@CompoundIndex(name="dataSetIdx", def="{agent: 1, sourceSystem: 1, sourceDataSetId: -1}")
+		@CompoundIndex(name="businessKeyIdx", def="{agent: 1, sourceSystem: 1, policyBusinessKey: 1}")
+		@CompoundIndex(name="policyTypeIdx", def="{agent: 1, sourceSystem: 1, policyType: 1}")
+		public class DomPolicyEntity extends AbstractPolicyEntity { 
+			@Id
+			private String id;
+			...
+		}
+		
+		public interface DomPolicyEntityDao extends MongoRepository<DomPolicyEntity, String> { }
+		public interface MongoRepository<T, ID> extends PagingAndSortingRepository<T, ID>, QueryByExampleExecutor<T> { }
+		public interface PagingAndSortingRepository<T, ID> extends CrudRepository<T, ID>  
+		public interface CrudRepository<T, ID> extends Repository<T, ID>
+
+
 ## spring-batch
+
+spring-boot-starter-batch.jar uses spring-batch.jar
 
 Case Study: read from database (sql or stored procedure), write to a csv file.  
 MRI sample - /business-process-jobs/src/main/resources/com/tdsecurities/stars/bpe/file-extract
   
   
-## spring-integration 
+## spring-integration (deprecated)
+
+spring-integration is deprecated. The new tech is Apache Camel for service orchestration and data channel integration. 
 
 MRI sample - /orchestrator/src/main/resources/META-INF/spring/bcbs-svlm.xml   
 MRI sample - /orchestrator/src/main/java/com/tdsecurities/stars/orchestrator/bcbs/TimelinessServiceActivator.java   
@@ -539,22 +564,24 @@ Both spring-AOP lib and AspectJ lib defines: @Aspect, @Pointcut, @Around, @Befor
 
 Spring-AOP is one of the essential parts of the spring framework. the spring framework is based on IoC, DI and AOP. The AOP is one of the most important parts of the framework.
 
-Spring-AOP creates proxies at spring container loading time. It is Runtime weaving using proxy.
+Spring-AOP creates proxies at spring loading time. It is Runtime weaving using proxy.
 
 @enableAspectJAutoProxy on a @configuration class, OR, <aop:aspectj-autoproxy/> in xml config, it enables @AspectJ style of aspect declaration, but AspectJ runtime is not used. It still use Spring AOP proxies. 
 
-Spring-AOP will build a proxy for your objects, using a JDKDynamicProxy if your bean implements an interface, OR, using CGLIB dynamic proxy to subclass an implementation class  if your bean doesn't implement any interface.
+Spring-AOP will build a proxy for the objects, using a JDKDynamicProxy if your bean implements an interface, OR, using CGLIB dynamic proxy to subclass an implementation class  if your bean doesn't implement any interface.
 
 @EnableAspectJAutoProxy(proxyTargetClass = true) will force Spring container to always use CGLIB style subclass proxy.
 
-@Interface, @Aspect @Component or META-INFO/aop.xml,   
-@Around/@Before/@After,  
-ProceedingJointPoint.proceed(),  
-@Pointcut("execution(public * foo..*.*(..))"), 
-@Pointcut("@annotation(\<annotation class name>)"),  
-@Pointcut("within(\<package> or \<interface> or \<annotation class name>)")
+		@Interface, @Aspect @Component or META-INFO/aop.xml,   
+		@Around/@Before/@After,  
+		ProceedingJointPoint.proceed(),  
+		@Pointcut("execution(public * foo..*.*(..))"), 
+		@Pointcut("@annotation(\<annotation class name>)"),  
+		@Pointcut("within(\<package> or \<interface> or \<annotation class name>)")
 
-Spring Framework's support for LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ style aspects into the class files as they are being loaded into Spring context container. The focus of this section is on configuring and using LTW in the Spring application context container.
+for every class annotated with @Aspect, a singleton aspect bean is created in Spring context container. Then spring will use the aspect beans to create the proxy instances for those target beans.
+
+Spring Framework's support for LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ style aspects into the proxy beans as the target beans are being loaded into Spring container. The focus of this section is on configuring and using LTW in the Spring.
 
 
 ### AspectJ 
@@ -574,7 +601,8 @@ there are two major differences btwn Spring-AOP and AspectJ-AOP:
 - the type of weaving     
   Spring-aop approach is simpler and more manageable. But with the Spring AOP you can't use the all power of AOP because the implementation is done through proxies and not with modification of your bytecode.
   
-  Spring AOP is basically a proxy instnace created by the container, so spring-AOP can only be applied to Spring beans. AspectJ AOP can be used to any java instances (beans or not-beans)
+  Spring AOP is basically proxy instances created by the Spring container, so spring-AOP can only be applied to Spring beans.   
+  AspectJ AOP can be used to any java instances (beans or not-beans)
 
 - joinpoint definition  
   1. spring-AOP can only be applied to Spring beans. AspectJ AOP can be used to any java instances (beans or not-beans).  
@@ -637,7 +665,7 @@ It can be coded in hybrid:
 - If we want to inject some mocked beans, we can use @InjectMocks, @Mock, @Spy 
 - in @Before setup() method, explicitly call MockitoAnnotations.initMocks(this) to trigger Mock/Spy instances injection 
 
-@Mock - create a stub (a dummy object with no state, void method body, return null or zero).
+@Mock - create a stub (a dummy object with no state, void method body, return null or zero).  
 @Spy - create a real object with field varialbes and method implementations, return real value.
 
 Sample:
@@ -658,7 +686,7 @@ Sample:
 It is a internal annotation. usually do not used by developer. use @SpringBootTest instead.  
 It does NOT create a spring app context container. It is used together with RunWith(SpringRunner.class)
 
-see C:\UserData\finra\edp\filex\filex-api\filex-api-service\src\test\java\org\finra\filex\service\impl\TokenServiceImplTest.java
+see filex-api\filex-api-service\src\test\java\org\finra\filex\service\impl\TokenServiceImplTest.java
 
 @SpringJUnitConfig is a composed annotation that combines two:     
 - @ExtendWith(SpringExtension.class) from spring-test. Spring's implemtation of junit jupiter's callback interfaces.
@@ -672,10 +700,10 @@ lib: spring-test.jar v5
 
 #### @SpringBootTest
 
-It does not start up a spring-boot application. It is used together with RunWith(SpringRunner.class)
+It start up a spring-boot application. 
 
 It specifies: 
-- context configuration locations; used to create a applicaton context container.
+- context configuration locations; start up a applicaton context container.
 - (optional) web Environment. used to create a web context container. It is only required when there is a REST web tier to test.
 - @ExtendWith(SpringExtension.class)  
 
@@ -694,7 +722,7 @@ spring-mvc test using MockMvc in spring-test jar.
 It is a internal annotation. usually do not used by developer. use @SpringBootTest with WebEnvironment instead.  
 It does NOT create a spring app context container. It is used together with RunWith(SpringRunner.class)
 
-see C:\UserData\finra\edp\filex\filex-api\filex-api-rest\src\test\java\com\example\mockito\BaseRestIT.java
+see filex-api\filex-api-rest\src\test\java\com\example\mockito\BaseRestIT.java
 
 the annotation creates:  
 - a spring test context container. the test instance is a bean in the container.
@@ -722,7 +750,6 @@ There are two ways of coding:
   
 @AutoConfigureMockMvc creates and injects web tier beans into a application context container.
 
-    @RunWith(SpringRunner.class)  
 	@SpringBootTest(classes={MyApplication.class}, webEnvironment=WebEnvironment.MOCK )  
 	@TestPropertySource(locations={"classpath:application-test.properties"})    
     @AutoConfigureMockMvc     
@@ -781,10 +808,17 @@ test web request-response:
 
 ### index
 
+Type 1 :
 - clustered index (index organized table)
 - non-clustered index (the tree nodes store the physical locations of the actual rows in disk)  
-- b-tree index (on columns with high cardinality), used in frequent DML(upsert/delete) operations.  
-- bitmap index (on columns with low cadinality), used in write-once read-many application, such as overnight batch load in DW. expensive to update bitmap index.  
+
+Type 2:
+- b-tree index (index on a column with high cardinality), used in frequent DML(upsert/delete) operations.  
+- bitmap index (index on a column with low cadinality for millions of rows ). Since it is expensive to update bitmap index, bitmap index is used in write-once read-many application, such as overnight batch load in DW.
+
+### cadinality
+
+A lot of distinct values is high cardinality; a lot of repeated values is low cardinality.
 
 
 ### performance tunning  
@@ -799,6 +833,14 @@ memory consumption in temp tablespece (hash join use more memory):
 
 analyze execute time, cost-based optimization (always in Oracle)
 
+### Oracle partitions
+
+partition and sub-partition
+
+- date partitions (1 day, 1 month, 1 quarter)
+- range partitions
+- list partitions
+- reference partitions (child table uses the same partition config as its parent table if child table has a foreigh key reference to parent table partitioning column). since oracle 11g
 
 ### Oracle HASH Joins, SORT-MERGE joins
 
