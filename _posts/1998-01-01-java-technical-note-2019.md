@@ -87,14 +87,3 @@ It is used in distributed system, including sharding, load balancing, distribute
 consistent hash ring is used in Cassandra, Memcached and Redis.
 
 
-## Testing
-- unit test is less relevant in distributed system
-- Integration test is important in distributed system
-- set up at lease one basic performance metrics
-- debugging - log tracing with request ID throughout the pipeline.
-- performance debug - load testing - send test requests in production peak load traffic
-- failure/negative testing before release
-
-
-
- 

@@ -10,16 +10,18 @@ https://www.codeguru.com/cpp/sample_chapter/article.php/c13533/Why-Too-Many-Thre
 
 Number of hardware threads = (number of CPUS) * (number of cores per CPU) * (number of hardware threads per core : ususally 1 thread per core, 2 thread per core if CPU processor supports HyperThreading)
 
-One hardware thread can run many software threads. In modern operating systems, this is often done by time-slicing. CPU L1 cache memory, main L2 cache memory contention if too many software threads -> slow down performance
+One hardware thread can run many software threads. In modern operating systems, this is often done by time-slicing. CPU L1 cache memory, main L2 cache memory contention.
+
+There exists main L2 cache memory contention if too many software threads. This will slow down performance.
 
 
 ## thread pool
 
 How will you implement a thread pool yourself.
-Executors class is a factory class that create different types of thread pools..
-Executor interface,  ExecutorService implements Executor, A ExecutorService instance is a thread pool.
+Executors is a factory class that create different types of thread pools.  
+Executor is interface,  ExecutorService implements Executor interface, A ExecutorService instance is a thread pool.
 
-C:\UserData\finra\edp\filex\filex-audit\filex-audit-de-lambda\src\main\java\org\finra\filex\audit\de\etl\S3ServerAccessLogProcessor.java
+See filex-audit\filex-audit-de-lambda\src\main\java\org\finra\filex\audit\de\etl\S3ServerAccessLogProcessor.java
 
 	return new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS,
 								  new LinkedBlockingQueue<Runnable>(processorBoundQueueCapacity), threadFactory,
@@ -81,7 +83,8 @@ methods in java.lang.Object.
 HashMap key class must be immutable and implements hashcode() and equals()  
 
 thread context switch, process context switch,   
-thread scheduler, cpu time slice (=preemptive scheduling),   
+thread scheduler, cpu time slice (=preemptive scheduling),  priority scheduling
+ 
 CPU registors state save/restore, cpu's L1 cache (on CPU chip), main L2 cache (on motherboard), main memory (on RAM chip)
 
 
@@ -140,38 +143,45 @@ There are two category of functional objects:
 Collectors class is a factory class. It creates Collector instances that implement various reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, grouping, partitioning, etc.
 
 	public final class Collectors extends Object
+	
+	public interface Collector<T,A,R>
+	
+	collectors.toList(), toSet(), toMap(), toConcurrentMap(), toCollection(TreeSet::new), 
+	collectors.joining(), counting(), summing*(), averaging*(), reducing(), grouping(), partitioning()
 
 ### java.util.stream.Stream class
  
-Stream static factory methods:  
-	of, concat, empty, generate, iterate, 
+- Stream static factory methods:  
+
+		of, concat, empty, generate, iterate, 
 	
-Stream transformation methods (a pipeline step that returns a Stream instance)  
-	filter, map, flatmap, distinct, sorted, limit, skip, peek(consumer)
+- Stream transformation methods (a pipeline step that returns a Stream instance)  
+
+		filter, map, flatmap, distinct, sorted, limit, skip, peek(consumer)
 	
-Stream action methods (a pipeline step that returns a non-Stream instance):  
-	findFirst, findLast, findAny
-	allMatch, anyMatch, noneMatch
-	forEach(consumer)
-	// statistics
-	specific methods: count, max, min  
-	generic methods: reduce(BinaryOperator accumulator), reduce(initialValue, BinaryOperator accumulator), reduce(initialValue, accumulator, combiner)
-	// to collection
-	specific methods: toArray
-	generic methods: collect(collector), collect(supplier, accumulator, combiner)
+- Stream action methods (a pipeline step that returns a non-Stream instance):  
+
+		findFirst, findLast, findAny
+		allMatch, anyMatch, noneMatch	// return a boolean
+		forEach(consumer)
+		// statistics
+		specific methods: count, max, min  
+		generic methods: reduce(BinaryOperator accumulator), reduce(initialValue, BinaryOperator accumulator), reduce(initialValue, accumulator, combiner)
+		// to collection
+		specific methods: toArray
+		generic methods: collect(collector), collect(supplier, accumulator, combiner)
 
 
 The following are examples of using the predefined collectors to perform common mutable reduction tasks:
 
-	Integer sum = integers.reduce(0, (a, b) -> a+b);
-	Integer sum = integers.reduce(0, Integer::sum);		// static method reference  java.lang.Integer.sum(int a, int b)
+	Integer sum = integers.stream().reduce(0, (a, b) -> a+b);
+	Integer sum = integers.stream().reduce(0, Integer::sum);		// static method reference  java.lang.Integer.sum(int a, int b)
 	
      // Accumulate names into a List
      List<String> list = people.stream().map(Person::getName).collect(Collectors.toList());
 
      // Accumulate names into a TreeSet
-     Set<String> set = people.stream().map(Person::getName).collect(
-												Collectors.toCollection(TreeSet::new));
+     Set<String> set = people.stream().map(Person::getName).collect(Collectors.toCollection(TreeSet::new));
 
      // Convert elements to strings and concatenate them, separated by commas
      String joined = things.stream()
@@ -204,7 +214,7 @@ The following are examples of using the predefined collectors to perform common 
 
 https://www.callicoder.com/java-8-completablefuture-tutorial/
 
-see sample code in: C:\UserData\cap??\cardinal-prime\cardinal-channel-accounts\cardinal-accounts-srvprovider\src\main\java\com\p??\cardinal\accounts\srvprovider\AccountsServiceProvider.java
+see sample code in: cap??\cardinal-prime\cardinal-channel-accounts\cardinal-accounts-srvprovider\src\main\java\com\p??\cardinal\accounts\srvprovider\AccountsServiceProvider.java
 
 CompletableFuture<T> implements Future<T>, CompletionStage<T>
 
@@ -219,55 +229,56 @@ You can pass your own Executor argument to the runAsync() or supplyAsync() metho
 
 - attach a callback to the CompletableFuture using thenApply(), thenAccept() and thenRun():
 
-		CompletableFuture<S> CompletableFuture.thenApply(T -> S)
-		CompletableFuture<Void> CompletableFuture.thenAccept(T -> void)
-		CompletableFuture<Void> CompletableFuture.thenRun(() -> {})
+	CompletableFuture<S> CompletableFuture.thenApply(T -> S)
+	CompletableFuture<Void> CompletableFuture.thenAccept(T -> void)
+	CompletableFuture<Void> CompletableFuture.thenRun(() -> {})
 	
 - async callback
 
-		CompletableFuture<S> CompletableFuture.thenApplyAsync(T -> S)
+	CompletableFuture<S> CompletableFuture.thenApplyAsync(T -> S)
 	
 - CompletableFuture.get() method is blocking. It waits until the Future is completed and returns the result after its completion.
 
-		CompletableFuture.supplyAsync(() -> {
-			// Code which might throw an exception
-			return "Some result";
-		}).thenApply(result -> {
-			return "processed result";
-		}).thenApply(result -> {
-			return "result after further processing";
-		}).thenAccept(result -> {
-			// do something with the final result
-		});
+	CompletableFuture.supplyAsync(() -> {
+		// Code which might throw an exception
+		return "Some result";
+	}).thenApply(result -> {
+		return "processed result";
+	}).thenApply(result -> {
+		return "result after further processing";
+	}).thenAccept(result -> {
+		// do something with the final result
+	});
 
 		
 ### Combining two CompletableFutures together  
 
 - Combine two dependent futures using thenCompose() 
+
   thenCompose() is used to combine two Futures where one future is dependent on the other.
   
-	CompletableFuture<User> getUsersDetail(String userId) {
-		return CompletableFuture.supplyAsync(() -> {
-			UserService.getUserDetails(userId);
-		});	
-	}
-
-	CompletableFuture<Double> getCreditRating(User user) {
-		return CompletableFuture.supplyAsync(() -> {
-			CreditRatingService.getCreditRating(user);
-		});
-	}
-	CompletableFuture<Double> result = getUserDetail(userId).thenCompose(user -> getCreditRating(user));
+		CompletableFuture<User> getUsersDetail(String userId) {
+			return CompletableFuture.supplyAsync(() -> {
+				UserService.getUserDetails(userId);
+			});	
+		}
+		CompletableFuture<Double> getCreditRating(User user) {
+			return CompletableFuture.supplyAsync(() -> {
+				CreditRatingService.getCreditRating(user);
+			});
+		}
+		CompletableFuture<Double> result = getUserDetail(userId).thenCompose(user -> getCreditRating(user));
   
-- Combine two independent futures using thenCombine()  
+- Combine two independent futures using thenCombine() 
+ 
   thenCombine() is used when you want two Futures to run independently and do something after both are complete.
   The callback function passed to thenCombine() will be called when both the Futures are complete.
   
-  CompletableFuture<Double> combinedFuture = weightInKgFuture
-        .thenCombine(heightInCmFuture, (weightInKg, heightInCm) -> {
-			Double heightInMeter = heightInCm/100;
-			return weightInKg/(heightInMeter*heightInMeter);
-			});
+	  CompletableFuture<Double> combinedFuture = weightInKgFuture
+			.thenCombine(heightInCmFuture, (weightInKg, heightInCm) -> {
+				Double heightInMeter = heightInCm/100;
+				return weightInKg/(heightInMeter*heightInMeter);
+				});
 
 ### Combining multiple CompletableFutures together  
 

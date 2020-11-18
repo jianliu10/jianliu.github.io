@@ -7,10 +7,24 @@ categories: tech-java-spring
 
 # 2018 technical notes #
 
+## OO
+
+PEI:  
+- polymorphism
+- Encapsulation (Information hiding)
+- Inheritance
+
+
 ## design patterns  
 
-builder, singleton, prototype, factory, abstract factory, adapter, wrapper, facade, proxy, chain of responsibility, , iterator, mediator, observer, visitor, strategy, memento, template
+builder, singleton, prototype, factory, abstract factory, adapter, wrapper, facade (a interface of a subsystem), proxy (stub to a remote object), chain of responsibility, iterator, mediator (broadcast), observer, visitor (visit a tree), strategy (algorithm switch), memento (state persistence), template
  
+adapter vs wrapper:
+adapter is used to convert a external interface provided by a third party lib to a internal interface expected by the app code. The external interface declaration and interface interface declaration are different.
+wrapper and wrappee provides similar interface declaration. A wrapper is used to modified, enrich, extend a wrappee's behavior. 
+
+chain of responsibility: a request is passed down a chain of objects. each object in the chain is responsible of processing a specific task.
+
 
 ## Spring framework two essential features
 
@@ -26,7 +40,7 @@ builder, singleton, prototype, factory, abstract factory, adapter, wrapper, faca
   
 - AOP: Aspect Oriented Programming
   @EnableAspectJAutoProxy - use ApectJ style AOP declarations like @Apect, @Pointcut, @Advise, @Around, @Before, @After, @AfterThrowing, @AfterReturning etc. while runtime still using Spring's proxy based AOP. 
-  need to include spring-aspectj.jar when using @EnableAspectJAutoProxy, which handles components marked with AspectJ's @Aspect annotation
+  need to include spring-aspects.jar when using @EnableAspectJAutoProxy, which handles components marked with AspectJ's @Aspect annotation
 
 Spring bean scopes: singleton, prototype, request, session, spring-batch's step
 
@@ -612,172 +626,6 @@ there are two major differences btwn Spring-AOP and AspectJ-AOP:
   If performance under high load is important, you'll want AspectJ which is 9-35x faster than Spring AOP. whether your aspects will be mission critical.
 
  
-## Junit test frameworks
-
-### junit test v5 programming model: junit-jupiter
-
-see xjc-svc module tests in xml-json-converter project.
-
-No @RunWith(), @TestSuite annotations at class level is required. Only @Test annotation at method level is required. 
-
-libs:  
-	junit-platform-lanucher-1.3.2.jar, junit-platform-engine-1.3.2.jar, 
-	junit-jupiter-api-5.3.1.jar, junit-jupiter-engine-5.3.1.jar, junit-jupiter-params-5.3.1.jar
-	mockito-core-2.23.0.jar, mockito-junit-jupiter-2.23.4.jar
-
-junit-jupiter sample classes:
-
-	import org.junit.jupiter.api.BeforeAll;
-	import org.junit.jupiter.api.Test;
-	import org.junit.jupiter.api.TestInstance;
-	import org.junit.jupiter.api.TestInstance.Lifecycle;
-
-	import static org.junit.jupiter.api.Assertions.assertEquals;
-	import static org.junit.jupiter.api.Assertions.assertNotNull;
-	import static org.junit.jupiter.api.Assertions.assertTrue;
-
-	
-### @RunWith(MockitoJUnitRunner.class)
-
-lib: mockito-core-2.23.0.jar, mockito-junit-jupiter-2.23.4.jar
-
-It will not create spring app context container. the test calss instance can not use @Autowired to inject dependency. dependency are assigned explicitly in @Before setup() method.
-
-in @Before setup() method, do NOT need to explicitly call 'MockitoAnnotations.initMocks(this)' to inject mocks/spys. mocks/spys injection is done automatically. 
-
-	import org.mockito.InjectMock;
-	import org.mockito.Mock;
-	import org.mockito.Spy;
-	import org.mockito.ArgumentCaptor;
-	import org.mockito.Captor;
-
-	
-### junit test with a Spring application context container - @RunWith(SpringRunner.class) 
-
-SpringRunner.class is an alias for the SpringJUnit4ClassRunner.class. This class requires JUnit 4.12 or higher.
-
-libs: spring-test.jar 
-
-It will create a spring app context container containing all the scanned beans. the test class is a bean in the container.   
-
-It can be coded in hybrid:  
-- The test bean can use @Autowired to inject real(not mocked) beans from container. 
-- If we want to inject some mocked beans, we can use @InjectMocks, @Mock, @Spy 
-- in @Before setup() method, explicitly call MockitoAnnotations.initMocks(this) to trigger Mock/Spy instances injection 
-
-@Mock - create a stub (a dummy object with no state, void method body, return null or zero).  
-@Spy - create a real object with field varialbes and method implementations, return real value.
-
-Sample:
-
-     @InjectMocks  
-     private AccountsController accountsController;  
-     @Spy  
-     private TransactionTrendRequestRestAPIMapper transactionTrendRequestRestAPIMapper;  
-     @Mock  
-     private AccountsService accountsService;  
-     @Before  
-     public void setup() {  
-    	MockitoAnnotations.initMocks(this);  
-     }  
-
-#### internal @SpringJUnitConfig 
-
-It is a internal annotation. usually do not used by developer. use @SpringBootTest instead.  
-It does NOT create a spring app context container. It is used together with RunWith(SpringRunner.class)
-
-see filex-api\filex-api-service\src\test\java\org\finra\filex\service\impl\TokenServiceImplTest.java
-
-@SpringJUnitConfig is a composed annotation that combines two:     
-- @ExtendWith(SpringExtension.class) from spring-test. Spring's implemtation of junit jupiter's callback interfaces.
-- @ContextConfiguration from the Spring TestContext Framework. It specifies the context configuration locations.
-
-lib: spring-test.jar v5
-
-	import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-	import org.springframework.test.context.TestPropertySource;
-
-
-#### @SpringBootTest
-
-It start up a spring-boot application. 
-
-It specifies: 
-- context configuration locations; start up a applicaton context container.
-- (optional) web Environment. used to create a web context container. It is only required when there is a REST web tier to test.
-- @ExtendWith(SpringExtension.class)  
-
-lib: spring-boot-test.jar v2
-
-	import org.springframework.boot.test.mock.mockito.MockBean;
-	import org.springframework.boot.test.mock.mockito.SpyBean;
-
-
-### spring-mvc junit test 
-
-spring-mvc test using MockMvc in spring-test jar.
-
-#### internal @SpringJUnitWebConfig 
-
-It is a internal annotation. usually do not used by developer. use @SpringBootTest with WebEnvironment instead.  
-It does NOT create a spring app context container. It is used together with RunWith(SpringRunner.class)
-
-see filex-api\filex-api-rest\src\test\java\com\example\mockito\BaseRestIT.java
-
-the annotation creates:  
-- a spring test context container. the test instance is a bean in the container.
-- a web container.
-
-@SpringJUnitWebConfig is a composed annotation that combines:  
-- @ExtendWith(SpringExtension.class) from spring-test
-- @ContextConfiguration from the Spring TestContext Framework.
-- @WebAppConfiguration from the Spring TestContext Framework.
-
-lib: spring-test.jar v5
-
-	import org.springframework.test.context.ActiveProfiles;
-	import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-	import org.springframework.test.web.servlet.MockMvc;
-
-
-#### MockMvc in org.springframework.test.web.servlet.MockMvc
-
-MockMvc is used together with @SpringBootTest((.. WebEnvironment.MOCK). 
-
-There are two ways of coding:
-
-- use @AutoConfigureMockMvc
-  
-@AutoConfigureMockMvc creates and injects web tier beans into a application context container.
-
-	@SpringBootTest(classes={MyApplication.class}, webEnvironment=WebEnvironment.MOCK )  
-	@TestPropertySource(locations={"classpath:application-test.properties"})    
-    @AutoConfigureMockMvc     
-		
-    @Autowired    
-    private MockMvc mockMvc;  
-    
-- use manual setup:  
-
-    org.springframework.test.web.servlet.MockMvc mockMvc =   					
-		org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(accountsController)  
-			.setMessageConverters(new StringHttpMessageConverter(), new MappingJackson2HttpMessageConverter())  
-			.setControllerAdvice(advice)
-			.build();
-
-test web request-response:
-			
-    mockMvc.perform(post("/load/input?input_name=YDMD_SP_LDR_AB_Part1&bid=b2");       
-
-	mockMvc.perform(get("/accounts/1/transactions/filterOptions")  
-			.accept(MediaType.APPLICATION_JSON))
-			.andDo(print())
-			.andExpect(status().isOk())
-		    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-			.andExpect(jsonPath("$.cardholderFilterOption[1]").exists())
-            .andExpect(jsonPath("$.cardholderFilterOption[0].accountCustomerId").value("1"))
-
-	
 
 ## microservice, design patterns, RESTful API design  
 

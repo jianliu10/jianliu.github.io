@@ -47,7 +47,7 @@ jconsole (old), jvisualvm (new)
  
 ## bin/jstatd	
 
-start up a jstatd daemon server for remote monitoring by jps or jstat tools. jstatd server register itself in a remote RMI registry. jstatd server is used by jps tool and jstat tool.
+start up a jstatd daemon service for remote monitoring by jps or jstat tools. jstatd service register itself in a remote RMI registry. jstatd service is used by jps tool and jstat tool.
 
 ## bin/jps(JVM Process Status)
 
@@ -141,14 +141,6 @@ jmap is used to view heap memory usage, usually combined with jhat.
    // enter the host address in the browser: 9998 to see
    
    
-## -agentlib:hprof (JVM heap/cpu profiling agent)
-
-see my "jvm performance tunning" blog
-
-HPROF is actually a JVM native agent library (JNI) which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. 
-
-The data generated can be in textual or binary format, and can be used to track down and isolate**performance problems involving memory usage and inefficient code**. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
-	
 ## bin/jconsole 
 
 Jconsole is a JMX-compliant monitoring tool.  It uses the extensive JMX instrumentation of the Java virtual machine to provide information on performance and resource consumption of applications running on the Java platform.
@@ -171,6 +163,15 @@ provides a visual interface for viewing detailed information about Java applicat
 most of the previously standalone tools JConsole, jstat, jinfo, jstack, and jmap are part of Java VisualVM. Java VisualVM federates these tools to obtain data from the JVM software, then re-organizes and presents the information graphically, to enable you to view different data about multiple Java applications uniformly, whether they are running locally or on remote machines. 
 
 Java VisualVM can be used by Java application developers to troubleshoot applications and to monitor and improve the applications' performance. Java VisualVM can allow developers to generate and analyse heap dumps, track down memory leaks, browse the platform's MBeans and perform operations on those MBeans, perform and monitor garbage collection, and perform lightweight memory and CPU profiling.
+
+## -agentlib:hprof (JVM heap/cpu profiling agent)
+
+see my "jvm performance tunning" blog
+
+HPROF is actually a JVM native agent library (JNI) which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. 
+
+The data generated can be in textual or binary format, and can be used to track down and isolate**performance problems involving memory usage and inefficient code**. The binary format file from HPROF can be used with tools such as jhat to browse the allocated objects in the heap.
+	
 
 ## -agentlib:jdwp (jvm remote debugging agent)
 
