@@ -13,13 +13,16 @@ https://blog.csdn.net/DreamSeeker_1314/article/details/84403166
 ## 存出、载入、上传 image 
 
 如果要导出image (镜像)到本地文件，可以使用docker save命令    
+
 	docker save -o nginx.tar nginx:latest
 
 可以使用docker load将导出的tar文件再导入到local registry     
-	docker load < nginx.tar 
+
+	docker load &lt; nginx.tar 
 	docker load --input nginx.tar
 
 可以使用docker push命令上传镜像到仓库，默认上传到Docker Hub官方仓库(需要登录)。命令格式：
+
 	docker push NAME[:TAG] ,  [REGISTRY_HOST[:REGISTRY_PORT]/]NAME[:TAG]
 
 
@@ -74,7 +77,7 @@ Dockerfile由一行行命令语句组成，并且支持以#开头的注释行。
 	RUN echo "deb http://archive.ubuntu.com/ubuntu/ raring main universe" >> /etc/apt/sources.list
 	RUN apt-get update && apt-get install -y nginx
 	RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
-	# Commands when creating a new container
+	# Commands when starting a container
 	CMD /usr/sbin/nginx
 
 其中，一开始必须指明所基于的镜像名称，接下来一般是说明维护者信 息。后面则是镜像操作指令，例如RUN指令，RUN指令将对镜像执行跟随的命 令。每运行一条RUN指令，镜像就添加新的一层，并提交。最后是CMD指令，用来指定运行容器时的操作命令。
@@ -173,11 +176,11 @@ Dockerfile由一行行命令语句组成，并且支持以#开头的注释行。
 
   声明镜像内服务所监听的端口。 格式为EXPOSE <port>[<port>...]。 例如:  
   EXPOSE 22 80 8443
-  注意，该指令只是起到声明作用，并不会自动完成端口映射。在启动容器时需要使用-P，Docker主机会自动分配一个宿主机的临时端 口转发到指定的端口;使用-p，则可以具体指定哪个宿主机的本地端口会映射过来。
+  注意，该指令只是起到声明作用，并不会自动完成端口映射。在启动容器时需要使用-P，Docker主机会自动分配一个宿主机的临时端 口转发到指定的端口;使用-P，则可以具体指定哪个宿主机的本地端口会映射过来。
   
 7.ENV
 
-  指定环境变量，在镜像生成过程中会被后续RUN指令使用，在镜像启动的容器中也会存在。格式为ENV <key> <value>或ENV <key>=<value>... 例如:
+  指定环境变量，在镜像生成过程中会被后续RUN/COPY/ADD/CMD etc. 指令使用，在镜像启动的容器中也会存在。格式为ENV <key> <value>或ENV <key>=<value>... 例如:
   
 	ENV PG_MAJOR 9.3
 	ENV PG_VERSION 9.3.4
@@ -189,15 +192,18 @@ Dockerfile由一行行命令语句组成，并且支持以#开头的注释行。
   
 8.ADD
 
-  该命令将复制指定的<src>路径下的内容到容器中的<dest>路径下。 格式为ADD  <src>  <dest>  
-  其中<src>可以是Dockerfile所在目录的一个相对路径(文件或目录)，也 可以是一个URL，还可以是一个tar文件(如果为tar文件，会自动解压到<dest> 路径下)。<dest>可以是镜像内的绝对路径，或者相对于工作目录 (WORKDIR)的相对路径。   
-  路径支持正则格式，例如:
-  ADD *.c /code/
+  该命令将复制指定的<src>路径下的内容到容器中的<dest>路径下。 格式为"ADD  src  dest"   
+  其中"src"可以是docker build context root 所在目录的一个相对路径(文件或目录)，也 可以是一个URL，还可以是一个tar文件(如果为tar文件，会自动解压到<dest> 路径下)。    
+  "dest"可以是镜像内的绝对路径，或者相对于工作目录 (WORKDIR)的相对路径。 目标路径不存在时，会自动创建。    
+  
+  路径支持正则格式，例如:  ADD *.c /code/
   
 9.COPY
 
-  格式为COPY<src><dest>。 复制本地主机的<src>(为Dockerfile所在目录的相对路径、文件或目录)下的内容到镜像中的<dest>下。目标路径不存在时，会自动创建。  
-  路径同样支持正则格式。当使用本地目录为源目录时，推荐使用COPY。  
+  格式为"COPY src dest"。   
+  复制本地主机的 src (为docker build context root 所在目录的相对路径、文件或目录)下的内容到镜像中的dest下。目标路径不存在时，会自动创建。  
+  路径同样支持正则格式。   
+  当使用本地目录为源目录时，推荐使用COPY。    
   
 10.ENTRYPOINT
 
@@ -212,7 +218,7 @@ Dockerfile由一行行命令语句组成，并且支持以#开头的注释行。
   
 11.VOLUME
 
-  创建一个数据卷挂载点。格式为VOLUME ["/data"]。 可以从local, NFS, docker VM storage 挂载数据卷，一般用来存放数据库和需要保存的数据等。
+  创建一个数据卷挂载点。格式为VOLUME ["/data"]。 可以从VM host local disk, NFS, cloud storage 挂载数据卷，一般用来存放数据库和需要保存的数据等。
   
 12.USER
 
@@ -223,7 +229,7 @@ Dockerfile由一行行命令语句组成，并且支持以#开头的注释行。
   
 13.WORKDIR
 
-  为后续的RUN、CMD和 指令配置工作目录。
+  working directory for RUN, ENTRYPOINT, CMD。
   ENTRYPOINT 格式为WORKDIR /path/to/workdir。可以使用多个WORKDIR指令，后续命令如果参数是相对路径，则会基于之前命令指定的路径。例如:  
   WORKDIR /a  
   WORKDIR b  

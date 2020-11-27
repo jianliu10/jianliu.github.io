@@ -13,19 +13,20 @@ use 'docker-compose' command to starts / stop service. it can also be used to bu
 
 sample files:
 
-	C:\UserData\capco\cardinal-model\docker-compose.yml
-	C:\UserData\capco\cardinal-infinispan\app.yml
-	C:\UserData\cibc-api\reference-rest-api\compose\docker-compose-oracle.yml
-	C:\UserData\cibc-api\reference-rest-api\compose\docker-compose-cibcapi.yml
+	capco\cardinal-model\docker-compose.yml
+	capco\cardinal-infinispan\app.yml
+	cibc-api\reference-rest-api\compose\docker-compose-oracle.yml
+	cibc-api\reference-rest-api\compose\docker-compose-cibcapi.yml
 
 ### build or rebuild image for a service
 
 	docker-compose build <service-name> 	
 	
-	e.g. C:\UserData\capco\cardinal-model\docker-compose.yml
+e.g. in capco\cardinal-model\docker-compose.yml
+	
 		build:
-		  context: .
-		  dockerfile: cardinal-db-bootstrap-docker/Dockerfile
+		  context: cardinal-db-docker
+		  dockerfile: Dockerfile
 
 ### create and/or start a service and its containers from a docker-compose yaml file. 
 
@@ -79,6 +80,8 @@ Options:
 	
 ### You can build an image from a Dockerfile, and you can pull an image from a Docker Registry, but what happens when you supply both?  
 
+use "-f <absolute path to DockerFile>" or "-f <relative path to DockerFile>" where DickerFile is search in context root. 
+
 If you add build: "." to a service that will build a Docker image out of the Dockerfile that exists in the directory when you build or up your composer file.
 
 If you add image: "postgres:10.3-alpine" to a service that will pull down that image from the Docker Hub when you pull or up your compose file.	
@@ -88,7 +91,7 @@ If you add image: "postgres:10.3-alpine" to a service that will pull down that i
 	  build: "."
 	  image: "nickjj/myimage:1.0"
 
-When the image gets built, instead of using your COMPOSE_PROJECT_NAME or folder name + service name as the name of the image it will use what you have in the image property.
+When the image gets built, instead of using your "[COMPOSE_PROJECT_NAME | folder name]/service" name as the name of the image it will use what you have in the image property.
 
 In the above example you would end up with an image named and tagged as nickjj/myimage:1.0 which will be built out of the Dockerfile in the current directory. the built image is stored in docker local registery.
 

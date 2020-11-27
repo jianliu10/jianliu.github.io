@@ -331,7 +331,7 @@ The command will remove:
 - all build cache
 
 
-## docker service in Swarm mode (not Kurb mode)
+## docker service in Swarm cluster (not k8s cluster)
 
 use 'docker service' management command to start/stop/remove a service and its containers
 
