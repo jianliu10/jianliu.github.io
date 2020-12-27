@@ -52,16 +52,16 @@ Eenter messages from the producer’s terminal and see them appearing in the sub
 	
 # Configs
 
-3.1 Broker Configs
-	3.1.1 Updating Broker Configs
-3.2 Topic-Level Configs
-3.3 Producer Configs
-3.4 Consumer Configs
-3.5 Kafka Connect Configs
-	3.5.1 Source Connector Configs
-	3.5.2 Sink Connector Configs
-3.6 Kafka Streams Configs
-3.7 Admin Configs	
+		3.1 Broker Configs
+			3.1.1 Updating Broker Configs
+		3.2 Topic-Level Configs
+		3.3 Producer Configs
+		3.4 Consumer Configs
+		3.5 Kafka Connect Configs
+			3.5.1 Source Connector Configs
+			3.5.2 Sink Connector Configs
+		3.6 Kafka Streams Configs
+		3.7 Admin Configs	
 	
 # APIs
 
@@ -121,19 +121,19 @@ ktable.toStream(): convert upsert changes of a ktable to a kstream.
 
 ### Transforming data 
 
-- kstream -> kstream : 
-  kstream.filter, map, flatmap, flatmapvalues, join, leftJoing, rightJoin
-- kstream -> kgroupedtable : 
-  kstream.groupby
-- kgroupedtable -> ktable
-  count("state-store-name"), aggregate(...)
-  /* windowing by event-time */ count(TimeWindows.of(TimeUnit), "state-store-name")    
+- kstream -> kstream :   
+	kstream.filter, map, flatmap, flatmapvalues, join, leftJoing, rightJoin
+- kstream -> kgroupedtable :   
+	kstream.groupby
+- kgroupedtable -> ktable  
+	  count("state-store-name"), aggregate(...)
+	  /* windowing by event-time */ count(TimeWindows.of(TimeUnit), "state-store-name")    
 - kstream -> ktable
-  kstream.reduce
+	kstream.reduce
 - ktable -> ktable : 
-  ktable.filter, mapValue, join
+	ktable.filter, mapValue, join
 - ktable -> kstream change logs: 
-  ktable.toStream()
+	ktable.toStream()
 
 e.g.
 
@@ -159,19 +159,19 @@ e.g.
 
 - StreamsConfig class
 
-	Properties props = new Properties();
-	props.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount-application");
-	props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-broker1:9092");
+		Properties props = new Properties();
+		props.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount-application");
+		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-broker1:9092");
 		
 - StreamBuilder class. builder.stream("TextLinesTopic")
 
-	StreamsBuilder builder = new StreamsBuilder();
-	KStream<String, String> textLines = builder.stream("TextLinesTopic", Consumed.with(stringSerde, stringSerde));
-	KTable<String, Long> wordCounts = textLines
-		.flatMapValues(textLine -> Arrays.asList(textLine.toLowerCase().split("\\W+")))
-		.groupBy((key, word) -> word)
-		.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("counts-store"));
-	wordCounts.toStream().to("WordsWithCountsTopic", Produced.with(Serdes.String(), Serdes.Long()));
+		StreamsBuilder builder = new StreamsBuilder();
+		KStream<String, String> textLines = builder.stream("TextLinesTopic", Consumed.with(stringSerde, stringSerde));
+		KTable<String, Long> wordCounts = textLines
+			.flatMapValues(textLine -> Arrays.asList(textLine.toLowerCase().split("\\W+")))
+			.groupBy((key, word) -> word)
+			.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("counts-store"));
+		wordCounts.toStream().to("WordsWithCountsTopic", Produced.with(Serdes.String(), Serdes.Long()));
 		
 - Serdes (serializers and deserializers) for key and value
 
@@ -181,16 +181,16 @@ e.g.
 
 - KafkaStreams class. 
 
-	KafkaStreams streams = = new KafkaStreams(builder.build, props); 
-	streams.start();
+		KafkaStreams streams = = new KafkaStreams(builder.build, props); 
+		streams.start();
 	
 - state data store (materialize)	
 
-	kgroupedtable.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("counts-store"));
+		kgroupedtable.count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("counts-store"));
 
 - starts the WordCount demo application:
 	
-	bin/kafka-run-class.sh org.apache.kafka.streams.examples.wordcount.WordCountDemo	
+		bin/kafka-run-class.sh org.apache.kafka.streams.examples.wordcount.WordCountDemo	
 	
 As one can see, outputs of the Wordcount application is actually a continuous stream of records upserts.
 
@@ -201,44 +201,44 @@ https://towardsdatascience.com/kafka-python-explained-in-10-lines-of-code-800e3e
 
 - install kafka client module:
 
-	pip install kafka-python
-	conda install -c conda-forge kafka-python
+		pip install kafka-python
+		conda install -c conda-forge kafka-python
 
 - producer app:
 
-	from time import sleep
-	from json import dumps
-	from kafka import KafkaProducer
+		from time import sleep
+		from json import dumps
+		from kafka import KafkaProducer
 
-	producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
-							 value_serializer=lambda x: 
-							 dumps(x).encode('utf-8'))
-	for e in range(1000):
-		data = {'number' : e}
-		producer.send('numtest', value=data)
-		sleep(5)						 
+		producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
+								 value_serializer=lambda x: 
+								 dumps(x).encode('utf-8'))
+		for e in range(1000):
+			data = {'number' : e}
+			producer.send('numtest', value=data)
+			sleep(5)						 
 
 - comsumer app:
 
-	from kafka import KafkaConsumer
-	from pymongo import MongoClient
-	from json import loads
+		from kafka import KafkaConsumer
+		from pymongo import MongoClient
+		from json import loads
 
-	consumer = KafkaConsumer(
-		'numtest',
-		 bootstrap_servers=['localhost:9092'],
-		 auto_offset_reset='earliest',
-		 enable_auto_commit=True,
-		 group_id='my-group',
-		 value_deserializer=lambda x: loads(x.decode('utf-8')))
-		 
-	client = MongoClient('localhost:27017')
-	collection = client.numtest.numtest	 
+		consumer = KafkaConsumer(
+			'numtest',
+			 bootstrap_servers=['localhost:9092'],
+			 auto_offset_reset='earliest',
+			 enable_auto_commit=True,
+			 group_id='my-group',
+			 value_deserializer=lambda x: loads(x.decode('utf-8')))
+			 
+		client = MongoClient('localhost:27017')
+		collection = client.numtest.numtest	 
 
-	for message in consumer:
-		message = message.value
-		collection.insert_one(message)
-		print('{} added to {}'.format(message, collection))
+		for message in consumer:
+			message = message.value
+			collection.insert_one(message)
+			print('{} added to {}'.format(message, collection))
 
 		
 	
