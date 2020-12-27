@@ -595,7 +595,7 @@ Spring-AOP will build a proxy for the objects, using a JDKDynamicProxy if your b
 
 for every class annotated with @Aspect, a singleton aspect bean is created in Spring context container. Then spring will use the aspect beans to create the proxy instances for those target beans.
 
-Spring Framework's support for LTW (Load Time Weaver). Load-time weaving (LTW) refers to the process of weaving AspectJ style aspects into the proxy beans as the target beans are being loaded into Spring container. The focus of this section is on configuring and using LTW in the Spring.
+For Spring-AOP you do not need the AspectJ compiler, but then you are stuck with the proxy-based "AOP lite" approach which comes at the cost of internal calls not being intercepted by aspects because they do not go through proxies but through this (the original object).
 
 
 ### AspectJ 
@@ -605,7 +605,9 @@ libs: aspectj-maven-plugin, org.aspectj.aspectjtools.jar, org.aspectj.aspectjwea
 AspectJ modifies class bytecodes at compilation time. Compile time weaving can offer benefits of performance (in some cases).  
 
 - Compile time weaving. It is done through AspectJ Tools(ajc compiler) if java source files are available
-- OR post compilation weaving (using compiled class files). 
+- OR LTW (Load Time Weaver). Which is post compilation weaving (using compiled class files). Spring Framework's support for LTW (Load Time Weaver). 
+
+For full-blown AspectJ you can configure Spring to use LTW (load-time weaving) as described in manual chapter Using AspectJ with Spring applications. Alternatively, you can also use compile-time weaving, but this is not necessary unless you have performance problems during application start-up.
 
 
 ### Comparison
@@ -625,7 +627,6 @@ there are two major differences btwn Spring-AOP and AspectJ-AOP:
 - runtime performance
   If performance under high load is important, you'll want AspectJ which is 9-35x faster than Spring AOP. whether your aspects will be mission critical.
 
- 
 
 ## microservice, design patterns, RESTful API design  
 

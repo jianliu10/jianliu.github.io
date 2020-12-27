@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "一个简单无脑、长期稳定的永久投资组合"
+title:  "StockCalc"
 date:   2020-11-16 00:00:00 -0500
 categories: investment
 ---
