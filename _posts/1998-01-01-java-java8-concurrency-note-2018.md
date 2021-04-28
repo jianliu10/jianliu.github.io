@@ -146,8 +146,9 @@ Collectors class is a factory class. It creates Collector instances that impleme
 	
 	public interface Collector<T,A,R>
 	
-	collectors.toList(), toSet(), toMap(), toConcurrentMap(), toCollection(TreeSet::new), 
-	collectors.joining(), counting(), summing*(), averaging*(), reducing(), grouping(), partitioning()
+	collect.toArray(),  
+	collectors.toList(), toSet(), toMap(), toConcurrentMap(), toCollection(TreeSet::new),toCollection(LinkedHashMap::new)    
+	collectors.joining(), counting(), summing*(), averaging*(), reducing(), grouping(), partitioning()  
 
 ### java.util.stream.Stream class
  
@@ -229,13 +230,13 @@ You can pass your own Executor argument to the runAsync() or supplyAsync() metho
 
 - attach a callback to the CompletableFuture using thenApply(), thenAccept() and thenRun():
 
-	CompletableFuture<S> CompletableFuture.thenApply(T -> S)
-	CompletableFuture<Void> CompletableFuture.thenAccept(T -> void)
-	CompletableFuture<Void> CompletableFuture.thenRun(() -> {})
+	CompletableFuture&lt;S&gt; CompletableFuture.thenApply(T -> S)   
+	CompletableFuture&lt;Void&gt; CompletableFuture.thenAccept(T -> void)   
+	CompletableFuture&lt;Void&gt; CompletableFuture.thenRun(() -> {})   
 	
 - async callback
 
-	CompletableFuture<S> CompletableFuture.thenApplyAsync(T -> S)
+	CompletableFuture&lt;S&gt; CompletableFuture.thenApplyAsync(T -> S)
 	
 - CompletableFuture.get() method is blocking. It waits until the Future is completed and returns the result after its completion.
 
@@ -259,12 +260,12 @@ You can pass your own Executor argument to the runAsync() or supplyAsync() metho
   
 		CompletableFuture<User> getUsersDetail(String userId) {
 			return CompletableFuture.supplyAsync(() -> {
-				UserService.getUserDetails(userId);
+				return UserService.getUserDetails(userId);
 			});	
 		}
 		CompletableFuture<Double> getCreditRating(User user) {
 			return CompletableFuture.supplyAsync(() -> {
-				CreditRatingService.getCreditRating(user);
+				return CreditRatingService.getCreditRating(user);
 			});
 		}
 		CompletableFuture<Double> result = getUserDetail(userId).thenCompose(user -> getCreditRating(user));
@@ -322,17 +323,23 @@ sample 2 - CompletableFuture.anyOf():
 
 - Handle exceptions using exceptionally() callback
 	
+	Exception error;  
 	CompletableFuture<String> maturityFuture = CompletableFuture.supplyAsync(() -> {
-	}).exceptionally(ex -> {
+	do-something; return "something"; })
+	.exceptionally(ex -> {
+	    error = ex;
 		System.out.println("Oops! We have an exception - " + ex.getMessage());
 		return "Unknown!";
 	});
 
 -  Handle exceptions using the generic handle() method
 	
+	Exception error;  
 	CompletableFuture<String> maturityFuture = CompletableFuture.supplyAsync(() -> {
-	}).handle((res, ex) -> {
+	do-something; return "something"; })
+	.handle((res, ex) -> {
 		if(ex != null) {
+		    error = ex;
 			System.out.println("Oops! We have an exception - " + ex.getMessage());
 			return "Unknown!";
 		}

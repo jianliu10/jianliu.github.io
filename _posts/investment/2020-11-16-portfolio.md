@@ -33,6 +33,11 @@ extremely risky speculation: short term speculation using option, Dama stock. �
 
 rebalance the portfolio once a year. The buy and sell in rebalancing do not have to happen at the same time. 
 
+written on Jan 2021:
+My stock portfolio is maxed at $500k.  keep each stock under 10% of my stock portfolio. Buy 10 stocks. 
+Discipline: do not hold any single stock more than 10% (50w*10%=5w)
+
+
 ## watch window
 
 你选你心理感觉比较好的投资. 如果你对某只股票没有信心，很容易被震出来.
@@ -92,4 +97,26 @@ If you could build your own portfolio of bonds through your online broker. Good 
 ETF companies pay wholesale prices for bonds, not marked-up retail prices. The price paid for bonds is crucial because of the effect it has on yield. The more you pay for a bond, the lower your yield
 
 A compensating advantage for individual bonds is that they eventually mature. No matter how much a bond fluctuates in price, you can expect it to be redeemed on a set date at its issue price. Bond ETFs are designed to keep rolling along, never maturing and thus subject to price declines when interest rates rise and price gains when rates fall.
+
+
+## Note written on Jan 2021
+
+Discipline, Discipline, Discipline!!!
+
+When a stock is at its high, it is NOT a time to buy and hold. It is a time to flip. Put gains to my own pocket, do not buy and hold.
+When a stock is at its low, it is a time to buy and hold. 
+
+My stock portfolio $500k.  keep each stock under 10% of portfolio. Buy 10 stocks. 
+Discipline: do not hold any single stock more than 10% of my stock portfolio (50w*10%=5w)
+
+Current holdings:
+HZNP – flip. To sell at high when profit is 20%. Also worth holding for 3-5 years
+Gold: 1) Discipline - do not buy more of them.  ; 2) flip by big trends. Do not hold for LT. 2021 gold is a speculation. 
+My current holdings 6.1w ENB & 4.5w BCE: 1) Discipline - do not buy more of them.  2) Flip the existing shares by waves since they are at the friction period at their low level.  
+
+Future:
+NTR –  buy when drop under $60. Cyclical stock. 2019 eps good, 2020 eps bad, 2021 will be good. 
+ITA – flip. To buy at low
+Apple, MSFT – To buy at low for LT holding
+
 

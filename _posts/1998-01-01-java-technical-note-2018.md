@@ -34,8 +34,11 @@ chain of responsibility: a request is passed down a chain of objects. each objec
     
 - DI : Dependency Injection,  
   Given annonation declarations like @Autowired, @Qualifier, @Value, Spring automatically searches for beans with specific type or name, and assign beans to variables like class fields, method params. There is no need to write code to explicitly assigned value to variables.  
+  
   @Autowired, @Qualifier - inject beans to class fields, constructor/method parameters.   
-  @Value - inject configuration values from property files
+  
+  @Value - inject configuration values from property files  
+  
   @EnableConfigurationProperties, @ConfigurationProperties(prefix="..."), inject configuration properties from property files
   
 - AOP: Aspect Oriented Programming
@@ -470,8 +473,9 @@ spring-webmvc scans @RequestMapping annotations within the controller classes, a
 - one EntityManagerFactory bean for one persistence unit
   One persistence unit includes: data source, entity model classes, JPA properties, JPA vendor properties.
 	
-- @Repository not only create a singleton bean, but create a Aspect   
-  AOP proxy addes a AfterThrowing advice (PersistenceExceptionTranslationPostProcessor bean) to pointcuts(repository bean methods ). The aspect catches checked persistence exceptions and re-throw them as one of Spring’s unchecked DataAccessException.  
+- @Repository not only create a singleton bean, but create a Aspect.   
+
+  @Repository will create a AOP proxy for a repository singleton bean. The AOP proxy addes a AfterThrowing advice (PersistenceExceptionTranslationPostProcessor bean) to pointcuts(repository bean methods ). The AfterThrowing advice catches vendor specific persistence exceptions and re-throw them as oSpring’s unchecked persistence Exception.  
  
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
@@ -578,11 +582,11 @@ Both spring-AOP lib and AspectJ lib defines: @Aspect, @Pointcut, @Around, @Befor
 
 Spring-AOP is one of the essential parts of the spring framework. the spring framework is based on IoC, DI and AOP. The AOP is one of the most important parts of the framework.
 
-Spring-AOP creates proxies at spring loading time. It is Runtime weaving using proxy.
+Spring-AOP creates proxies at spring context container loading time. It is Runtime weaving using proxy.
 
 @enableAspectJAutoProxy on a @configuration class, OR, <aop:aspectj-autoproxy/> in xml config, it enables @AspectJ style of aspect declaration, but AspectJ runtime is not used. It still use Spring AOP proxies. 
 
-Spring-AOP will build a proxy for the objects, using a JDKDynamicProxy if your bean implements an interface, OR, using CGLIB dynamic proxy to subclass an implementation class  if your bean doesn't implement any interface.
+Spring-AOP will build proxies for the beans, using a JDKDynamicProxy if your bean implements an interface, OR, using CGLIB dynamic proxy to subclass an implementation class  if your bean doesn't implement any interface.
 
 @EnableAspectJAutoProxy(proxyTargetClass = true) will force Spring container to always use CGLIB style subclass proxy.
 
@@ -628,20 +632,7 @@ there are two major differences btwn Spring-AOP and AspectJ-AOP:
   If performance under high load is important, you'll want AspectJ which is 9-35x faster than Spring AOP. whether your aspects will be mission critical.
 
 
-## microservice, design patterns, RESTful API design  
 
-### data join
-
-Use two types of designs to handle data join in microservice architecture:   
- 
-- join data at consumer application level. use REST API to get data from another service, join data in the application.
-
-- join data at consumer app database level. use data events to publish data changes from the master data service to a topic.  consumer app subscribes to the topic and save the data in the consumer app's local db. then join data at the consumer app's local database,  
-
-
-### distributed transactions design
-
-Always avoid distributed transactions. Instread, always use local transaction.
 
  
  

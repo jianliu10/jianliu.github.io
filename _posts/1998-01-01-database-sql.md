@@ -2,7 +2,7 @@
 layout: post
 title:  "SQL databases - 2018"
 date:   2018-10-01 13:15:42 -0500
-categories: database
+categories: tech-database
 ---
 
 # SQL databases
@@ -41,11 +41,11 @@ Type 1 :
 
 Type 2:
 - b-tree index (index on a column with high cardinality), used in frequent DML(upsert/delete) operations.  
-- bitmap index (index on a column with low cadinality for millions of rows ). Since it is expensive to update bitmap index, bitmap index is used in write-once read-many application, such as overnight batch load in DW.
+- bitmap index (index on a column with low cadinality for millions of rows ). Since it is expensive to update bitmap index, bitmap index is used in write-once read-many application, such as overnight batch load of fact table in DW.
 
 ### cadinality
 
-A lot of distinct values is high cardinality; a lot of repeated values is low cardinality.
+A lot of distinct values is called high cardinality; a few of distinct values is called low cardinality.
 
 
 ## performance tunning  

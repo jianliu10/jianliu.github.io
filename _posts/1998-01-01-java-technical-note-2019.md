@@ -38,13 +38,34 @@ big data applications:
 - lambda serverless architecture (Computation - small annonymous function that is short-lived run. )
 - reactive programming  (event messaging, data streaming)
 
-## design patterm - event sourcing table
+## microservice, design patterns, RESTful API design  
+
+### data join
+
+Use two types of designs to handle data join in microservice architecture:   
+ 
+- join data at consumer application level. use REST API to get data from another service, join data in the application.
+
+- join data at consumer app database level. use data events to publish data changes from the master data service to a topic.  consumer app subscribes to the topic and save the data in the consumer app's local db. then join data at the consumer app's local database,  
+
+
+### distributed transactions design
+
+Always avoid distributed transactions. Instread, always use local transaction.
+
+## design pattern - Sage pattern 
+
+Sage convert a distribute transaction into multiple local transactions in micro services, using event messaging on event bus.
+
+consumer service; order service; payment service.  They invoke each other. 
+
+## microservice design pattern - event sourcing table
 
 To bridge transactional table data change to a messaging table
 
-for example, we add a record in a business table, then publish a event msg for the record to a topic. The db table write and topic msg publish need to be in a single distrubuted transaction. But we cannot use 2PC in modern distributed system. 2PC is not reliable.
+for example, we add a record in a business table, then publish a event msg for the record to a topic. The writing record to a db table write and publishing msg to a topic need to be in a single distrubuted transaction. But we cannot use 2PC in modern distributed system. 2PC is not reliable.
 
-Instead, we still need to use local transaction. so the solution is event sourcing.
+Instead, we still need to use local db transaction. so the solution is event sourcing.
 
 **event sourcing solution:**    
 use db Event Table as **message queue**, this make a local transaction across multiple tables (business table and Event table).  use db triggers to append events to db Event table.  
@@ -52,7 +73,7 @@ another process read events from the event table and publish to Topics.
 Here the Event table is the source of events.
 
 **Use case:**  
-Order lifecycle: Order created, Order cancelled, Order shipped, Order received.  
+Order lifecycle: Order created, Order updated, Order shipped, Order received, order cancelled.  
 there is one Order transactional table, a order record can be inserted, updated, deleted.
 There is another order event table, every order event is appended to event table. This event table is used as message QUEUE - append only, no update, no delete. 
 

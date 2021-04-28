@@ -16,7 +16,7 @@ the message payload does NOT contain the source data. Its payload contains the m
 - Kafka: Intact FCC project. 
 
 
-### Data Streaming
+### Data Messaging
 
 the message payload contains the source data.
 
