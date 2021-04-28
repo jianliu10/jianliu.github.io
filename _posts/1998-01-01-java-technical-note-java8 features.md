@@ -5,7 +5,7 @@ date:   2018-10-01 13:15:42 -0500
 categories: tech-java-spring
 ---
 
-https://mp.weixin.qq.com/s/_YVS4MNn6jZc_kfEX4vcZA
+[Java8新特性](https://mp.weixin.qq.com/s/_YVS4MNn6jZc_kfEX4vcZA)
 
 
 Java8新特性中最为重要的便是Lambda表达式和Stream API了，先来了解一下Lambda表达式吧。

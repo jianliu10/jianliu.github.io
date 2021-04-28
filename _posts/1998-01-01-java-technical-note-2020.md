@@ -28,6 +28,10 @@ https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_a
 "bootstrap context" is a parent context for the main "application context".  The two contexts share an Environment, which is the source of external properties for any Spring application.
 
 
+## Guava Cache- java local cache
+
+https://mp.weixin.qq.com/s/BV0Kcr7K3537kYIjuI740w
+
 
 ## Drools
 
